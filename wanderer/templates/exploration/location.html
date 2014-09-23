@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+ 
+{% block title %}{{location.title}}{% endblock %}
+ 
+{% block content %}
+<article>
+	<header>
+		<h2>
+			Deck
+		</h2>
+		{% if userprofile.active_location == location %}
+		<h2>
+			{{userprofile.active_scenario.title}}
+		</h2>
+		{{userprofile.active_scenario.description}}
+		{% else %}
+		No active scenario here. Go to {{userprofile.active_location}}.
+		{% endif %}
+		<h1> {{location.title}} </h1>
+		<p>
+			Posted on
+			<time datetime="{{location.created|date:"c"}}">
+			{{location.created|date}}
+			</time>
+		</p>
+	</header>
+	<p class="description">
+		{{location.description}}
+	</p>
+</article>
+{% endblock %}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css">
+		<meta charset="utf-8">
+		<title>
+			{% block title %}{% endblock %}
+		</title>
+		</head>
+	<body>
+		<div class="content">
+			{% block content %}
+			{% endblock %}
+		</div>
+		<div class="footer">
+		{% for card in hand %}
+		<h2>
+			<a href="{{card.get_absolute_url}}?from={{request.path}}">{{card.card.name}}</a>
+		</h2>
+		{% endfor %}
+		</div>
+	</body>
+</html>
