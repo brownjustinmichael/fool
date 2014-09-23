@@ -25,7 +25,7 @@ class UserProfile(models.Model):
     charm = models.IntegerField (default = 0)
     wisdom = models.IntegerField (default = 0)
     power = models.IntegerField (default = 0)
-    
+        
     def __str__ (self):
         return u"%s's Profile" % self.user.username
         
