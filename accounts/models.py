@@ -19,6 +19,13 @@ class UserProfile(models.Model):
     active_scenario = models.ForeignKey (Scenario, blank = True, null = True)
     active_location = models.ForeignKey (Location, blank = True, null = True)
     
+    force = models.IntegerField ()
+    dash = models.IntegerField ()
+    resist = models.IntegerField ()
+    charm = models.IntegerField ()
+    wisdom = models.IntegerField ()
+    power = models.IntegerField ()
+    
     def __str__ (self):
         return u"%s's Profile" % self.user.username
         

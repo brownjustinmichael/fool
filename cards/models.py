@@ -14,7 +14,7 @@ class CardAttributes (models.Model):
     player = models.ForeignKey (UserProfile)
     card = models.ForeignKey (Card)
     modifier = models.IntegerField ()
-    status = models.CharField (max_length = 6, choices = CARD_STATUSES, default = CARD_IN_STASH)
+    status = models.CharField (max_length = 7, choices = CARD_STATUSES, default = CARD_IN_STASH)
     
     def __str__ (self):
         return u"%s's %s" % (self.player.user, self.card)
