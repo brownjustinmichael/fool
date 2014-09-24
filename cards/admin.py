@@ -1,6 +1,6 @@
 from django.contrib import admin
 from cards.models import Card
-from cards.models import CardAttributes
+from cards.models import CardAttribute
  
 admin.site.register (Card)
-admin.site.register (CardAttributes)
+admin.site.register (CardAttribute)

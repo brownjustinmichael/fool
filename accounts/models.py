@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from scenarios.models import Scenario
+from events.models import Event
 from locations.models import Location
 
 CARD_IN_HAND = "hand"
@@ -16,7 +16,7 @@ class UserProfile(models.Model):
     # Other fields here
     accepted_eula = models.BooleanField(default = False)
     favorite_animal = models.CharField(max_length=20, default="Dragons")
-    active_scenario = models.ForeignKey (Scenario, blank = True, null = True)
+    active_event = models.ForeignKey (Event, blank = True, null = True)
     active_location = models.ForeignKey (Location, blank = True, null = True)
     
     force = models.IntegerField (default = 0)

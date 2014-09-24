@@ -10,9 +10,9 @@
 		</h2>
 		{% if userprofile.active_location == location %}
 		<h2>
-			{{userprofile.active_scenario.title}}
+			{{userprofile.active_event.title}}
 		</h2>
-		{{userprofile.active_scenario.description}}
+		{{userprofile.active_event.description}}
 		{% else %}
 		No active scenario here. Go to {{userprofile.active_location}}.
 		{% endif %}

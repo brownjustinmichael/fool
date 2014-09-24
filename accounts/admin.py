@@ -1,13 +1,13 @@
 from django.contrib import admin
 from accounts.models import UserProfile
-from cards.models import CardAttributes
+from cards.models import CardAttribute
 
-class CardAttributesInline(admin.TabularInline):
-    model = CardAttributes
+class CardAttributeInline(admin.TabularInline):
+    model = CardAttribute
 
 class UserProfileAdmin (admin.ModelAdmin):
     inlines = [
-        CardAttributesInline,
+        CardAttributeInline,
     ]
 
 admin.site.register(UserProfile, UserProfileAdmin)

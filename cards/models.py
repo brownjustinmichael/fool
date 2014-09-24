@@ -10,7 +10,7 @@ class Card (models.Model):
     def __str__ (self):
         return u"%s" % self.name
         
-class CardAttributes (models.Model):
+class CardAttribute (models.Model):
     player = models.ForeignKey (UserProfile)
     card = models.ForeignKey (Card)
     modifier = models.IntegerField ()
