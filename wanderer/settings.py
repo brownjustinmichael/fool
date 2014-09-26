@@ -40,6 +40,8 @@ INSTALLED_APPS = (
     'events',
     'locations',
     'accounts',
+    'results',
+    'polymorphic',
 )
 
 MIDDLEWARE_CLASSES = (

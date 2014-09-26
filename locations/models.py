@@ -7,6 +7,7 @@ class Location (models.Model):
     description = models.CharField(max_length=255)
     published = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
+    canshuffle = models.BooleanField (default = False)
  
     class Meta:
         ordering = ['-created']

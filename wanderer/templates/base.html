@@ -15,9 +15,17 @@
 		<div class="footer">
 		{% for card in hand %}
 		<h2>
-			<a href="{{card.get_absolute_url}}?from={{request.path}}">{{card.card.name}}</a>
+			<a href="{{card.get_absolute_url}}?from={{request.path}}">{{card.card.name}} {{card.modifier}}</a>
 		</h2>
 		{% endfor %}
+		{% if numcardsindeck > 0 %}
+		<h2>
+			<a href="/draw?from={{request.path}}">Deck</a>
+		</h2>
+		{% endif %}
+		<h2>
+			Money: {{user.userprofile.money}}
+		</h2>
 		</div>
 	</body>
 </html>

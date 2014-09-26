@@ -9,7 +9,7 @@ def index(request):
     # get the locations that are published
     locations = Location.objects.filter (published=True)
     # now return the rendered template
-    return render (request, 'exploration/index.html', {'locations': locations, 'hand': request.user.userprofile.getCardsInHand (), 'request': request})
+    return render (request, 'exploration/index.html', {'locations': locations, 'hand': request.user.userprofile.getCardsInHand (), 'request': request, 'numcardsindeck': request.user.userprofile.getNumCardsInDeck ()})
 
 @login_required (login_url='/accounts/login/')
 def location (request, slug):
@@ -19,7 +19,4 @@ def location (request, slug):
     username = None
     if request.user.is_authenticated():
         username = request.user.username
-        print (request.user.userprofile.favorite_animal)
-    print (request.path)
-    
-    return render (request, 'exploration/location.html', {'location': location, 'hand': request.user.userprofile.getCardsInHand (), 'request': request, 'userprofile': request.user.userprofile})
+    return render (request, 'exploration/location.html', {'location': location, 'hand': request.user.userprofile.getCardsInHand (), 'request': request, 'userprofile': request.user.userprofile, 'numcardsindeck': request.user.userprofile.getNumCardsInDeck (), 'logs': request.user.userprofile.log_set.order_by ('logged').all ()})

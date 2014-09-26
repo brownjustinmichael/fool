@@ -12,7 +12,7 @@
 		<h2>
 			{{userprofile.active_event.title}}
 		</h2>
-		{{userprofile.active_event.description}}
+		{{userprofile.active_event.content}}
 		{% else %}
 		No active scenario here. Go to {{userprofile.active_location}}.
 		{% endif %}
@@ -23,9 +23,27 @@
 			{{location.created|date}}
 			</time>
 		</p>
+		{% if location.canshuffle %}
+		<h2><a href="/shuffle?from={{request.path}}">Shuffle</a></h2>
+		{% endif %}
 	</header>
 	<p class="description">
 		{{location.description}}
 	</p>
+	{% for log in logs %}
+	<div class="logentry">
+		<h2>
+			{{log.title}}
+		</h2>
+		<p>{{log.event.content}}</p>
+		<p>{{log.result.message}}</p>
+		<p>
+			Logged on
+			<time datetime="{{log.logged|date:"c"}}">
+			{{location.created|date}}
+			</time>
+		</p>
+	</div>
+	{% endfor %}
 </article>
 {% endblock %}
