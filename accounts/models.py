@@ -74,7 +74,7 @@ Player = type ('Player', (AbstractPlayer,), stats)
 
 class Card (models.Model):
     """
-    This is a usable instance of the cardtemplate class. It should contain methods for card use, upgrades, socketing, etc.
+    This is a playable instance of the cardtemplate class. It should contain methods for card use, upgrades, socketing, etc.
     """
     modifier = models.IntegerField ()
     status = models.CharField (max_length = 7, choices = CARD_STATUSES, default = CARD_IN_STASH)
@@ -108,3 +108,6 @@ class Log (models.Model):
     
     user = models.ForeignKey (Player)
     
+    class Meta:
+        #Specify the order that the logging messages should appear "logged" for forward and "-logged" for reverse
+        ordering = ['logged']

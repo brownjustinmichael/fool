@@ -27,4 +27,4 @@ def location (request, slug):
     if location == active_location:
         event.resolve (player, location)
         
-    return render (request, 'exploration/location.html', {'location': location, 'hand': player.getCardsInHand (), 'request': request, 'userprofile': player, 'numcardsindeck': player.getNumCardsInDeck (), 'logs': player.log_set.filter (location = location).order_by ('logged').all ()})
+    return render (request, 'exploration/location.html', {'location': location, 'hand': player.getCardsInHand (), 'request': request, 'userprofile': player, 'numcardsindeck': player.getNumCardsInDeck (), 'logs': player.log_set.filter (location = location).all ()})
