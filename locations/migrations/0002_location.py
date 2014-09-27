@@ -14,12 +14,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Location',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('title', models.CharField(max_length=255)),
                 ('slug', models.SlugField(unique=True, max_length=255)),
                 ('description', models.CharField(max_length=255)),
                 ('published', models.BooleanField(default=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
+                ('canshuffle', models.BooleanField(default=False)),
             ],
             options={
                 'ordering': ['-created'],

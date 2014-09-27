@@ -1,13 +1,13 @@
 from django.contrib import admin
-from accounts.models import Player, CardAttribute
+from accounts.models import Player, Card
 
-class CardAttributeInline(admin.TabularInline):
-    model = CardAttribute
+class CardInline(admin.TabularInline):
+    model = Card
 
 class PlayerAdmin (admin.ModelAdmin):
     inlines = [
-        CardAttributeInline,
+        CardInline,
     ]
 
 admin.site.register(Player, PlayerAdmin)
-admin.site.register (CardAttribute)
+admin.site.register (Card)

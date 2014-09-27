@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from accounts.models import CardAttribute
+from accounts.models import Card
 from accounts.models import CARD_IN_DISCARD, CARD_IN_HAND
 from results.models import Log
 
 @login_required
 def card (request, slug):
     # get the Card object
-    cardattribute = get_object_or_404 (CardAttribute, id=slug)
+    cardattribute = get_object_or_404 (Card, id=slug)
     # now return the rendered template
     username = None
     if request.user.is_authenticated():

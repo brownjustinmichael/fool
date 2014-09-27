@@ -1,9 +1,9 @@
 from django.db import models
 from polymorphic import PolymorphicModel
-from accounts.models import Player, CARD_STATUSES, CARD_IN_STASH, USER_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
+from accounts.models import Player
 from django.core.urlresolvers import reverse
 from events.models import Event
-from cards.models import Card
+from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, PLAYER_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
 from locations.models import Location
 
 from django.contrib.contenttypes.models import ContentType
@@ -25,7 +25,7 @@ class Result (PolymorphicModel):
         
         
 class StatResult (Result):
-    stat = models.CharField (max_length = 8, choices = USER_STATS, null = True, default = None)
+    stat = models.CharField (max_length = 8, choices = PLAYER_STATS, null = True, default = None)
 
     modifier = models.IntegerField (default = 0)
     
@@ -74,7 +74,7 @@ class ResultCondition (models.Model):
     event = models.ForeignKey (Event)
     success_result = models.ForeignKey (Result, related_name = "_unused_1")
     fail_result = models.ForeignKey (Result, related_name = "_unused_2")
-    card = models.ForeignKey (Card)
+    card = models.ForeignKey (CardTemplate)
 
     success_threshold = models.IntegerField (default = 0)
 

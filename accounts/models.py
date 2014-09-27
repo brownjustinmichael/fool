@@ -6,25 +6,10 @@ import random
 
 from events.models import Event
 from locations.models import Location
-from cards.models import Card
-
-CARD_IN_HAND = "hand"
-CARD_IN_DECK = "deck"
-CARD_IN_DISCARD = "discard"
-CARD_IN_STASH = "stash"
-CARD_STATUSES = ((CARD_IN_HAND, "Hand"), (CARD_IN_DECK, "Deck"), (CARD_IN_DISCARD, "Discard"), (CARD_IN_STASH, "Stash"))
-
-FORCE = "force"
-DASH = "dash"
-RESIST = "resist"
-CHARM = "charm"
-WISDOM = "wisdom"
-POWER = "power"
-MONEY = "money"
-USER_STATS = ((FORCE, "Force"), (DASH, "Dash"), (RESIST, "Resist"), (CHARM, "Charm"), (WISDOM, "Wisdom"), (POWER, "Power"), (MONEY, "Money"))
+from cards.models import CardTemplate, PLAYER_STATS, CARD_STATUSES, CARD_IN_STASH, CARD_IN_HAND, CARD_IN_DECK, CARD_IN_DISCARD
 
 stats = collections.OrderedDict ()
-for stat in USER_STATS:
+for stat in PLAYER_STATS:
     stats [stat [0]] = models.IntegerField (default = 0)
 print (stats)
 
@@ -77,11 +62,12 @@ class AbstractPlayer (models.Model):
 stats.update ({"__module__": __name__})
 Player = type ('Player', (AbstractPlayer,), stats)
 
-class CardAttribute (models.Model):
-    player = models.ForeignKey (Player)
-    card = models.ForeignKey (Card)
+class Card (models.Model):
     modifier = models.IntegerField ()
     status = models.CharField (max_length = 7, choices = CARD_STATUSES, default = CARD_IN_STASH)
+    
+    player = models.ForeignKey (Player)
+    template = models.ForeignKey (CardTemplate)
     
     def __str__ (self):
         return u"%s's %s" % (self.player.user, self.card)
