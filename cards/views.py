@@ -25,7 +25,7 @@ def card (request, slug):
         # Treat this better
         print ("Nothing happens...")
         
-    newlog = Log (title = event.title, event = event, result = result, user = request.user.userprofile)
+    newlog = Log (title = event.title, event = event, result = result, user = request.user.userprofile, location = request.user.userprofile.active_location)
     newlog.save ()
         
     request.user.userprofile.save ()

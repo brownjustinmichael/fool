@@ -4,6 +4,7 @@ from accounts.models import UserProfile, CARD_STATUSES, CARD_IN_STASH, USER_STAT
 from django.core.urlresolvers import reverse
 from events.models import Event
 from cards.models import Card
+from locations.models import Location
 
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import QuerySet
@@ -94,6 +95,7 @@ class Log (models.Model):
     title = models.CharField (max_length = 255)
     event = models.ForeignKey (Event)
     result = models.ForeignKey (Result)
+    location = models.ForeignKey (Location)
     logged = models.DateTimeField (auto_now_add=True)
     
     user = models.ForeignKey (UserProfile)

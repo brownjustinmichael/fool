@@ -19,4 +19,4 @@ def location (request, slug):
     username = None
     if request.user.is_authenticated():
         username = request.user.username
-    return render (request, 'exploration/location.html', {'location': location, 'hand': request.user.userprofile.getCardsInHand (), 'request': request, 'userprofile': request.user.userprofile, 'numcardsindeck': request.user.userprofile.getNumCardsInDeck (), 'logs': request.user.userprofile.log_set.order_by ('logged').all ()})
+    return render (request, 'exploration/location.html', {'location': location, 'hand': request.user.userprofile.getCardsInHand (), 'request': request, 'userprofile': request.user.userprofile, 'numcardsindeck': request.user.userprofile.getNumCardsInDeck (), 'logs': request.user.userprofile.log_set.filter (location = location).order_by ('logged').all ()})
