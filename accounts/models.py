@@ -7,7 +7,7 @@ import random
 
 from events.models import Event
 from locations.models import Location
-from cards.models import CardTemplate, PLAYER_STATS
+from cards.models import CardTemplate, PLAYER_STATS, EXTRA_STATS
 from results.models import Result
 
 CARD_IN_HAND = "hand"
@@ -17,7 +17,8 @@ CARD_IN_STASH = "stash"
 CARD_STATUSES = ((CARD_IN_HAND, "Hand"), (CARD_IN_DECK, "Deck"), (CARD_IN_DISCARD, "Discard"), (CARD_IN_STASH, "Stash"))
 
 stats = collections.OrderedDict ()
-for stat in PLAYER_STATS:
+print (PLAYER_STATS, EXTRA_STATS, PLAYER_STATS + EXTRA_STATS)
+for stat in PLAYER_STATS + EXTRA_STATS:
     stats [stat [0]] = models.IntegerField (default = 0)
 
 class AbstractPlayer (models.Model):

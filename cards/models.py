@@ -6,8 +6,10 @@ RESIST = "resist"
 CHARM = "charm"
 WISDOM = "wisdom"
 POWER = "power"
+PLAYER_STATS = ((FORCE, "Force"), (DASH, "Dash"), (RESIST, "Resist"), (CHARM, "Charm"), (WISDOM, "Wisdom"), (POWER, "Power"))
+
 MONEY = "money"
-PLAYER_STATS = ((FORCE, "Force"), (DASH, "Dash"), (RESIST, "Resist"), (CHARM, "Charm"), (WISDOM, "Wisdom"), (POWER, "Power"), (MONEY, "Money"))
+EXTRA_STATS = ((MONEY, "Money"),)
 
 class CardTemplate (models.Model):
     """
