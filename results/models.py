@@ -1,8 +1,6 @@
 from django.db import models
 from polymorphic import PolymorphicModel
-from accounts.models import Player, CARD_STATUSES, CARD_IN_STASH
 from django.core.urlresolvers import reverse
-from events.models import Event
 from cards.models import CardTemplate, PLAYER_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
 from locations.models import Location
 
@@ -21,6 +19,7 @@ class Result (PolymorphicModel):
         userprofile.active_event = None
         userprofile.active_location = None
         print ("Super")
+        userprofile.save ()
         return self.message
         
         
@@ -60,7 +59,7 @@ class EnemyResult (Result):
         
 class NewEventResult (Result):
     # This field is required.
-    new_event = models.ForeignKey (Event, related_name = "_unused_3")
+    new_event = models.ForeignKey ("events.Event", related_name = "_unused_3")
         
     def __str__ (self):
         return u"%s, %s" % (self.name, str (self.new_event))
@@ -70,30 +69,4 @@ class NewEventResult (Result):
         userprofile.active_event = self.new_event
         return self.message
         
-class ResultCondition (models.Model):
-    event = models.ForeignKey (Event)
-    success_result = models.ForeignKey (Result, related_name = "_unused_1")
-    fail_result = models.ForeignKey (Result, related_name = "_unused_2")
-    card = models.ForeignKey (CardTemplate)
 
-    success_threshold = models.IntegerField (default = 0)
-
-    class Meta:
-      unique_together = ('event', 'card',)
-
-    def checkSuccess (self, card):
-        if card.play () >= self.success_threshold:
-            return self.success_result
-        else:
-            return self.fail_result
-            
-
-class Log (models.Model):
-    title = models.CharField (max_length = 255)
-    event = models.ForeignKey (Event)
-    result = models.ForeignKey (Result)
-    location = models.ForeignKey (Location)
-    logged = models.DateTimeField (auto_now_add=True)
-    
-    user = models.ForeignKey (Player)
-    

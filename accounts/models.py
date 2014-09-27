@@ -8,6 +8,7 @@ import random
 from events.models import Event
 from locations.models import Location
 from cards.models import CardTemplate, PLAYER_STATS
+from results.models import Result
 
 CARD_IN_HAND = "hand"
 CARD_IN_DECK = "deck"
@@ -18,7 +19,6 @@ CARD_STATUSES = ((CARD_IN_HAND, "Hand"), (CARD_IN_DECK, "Deck"), (CARD_IN_DISCAR
 stats = collections.OrderedDict ()
 for stat in PLAYER_STATS:
     stats [stat [0]] = models.IntegerField (default = 0)
-print (stats)
 
 class AbstractPlayer (models.Model):
     """
@@ -65,6 +65,9 @@ class AbstractPlayer (models.Model):
         for card in self.card_set.filter (status = CARD_IN_DISCARD).all ():
             card.status = CARD_IN_DECK
             card.save ()
+            
+    def recordLog (self, event, result, location):
+        Log (title = event.title, event = event, result = result, user = self, location = location).save ()
 
 stats.update ({"__module__": __name__})
 Player = type ('Player', (AbstractPlayer,), stats)
@@ -80,7 +83,7 @@ class Card (models.Model):
     template = models.ForeignKey (CardTemplate)
     
     def __str__ (self):
-        return u"%s's %s" % (self.player.user, self.card)
+        return u"%s's %s %d" % (self.player.user, self.template, self.modifier)
         
     def get_absolute_url (self):
         return reverse ('cards.views.card', args=[self.id])
@@ -90,6 +93,18 @@ class Card (models.Model):
         If playing the card would have a strange effect or unique bonuses, that effect should go here in a subclass
         """
         self.status = CARD_IN_DISCARD
+        print (self.status)
+        self.save ()
         if self.template.stat != None:
             return self.modifier + getattr (self.player, self.template.stat)
         return self.modifier
+
+class Log (models.Model):
+    title = models.CharField (max_length = 255)
+    event = models.ForeignKey (Event)
+    result = models.ForeignKey (Result)
+    location = models.ForeignKey (Location)
+    logged = models.DateTimeField (auto_now_add=True)
+    
+    user = models.ForeignKey (Player)
+    
