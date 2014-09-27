@@ -1,6 +1,6 @@
 from django.db import models
 from polymorphic import PolymorphicModel
-from accounts.models import UserProfile, CARD_STATUSES, CARD_IN_STASH, USER_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
+from accounts.models import Player, CARD_STATUSES, CARD_IN_STASH, USER_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
 from django.core.urlresolvers import reverse
 from events.models import Event
 from cards.models import Card
@@ -98,5 +98,5 @@ class Log (models.Model):
     location = models.ForeignKey (Location)
     logged = models.DateTimeField (auto_now_add=True)
     
-    user = models.ForeignKey (UserProfile)
+    user = models.ForeignKey (Player)
     
