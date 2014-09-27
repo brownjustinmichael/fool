@@ -35,6 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'grappelli',
     'django.contrib.admin',
     'cards',
     'events',
@@ -93,6 +94,16 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     os.path.join (BASE_DIR, 'wanderer/static/'),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    "django.core.context_processors.request",
 )
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
