@@ -1,14 +1,15 @@
 from django.db import models
-from polymorphic import PolymorphicModel
-from django.core.urlresolvers import reverse
-from cards.models import CardTemplate, PLAYER_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
-from locations.models import Location
-
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import QuerySet
 
+from polymorphic import PolymorphicModel
+from django.core.urlresolvers import reverse
+from cards.models import PLAYER_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
+
 class Result (PolymorphicModel):
-    # This field is required.
+    """
+    This class is designed to be a super class to any result to an event card
+    """
     name = models.CharField (max_length = 20)
     message = models.TextField ()
         
@@ -16,9 +17,11 @@ class Result (PolymorphicModel):
         return u"%s" % self.name
         
     def enact (self, userprofile):
+        """
+        This is the main function that the result class wraps. Given that a particular result has been decided, this enacts it. It should be overridden for each type of possible result
+        """
         userprofile.active_event = None
         userprofile.active_location = None
-        print ("Super")
         userprofile.save ()
         return self.message
         
