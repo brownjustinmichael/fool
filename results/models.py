@@ -1,9 +1,9 @@
 from django.db import models
 from polymorphic import PolymorphicModel
-from accounts.models import Player
+from accounts.models import Player, CARD_STATUSES, CARD_IN_STASH
 from django.core.urlresolvers import reverse
 from events.models import Event
-from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, PLAYER_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
+from cards.models import CardTemplate, PLAYER_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
 from locations.models import Location
 
 from django.contrib.contenttypes.models import ContentType
@@ -81,11 +81,8 @@ class ResultCondition (models.Model):
     class Meta:
       unique_together = ('event', 'card',)
 
-    def checkSuccess (self, cardattribute):
-        print ("CHECKING SUCCESS")
-        print (cardattribute.modifier, self.success_threshold)
-        print (str (self.success_result))
-        if cardattribute.modifier >= self.success_threshold:
+    def checkSuccess (self, card):
+        if card.play () >= self.success_threshold:
             return self.success_result
         else:
             return self.fail_result

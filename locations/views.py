@@ -12,7 +12,7 @@ def index(request):
     locations = Location.objects.filter (published=True)
     # now return the rendered template
     player = get_object_or_404 (Player, user = request.user)
-    return render (request, 'exploration/index.html', {'locations': locations, 'hand': request.user.userprofile.getCardsInHand (), 'request': request, 'numcardsindeck': request.user.userprofile.getNumCardsInDeck ()})
+    return render (request, 'exploration/index.html', {'locations': locations, 'hand': player.getCardsInHand (), 'request': request, 'numcardsindeck': player.getNumCardsInDeck ()})
 
 @login_required (login_url='/accounts/login/')
 def location (request, slug):
@@ -20,6 +20,5 @@ def location (request, slug):
     location = get_object_or_404 (Location, slug=slug)
     # now return the rendered template
     username = None
-    if request.user.is_authenticated():
-        player = get_object_or_404 (Player, user = request.user)
-        return render (request, 'exploration/location.html', {'location': location, 'hand': request.user.userprofile.getCardsInHand (), 'request': request, 'userprofile': request.user.userprofile, 'numcardsindeck': request.user.userprofile.getNumCardsInDeck (), 'logs': request.user.userprofile.log_set.filter (location = location).order_by ('logged').all ()})
+    player = get_object_or_404 (Player, user = request.user)
+    return render (request, 'exploration/location.html', {'location': location, 'hand': player.getCardsInHand (), 'request': request, 'userprofile': player, 'numcardsindeck': player.getNumCardsInDeck (), 'logs': player.log_set.filter (location = location).order_by ('logged').all ()})

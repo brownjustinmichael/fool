@@ -12,23 +12,26 @@ def card (request, slug):
     username = None
     if request.user.is_authenticated():
         username = request.user.username
-    cardattribute.status = CARD_IN_DISCARD
-    cardattribute.save ()
+    # cardattribute.status = CARD_IN_DISCARD
+    # cardattribute.save ()
     
-    event = request.user.userprofile.active_event
+    event = request.user.player.active_event
+    location = request.user.player.active_location
+    if event is None:
+        return redirect (request.GET.get ('from', 'index.html'))
     
     try:
-        resultcondition = event.resultcondition_set.filter (card = cardattribute.card).all () [0]
+        resultcondition = event.resultcondition_set.filter (card = cardattribute.template).all () [0]
         result = resultcondition.checkSuccess (cardattribute)
-        print (result.enact (request.user.userprofile))
+        print (result.enact (request.user.player))
     except IndexError:
         # Treat this better
         print ("Nothing happens...")
         
-    newlog = Log (title = event.title, event = event, result = result, user = request.user.userprofile, location = request.user.userprofile.active_location)
+    newlog = Log (title = event.title, event = event, result = result, user = request.user.player, location = location)
     newlog.save ()
         
-    request.user.userprofile.save ()
+    request.user.player.save ()
     
     return redirect (request.GET.get ('from', 'index.html'))
 
@@ -38,8 +41,8 @@ def draw (request):
     username = None
     if request.user.is_authenticated():
         username = request.user.username
-    card = request.user.userprofile.drawCard ()
-    print ("Drawing " + str (card.card) + str (card.modifier))
+    card = request.user.player.drawCard ()
+    print ("Drawing " + str (card.template) + str (card.modifier))
     card.status = CARD_IN_HAND
     card.save ()
     return redirect (request.GET.get ('from', 'index.html'))
@@ -50,6 +53,6 @@ def shuffle (request):
     username = None
     if request.user.is_authenticated():
         username = request.user.username
-    request.user.userprofile.reshuffle ()
+    request.user.player.reshuffle ()
     return redirect (request.GET.get ('from', 'index.html'))
 
