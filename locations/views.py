@@ -12,7 +12,7 @@ def index(request):
     locations = Location.objects.filter (published=True)
     # now return the rendered template
     player = get_object_or_404 (Player, user = request.user)
-    return render (request, 'exploration/index.html', {'locations': locations, 'hand': player.getCardsInHand (), 'request': request, 'numcardsindeck': player.getNumCardsInDeck ()})
+    return render (request, 'exploration/index.html', {'locations': locations, 'hand': player.deck.getCardsInHand (), 'request': request, 'numcardsindeck': player.deck.getNumCardsInDeck ()})
 
 @login_required (login_url='/accounts/login/')
 def location (request, slug):
@@ -27,4 +27,4 @@ def location (request, slug):
     if location == active_location:
         event.resolve (player, location)
         
-    return render (request, 'exploration/location.html', {'location': location, 'hand': player.getCardsInHand (), 'request': request, 'userprofile': player, 'numcardsindeck': player.getNumCardsInDeck (), 'logs': player.log_set.filter (location = location).all ()})
+    return render (request, 'exploration/location.html', {'location': location, 'hand': player.deck.getCardsInHand (), 'request': request, 'userprofile': player, 'numcardsindeck': player.deck.getNumCardsInDeck (), 'logs': player.log_set.filter (location = location).all ()})

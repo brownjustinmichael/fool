@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from accounts.models import Card, Player
-from accounts.models import CARD_IN_DISCARD, CARD_IN_HAND
+from accounts.models import Player
+from cards.models import Card, Deck, CARD_IN_DISCARD, CARD_IN_HAND
 
 @login_required
 def card (request, slug):
@@ -23,9 +23,10 @@ def card (request, slug):
 def draw (request):
     # now return the rendered template
     username = None
-    if request.user.is_authenticated():
-        username = request.user.username
-    card = request.user.player.drawCard ()
+    player = get_object_or_404 (Player, user = request.user)
+    deck = get_object_or_404 (Deck, player = player)
+
+    card = deck.drawCard ()
     print ("Drawing " + str (card.template) + str (card.modifier))
     card.status = CARD_IN_HAND
     card.save ()
@@ -37,6 +38,6 @@ def shuffle (request):
     username = None
     if request.user.is_authenticated():
         username = request.user.username
-    request.user.player.reshuffle ()
+    request.user.player.deck.reshuffle ()
     return redirect (request.GET.get ('from', 'index.html'))
 

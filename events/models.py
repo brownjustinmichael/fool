@@ -36,7 +36,7 @@ class Event (models.Model):
         """
         if card is not None:
             # If there is a card, play it
-            value = card.play ()
+            value = player.playCard (card)
             
             # Get the possible result conditionals (0 or 1)
             resultconditions = self.resultcondition_set.filter (card = card.template).order_by ('success_threshold').all ()
