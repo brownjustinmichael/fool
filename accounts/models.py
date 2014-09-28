@@ -17,9 +17,12 @@ CARD_IN_STASH = "stash"
 CARD_STATUSES = ((CARD_IN_HAND, "Hand"), (CARD_IN_DECK, "Deck"), (CARD_IN_DISCARD, "Discard"), (CARD_IN_STASH, "Stash"))
 
 stats = collections.OrderedDict ()
-print (PLAYER_STATS, EXTRA_STATS, PLAYER_STATS + EXTRA_STATS)
 for stat in PLAYER_STATS + EXTRA_STATS:
     stats [stat [0]] = models.IntegerField (default = 0)
+
+class Deck (models.Model):
+    def get_admin_url(self):
+        return "/admin/accounts/deck/%d/" %self.id
 
 class AbstractPlayer (models.Model):
     """
@@ -33,6 +36,8 @@ class AbstractPlayer (models.Model):
 
     active_event = models.ForeignKey (Event, blank = True, null = True)
     active_location = models.ForeignKey (Location, blank = True, null = True)
+    
+    deck = models.OneToOneField (Deck, null = True, blank = True)
     
     class Meta:
         abstract = True
@@ -80,11 +85,12 @@ class Card (models.Model):
     modifier = models.IntegerField ()
     status = models.CharField (max_length = 7, choices = CARD_STATUSES, default = CARD_IN_STASH)
     
-    player = models.ForeignKey (Player)
+    player = models.ForeignKey (Player, blank = True, null = True)
+    deck = models.ForeignKey (Deck, blank = True, null = True)
     template = models.ForeignKey (CardTemplate)
     
     def __str__ (self):
-        return u"%s's %s %d" % (self.player.user, self.template, self.modifier)
+        return u"%s's %s %d" % ("FIX", self.template, self.modifier)
         
     def get_absolute_url (self):
         return reverse ('cards.views.card', args=[self.id])

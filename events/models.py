@@ -39,7 +39,7 @@ class Event (models.Model):
             value = card.play ()
             
             # Get the possible result conditionals (0 or 1)
-            resultconditions = self.resultcondition_set.filter (card = card.template).order_by (success_threshold).all ()
+            resultconditions = self.resultcondition_set.filter (card = card.template).order_by ('success_threshold').all ()
             
             #If there is one, check it
             if len (resultconditions) == 1:
@@ -83,7 +83,7 @@ class ResultCondition (models.Model):
         The main method of the class, determines whether a cardValue is sufficient for success.
         """
         if cardValue >= self.success_threshold:
-            return (True, self.success_result)
+            return self.success_result
         else:
-            return (False, self.fail_result)
+            return self.fail_result
             

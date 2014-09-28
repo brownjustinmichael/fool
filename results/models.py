@@ -4,7 +4,7 @@ from django.db.models.query import QuerySet
 
 from polymorphic import PolymorphicModel
 from django.core.urlresolvers import reverse
-from cards.models import PLAYER_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
+from cards.models import PLAYER_STATS, EXTRA_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
 
 class Result (PolymorphicModel):
     """
@@ -25,9 +25,8 @@ class Result (PolymorphicModel):
         userprofile.save ()
         return self.message
         
-        
 class StatResult (Result):
-    stat = models.CharField (max_length = 8, choices = PLAYER_STATS, null = True, default = None)
+    stat = models.CharField (max_length = 8, choices = PLAYER_STATS + EXTRA_STATS, null = True, default = None)
 
     modifier = models.IntegerField (default = 0)
     
