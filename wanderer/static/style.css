@@ -6,6 +6,7 @@ body{
 	font-size: 14px;
 	line-height: 28px;
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	background:blue;
 }
 div.content{
 	border: 1px solid #fbfbfb;
@@ -19,11 +20,23 @@ div.footer{
     position:fixed;
     padding-bottom:-10px;
     bottom:0px;
-    background-color: white;
     width: 100%;
 }
 
 /*CARD CSS*/
+
+#card_bin{
+	width:80%;
+	margin:auto;
+}
+
+#card_background{
+	position:relative;
+	top:200px;
+	z-index:1;
+	height: 50px;
+	background-color: #444444;
+}
 
 .card_slot{
 	display:inline-block;
@@ -33,12 +46,32 @@ div.footer{
 }
 
 .card{
+	position:relative;
 	width:150px;
 	margin:auto;
 	height:200px;
-	border-radius:10px;
-	background-color:darkgrey;
+	border-top-left-radius:10px;
+	border-top-right-radius:10px;
+	background-color:#6E6754;
 	color:black;
+	z-index:2;
+}
+
+.card_image{
+	position:absolute;
+	width:95%;
+	height:100%;
+	background-image:url("http://upload.wikimedia.org/wikipedia/commons/1/17/Fist.png");
+	background-size:100% 100%;
+	margin:2.5%;
+	opacity:0.5;
+	border-radius:5px 5px 0px 0px;
+	z-index:2;
+}
+
+.card_inner{
+	position:relative;
+	z-index:3;
 }
 
 .card_slot a{
@@ -46,10 +79,8 @@ div.footer{
 }
 
 .card_title{
-	
-	margin-left:15px;
-	margin-top:20px;
-	padding:5px;
+
+	padding:10px 10px 5px 10px;
 }
 
 .card_level{
@@ -64,7 +95,52 @@ div.footer{
 }
 
 .card_title h2{
+	background-color:#999999;
 	border:1px solid black;
-	display:inline;
+	display:inline-block;
+	text-align:center;
+	width:80px;
+	margin:0px;
+}
+
+.card_socket_bin{
+	display:table;
+	margin:0 auto;
+}
+
+.card_description{
+	margin:50px 10px 5px 10px;
+	height:50px;
+	line-height:1em;
+	font-size:60%;
+	word-wrap:break-word;
+}
+
+.card_socket{
+	display:inline-block;
+	width:25px;
+	height:25px;
+	margin:10px;
+	border-radius:40px;
+	background-color:#555555;
+}
+
+#inventory{
+	position:fixed;
+	bottom:0px;
+	right:0px;
+	background-color:darkgrey;
+	width:100px;
+	height:100px;
+	border-top-left-radius: 20px;
+}
+
+#deck{
+	height:50px;
+}
+
+#money{
 	
+	border:1px solid black;
+	padding:10px;
 }

@@ -6,7 +6,7 @@
 		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css">
 		<meta charset="utf-8">
 		<title>
-			{% block title %}The Fool{% endblock %}
+			The Fool | {% block title %}{% endblock %}
 		</title>
 		</head>
 	<body>
@@ -15,39 +15,56 @@
 			{% endblock %}
 		</div>
 		<div class="footer">
+			<div id="card_bin">
+				<div id="card_background"></div>
 			{% for card in hand %}
 				
 				<div class="card_slot">
 					<a href="{{card.get_absolute_url}}?from={{request.path}}">
 						<div class="card">
-							<div class="card_title">
-								<h2>
-									{{card.template.name}}
-									
-								</h2>
-								<div class="card_level">
-									{{card.modifier}}
+							<div class="card_image"></div>
+							<div class="card_inner">
+								<div class="card_title">
+									<h2>
+										{{card.template.name}}
+										
+									</h2>
+									<div class="card_level">
+										{{card.modifier}}
+									</div>
+								</div>
+								<p class="card_description">
+									BOOOOOBs booobobobobobobobobbooboboboboboboboboboboboobobobobobbooboobo
+								</p>
+								<div class="card_socket_bin">
+									<div class="card_socket">
+									</div>
+									<div class="card_socket">
+									</div>
+									<div class="card_socket">
 								</div>
 							</div>
-							<div class="card_img">
-								
 							</div>
-							<p class="card_description">
-								
-							</p>
 						</div>
 					</a>
-				</div>
-				
+				</div>	
 			{% endfor %}
-			{% if numcardsindeck > 0 %}
-				<h2>
-					<a href="/draw?from={{request.path}}">Deck</a>
-				</h2>
-			{% endif %}
-			<h2>
-				Money: {{user.player.money}}
-			</h2>
+			</div>
+			<div id="inventory">
+				<div id="deck">
+					{% if numcardsindeck > 0 %}
+						<h2>
+							<a href="/draw?from={{request.path}}">Deck</a>
+						</h2>
+					{% endif %}
+				</div>
+				<div id="money">
+					<div>
+						{{user.player.money}} $
+					</div>
+				</div>
+			</div>
+			
 		</div>
 	</body>
 </html>
