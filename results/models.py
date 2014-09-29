@@ -64,7 +64,7 @@ class NewEventResult (Result):
     new_event = models.ForeignKey ("events.Event", related_name = "_unused_3")
         
     def __str__ (self):
-        return u"%s, %s" % (self.name, str (self.new_event))
+        return u"%s -> %s" % (self.name, str (self.new_event))
         
     def enact (self, userprofile):
         print ("Enacting")

@@ -26,7 +26,7 @@ def makePlayers (apps, schema_editor):
     db_alias = schema_editor.connection.alias
     
     Player.objects.using (db_alias).bulk_create ([
-        Player (force = 3, user = user, deck = Deck.objects.using (db_alias).create ()) for user in User.objects.all ()
+        Player (force = 3, power = 2, user = user, deck = Deck.objects.using (db_alias).create ()) for user in User.objects.all ()
     ])
     
     for player in Player.objects.all ():

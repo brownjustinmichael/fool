@@ -3,6 +3,11 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 
+def loadLocations (apps, schema_editor):
+    Location = apps.get_model ("locations", "Location")
+    db_alias = schema_editor.connection.alias
+    
+    Location.objects.create (title = "Home", slug = "home", description = "It's not much, but it's home.", canshuffle = True)
 
 class Migration(migrations.Migration):
 
@@ -27,4 +32,5 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.RunPython (loadLocations),
     ]
