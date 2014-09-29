@@ -68,7 +68,9 @@ class NewEventResult (Result):
         
     def enact (self, userprofile):
         print ("Enacting")
+        print (self.new_event)
         userprofile.active_event = self.new_event
+        userprofile.save ()
         return self.message
         
 

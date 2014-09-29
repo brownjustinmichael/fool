@@ -2,6 +2,12 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from results.models import StatResult
+
+def loadResult (apps, schema_editor):
+    # StatResult.objects.create (name = "null", message = "Nothing happens.", stat = 'force', modifier = 0)
+    print ("Making result")
+    # null.save ()
 
 
 class Migration(migrations.Migration):
@@ -34,4 +40,5 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='results.Result'),
             preserve_default=True,
         ),
+        # migrations.RunPython (loadResult,)
     ]

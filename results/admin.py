@@ -30,6 +30,7 @@ class ResultParentAdmin(PolymorphicParentModelAdmin):
     """ The parent model admin """
     base_model = Result
     child_models = (
+        (Result, ResultChildAdmin),
         (StatResult, StatResultAdmin),
         (NewEventResult, NewEventResultAdmin),
         (EnemyResult, EnemyResultAdmin),
