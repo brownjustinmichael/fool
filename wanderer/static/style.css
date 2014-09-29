@@ -20,4 +20,51 @@ div.footer{
     padding-bottom:-10px;
     bottom:0px;
     background-color: white;
+    width: 100%;
+}
+
+/*CARD CSS*/
+
+.card_slot{
+	display:inline-block;
+	width:200px;
+	
+	
+}
+
+.card{
+	width:150px;
+	margin:auto;
+	height:200px;
+	border-radius:10px;
+	background-color:darkgrey;
+	color:black;
+}
+
+.card_slot a{
+	text-decoration:none;
+}
+
+.card_title{
+	
+	margin-left:15px;
+	margin-top:20px;
+	padding:5px;
+}
+
+.card_level{
+	border-radius:20px;
+	width:30px;
+	height:30px;
+	float:right;
+	text-align:center;
+	color:white;
+	font-size:130%;
+	background-color:#555555;
+}
+
+.card_title h2{
+	border:1px solid black;
+	display:inline;
+	
 }

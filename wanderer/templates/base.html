@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<script src="{{STATIC_URL}}jquery.min.js" type="text/javascript"></script>
+		
 		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css">
 		<meta charset="utf-8">
 		<title>
-			{% block title %}{% endblock %}
+			{% block title %}The Fool{% endblock %}
 		</title>
 		</head>
 	<body>
@@ -13,19 +15,39 @@
 			{% endblock %}
 		</div>
 		<div class="footer">
-		{% for card in hand %}
-		<h2>
-			<a href="{{card.get_absolute_url}}?from={{request.path}}">{{card.template.name}} {{card.modifier}}</a>
-		</h2>
-		{% endfor %}
-		{% if numcardsindeck > 0 %}
-		<h2>
-			<a href="/draw?from={{request.path}}">Deck</a>
-		</h2>
-		{% endif %}
-		<h2>
-			Money: {{user.player.money}}
-		</h2>
+			{% for card in hand %}
+				
+				<div class="card_slot">
+					<a href="{{card.get_absolute_url}}?from={{request.path}}">
+						<div class="card">
+							<div class="card_title">
+								<h2>
+									{{card.template.name}}
+									
+								</h2>
+								<div class="card_level">
+									{{card.modifier}}
+								</div>
+							</div>
+							<div class="card_img">
+								
+							</div>
+							<p class="card_description">
+								
+							</p>
+						</div>
+					</a>
+				</div>
+				
+			{% endfor %}
+			{% if numcardsindeck > 0 %}
+				<h2>
+					<a href="/draw?from={{request.path}}">Deck</a>
+				</h2>
+			{% endif %}
+			<h2>
+				Money: {{user.player.money}}
+			</h2>
 		</div>
 	</body>
 </html>
