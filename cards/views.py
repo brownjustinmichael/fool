@@ -9,6 +9,7 @@ def card (request, slug):
     card = get_object_or_404 (Card, id=slug)
     player = get_object_or_404 (Player, user = request.user)
     # now return the rendered template
+    deck = get_object_or_404 (Deck, player = player)
     
     event = request.user.player.active_event
     location = request.user.player.active_location
@@ -26,10 +27,10 @@ def draw (request):
     player = get_object_or_404 (Player, user = request.user)
     deck = get_object_or_404 (Deck, player = player)
 
-    card = deck.drawCard ()
+    card = deck.drawCard (player)
     print ("Drawing " + str (card.template) + str (card.modifier))
-    card.status = CARD_IN_HAND
-    card.save ()
+    # card.status = CARD_IN_HAND
+    # card.save ()
     return redirect (request.GET.get ('from', 'index.html'))
 
 @login_required
@@ -38,6 +39,6 @@ def shuffle (request):
     username = None
     if request.user.is_authenticated():
         username = request.user.username
-    request.user.player.deck.reshuffle ()
+    request.user.player.deck.reshuffle (request.user.player)
     return redirect (request.GET.get ('from', 'index.html'))
 
