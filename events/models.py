@@ -36,7 +36,7 @@ class Event (models.Model):
         """
         if card is not None:
             # If there is a card, play it
-            value = player.playCard (card)
+            stat, value = player.playCard (card)
             
             # Get the possible result conditionals (0 or 1)
             resultconditions = self.resultcondition_set.filter (card = card.template).order_by ('success_threshold').all ()
@@ -48,6 +48,8 @@ class Event (models.Model):
             # If not, use the generic result
             else:
                 result = self.generic_result
+                
+            card.resolve ()
         else:
             #If the card isn't set to auto and there's no played card, it can't resolve
             if not self.auto:

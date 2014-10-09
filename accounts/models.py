@@ -1,7 +1,7 @@
 import random
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.core.exceptions import ObjectDoesNotExist
 import collections
 
 from events.models import Event
@@ -52,9 +52,17 @@ class CardStatus (models.Model):
 class DeckStatus (models.Model):
     player = models.ForeignKey ('Player')
     deck = models.ForeignKey (Deck)
+    location = models.ForeignKey (Location, blank = True, null = True)
     
     class Meta:
         unique_together = (('player', 'deck'))
+        
+    def save (self, *args, **kwargs):
+        try:
+            self.location = self.deck.location
+        except ObjectDoesNotExist:
+            pass
+        return super (DeckStatus, self).save (*args, **kwargs)
         
     def getNumCards (self, status = CARD_IN_DECK):
         """
@@ -127,8 +135,13 @@ class AbstractPlayer (models.Model):
             return cardstatus.play () + getattr (self, card.template.stat)
         return cardstatus.play ()
         
+    def getCards (self, status = CARD_IN_PLAY):
+        return CardStatus.objects.filter (deck__player = self).filter (status = status)
+        
     def addDeckStatus (self, deck):
-        deckstatus = DeckStatus ()
+        deckstatus = DeckStatus (deck = deck, player = self)
+        deckstatus.save ()
+        return deckstatus
 
 stats.update ({"__module__": __name__})
 Player = type ('Player', (AbstractPlayer,), stats)

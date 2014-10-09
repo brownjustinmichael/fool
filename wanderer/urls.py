@@ -12,5 +12,6 @@ urlpatterns = patterns('',
     url(r'^draw/$', 'cards.views.draw'),
     url(r'^cards/(?P<slug>[\w\-]+)/$', 'cards.views.card'),
     url(r'^exploration/(?P<slug>[\w\-]+)/draw/$', 'locations.views.draw'),
+    url(r'^exploration/(?P<slug>[\w\-]+)/shuffle/$', 'locations.views.location'),
     url(r'^exploration/(?P<slug>[\w\-]+)/$', 'locations.views.location'),
 )

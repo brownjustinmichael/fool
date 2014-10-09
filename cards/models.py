@@ -22,6 +22,36 @@ PLAYER_STATS = ((FORCE, "Force"), (DASH, "Dash"), (RESIST, "Resist"), (CHARM, "C
 MONEY = "money"
 EXTRA_STATS = ((MONEY, "Money"),)
 
+class Score (object):
+    def __init__ (self, stat = None, value = 0):
+        self.stat = stat
+        self.value = value
+        
+    def __add__ (self, score):
+        if (isinstance (score, Score)):
+            if (score.stat != self.stat):
+                raise TypeError
+            return Score (self.stat, self.value + score.value)
+        else:
+            return Score (self.stat, self.value + score)
+            
+    def __sub__ (self, score):
+        if (isinstance (score, Score)):
+            if (score.stat != self.stat):
+                raise TypeError
+            return Score (self.stat, self.value - score.value)
+        else:
+            return Score (self.stat, self.value - score)
+            
+    def __mul__ (self, score):
+        return Score (self.stat, self.value * score)
+        
+    def __div__ (self, score):
+        return Score (self.stat, self.value / score)
+        
+    def __iter__ (self):
+        return iter ((self.stat, self.value))
+
 class CardTemplate (models.Model):
     """
     This class is designed to contain the more complex workings of the card class, which will include leveling mechanisms, socketing capacity, and subclasses for strange cards like Tarot and Item
@@ -37,6 +67,7 @@ class Deck (models.Model):
         deckstatus = self.deckstatus_set.filter (player = player).first ()
         if deckstatus is None:
             deckstatus = player.addDeckStatus (self)
+        print (deckstatus)
         return deckstatus
     
     def getNumCards (self, player, status = CARD_IN_DECK):
@@ -87,13 +118,12 @@ class Card (models.Model):
     This is a playable instance of the cardtemplate class. It should contain methods for card use, upgrades, socketing, etc.
     """
     modifier = models.IntegerField ()
-    status = models.CharField (max_length = 7, choices = CARD_STATUSES, default = CARD_IN_STASH)
     
     deck = models.ForeignKey (Deck)
     template = models.ForeignKey (CardTemplate)
     
     def __str__ (self):
-        return u"%s's %s %d" % ("FIX", self.template, self.modifier)
+        return u"%s %d" % (self.template, self.modifier)
         
     def isActive (self):
         return True
@@ -111,8 +141,8 @@ class Card (models.Model):
         """
         If playing the card would have a strange effect or unique bonuses, that effect should go here in a subclass
         """
-        return self.modifier
+        return Score (self.template.stat, self.modifier)
         
-    def discard (self):
-        self.status = CARD_IN_DISCARD
+    def discard (self, next_status = CARD_IN_DISCARD):
+        self.status = next_status
         self.save ()
