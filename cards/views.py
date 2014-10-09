@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from accounts.models import Player
 from cards.models import Card, Deck, CARD_IN_DISCARD, CARD_IN_HAND
+from locations.models import Location
+from django.core.urlresolvers import reverse
 
 @login_required
 def card (request, slug):
@@ -13,7 +15,12 @@ def card (request, slug):
     
     event = request.user.player.active_event
     location = request.user.player.active_location
+    
     if event is None:
+        slug = request.GET.get ('from', 'index.html')
+        location = Location.objects.filter (slug = slug [13:-1]).first ()
+        if location is not None:
+            location.trigger_event (player, card.getStatus (player))
         return redirect (request.GET.get ('from', 'index.html'))
     
     event.resolve (player, location, card)
@@ -28,7 +35,6 @@ def draw (request):
     deck = get_object_or_404 (Deck, player = player)
 
     card = deck.drawCard (player)
-    print ("Drawing " + str (card.template) + str (card.modifier))
     # card.status = CARD_IN_HAND
     # card.save ()
     return redirect (request.GET.get ('from', 'index.html'))

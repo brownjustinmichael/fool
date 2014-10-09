@@ -6,12 +6,10 @@ class CardStatusInline(admin.TabularInline):
     model = CardStatus
     
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
-        print (request._obj_.location)
         field = super(CardStatusInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
         if request._obj_ is not None:
             field.queryset = field.queryset.filter(deck__exact = request._obj_.deck)
-            print (field.queryset.all ())  
         else:
             field.queryset = field.queryset.none()
 
@@ -36,8 +34,6 @@ class PlayerAdmin (admin.ModelAdmin):
             'script.js',       # project static folder
         )
     inlines = [DeckStatusInline]
-        
-        
     
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(DeckStatus, DeckStatusAdmin)

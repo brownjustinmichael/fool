@@ -5,8 +5,13 @@
 {% block content %}
 <article>
 	<header>
+		{% if numcardsatlocation > 0 %}
 		<h2>
 			<a href="draw/">Deck</a>
+		</h2>
+		{% endif %}
+		<h2>
+			<a href="shuffle">Shuffle</a>
 		</h2>
 		{% for card in in_play %}
 		<h2>

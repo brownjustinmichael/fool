@@ -31,7 +31,7 @@ class CardStatus (models.Model):
         card = self.card.draw (next_status = next_status)
         self.status = next_status
         self.save ()
-        return card
+        return self
         
     def play (self, next_status = CARD_IN_PLAY):
         value = self.card.play (next_status = next_status)
@@ -41,6 +41,7 @@ class CardStatus (models.Model):
         
     def resolve (self, next_status = CARD_IN_DISCARD):
         self.card.resolve (next_status = next_status)
+        print ("Setting state to ", next_status)
         self.status = next_status
         self.save ()    
         
@@ -56,6 +57,9 @@ class DeckStatus (models.Model):
     
     class Meta:
         unique_together = (('player', 'deck'))
+        
+    def __str__ (self):
+        return "%s viewed by %s" % (str (self.deck), str (self.player.user.username))
         
     def save (self, *args, **kwargs):
         try:
@@ -80,7 +84,11 @@ class DeckStatus (models.Model):
         """
         Return the Card instance on top of the deck
         """
-        return self.cardstatus_set.filter (status = CARD_IN_DECK).order_by ('position').first ().draw (next_status)
+        print ("For real this time")
+        cardstatus = self.cardstatus_set.filter (status = CARD_IN_DECK).order_by ('position').first ()
+        if cardstatus is not None:
+            return cardstatus.draw (next_status)
+        raise ValueError ("You've run out of cards in this deck.")
 
     def playCard (self, card, next_status = CARD_IN_HAND):
         """

@@ -74,7 +74,7 @@ class Deck (models.Model):
         """
         Return the number of cards currently in the deck
         """
-        return self.getStatus (player).getNumCards ()
+        return self.getStatus (player).getNumCards (status)
     
     def getCards (self, player, status = CARD_IN_HAND):
         """
@@ -86,6 +86,7 @@ class Deck (models.Model):
         """
         Return the Card instance on top of the deck
         """
+        print ("I'm drawing a card...")
         return self.getStatus (player).drawCard ()
         
     def playCard (self, player, card):
@@ -141,7 +142,12 @@ class Card (models.Model):
         """
         If playing the card would have a strange effect or unique bonuses, that effect should go here in a subclass
         """
+        print ("I'm playing myself.")
         return Score (self.template.stat, self.modifier)
+        
+    def resolve (self, next_status = CARD_IN_DISCARD):
+        print ("RESOLVEING")
+        return self
         
     def discard (self, next_status = CARD_IN_DISCARD):
         self.status = next_status
