@@ -1,3 +1,8 @@
+html{
+	height:100%;
+	min-width:800px;
+}
+
 body{
 	background-color: #fdfdfd;
 	color: #2e2e2e;
@@ -7,16 +12,28 @@ body{
 	line-height: 28px;
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	background:blue;
+	height:100%;
 }
-div.content{
+.header{
+	height:50px;
+	background: #222222;
+	color: red;
+	text-align: center;
+	font-size: 180%;
+	line-height: 2em;
+	box-shadow:0px 2px rgba(0,0,0,1);
+}
+
+.content{
 	border: 1px solid #fbfbfb;
 	background-color: #fff;
 	max-width: 640px;
 	width: 96%;
 	padding: 2%;
-	margin: 28px  auto;
+	margin: 30px  auto;
 }
-div.footer{
+
+.footer{
     position:fixed;
     padding-bottom:-10px;
     bottom:0px;
@@ -41,12 +58,11 @@ div.footer{
 .card_slot{
 	display:inline-block;
 	width:200px;
-	
-	
 }
 
 .card{
 	position:relative;
+	top:5px;
 	width:150px;
 	margin:auto;
 	height:200px;
@@ -60,7 +76,7 @@ div.footer{
 .card_image{
 	position:absolute;
 	width:95%;
-	height:100%;
+	height:96%;
 	background-image:url("http://upload.wikimedia.org/wikipedia/commons/1/17/Fist.png");
 	background-size:100% 100%;
 	margin:2.5%;
@@ -72,6 +88,7 @@ div.footer{
 .card_inner{
 	position:relative;
 	z-index:3;
+	height:100%;
 }
 
 .card_slot a{
@@ -79,14 +96,13 @@ div.footer{
 }
 
 .card_title{
-
-	padding:10px 10px 5px 10px;
+	padding:6% 6% 3% 6%;
 }
 
 .card_level{
 	border-radius:20px;
-	width:30px;
-	height:30px;
+	width:20%;
+	height:20%;
 	float:right;
 	text-align:center;
 	color:white;
@@ -99,28 +115,31 @@ div.footer{
 	border:1px solid black;
 	display:inline-block;
 	text-align:center;
-	width:80px;
+	width:65%;
 	margin:0px;
 }
 
-.card_socket_bin{
-	display:table;
-	margin:0 auto;
-}
-
 .card_description{
-	margin:50px 10px 5px 10px;
-	height:50px;
+	margin:50% 7.5% 2% 7.5%;
+	height:15%;
 	line-height:1em;
 	font-size:60%;
 	word-wrap:break-word;
 }
 
+.card_socket_bin{
+	text-align:center;
+	margin:10px auto 10px;
+	width:75%;
+	height:12.5%;
+}
+
 .card_socket{
-	display:inline-block;
-	width:25px;
-	height:25px;
-	margin:10px;
+	display: inline-block;
+	margin-left: 5%;
+	margin-right: 5%;
+	width:20%;
+	height:85%;
 	border-radius:40px;
 	background-color:#555555;
 }
@@ -140,7 +159,69 @@ div.footer{
 }
 
 #money{
-	
 	border:1px solid black;
 	padding:10px;
+}
+
+/*CARD MODAL */
+
+#card_modal{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:100%;
+	height:100%;
+	display:none;
+	z-index:3
+}
+
+#modal_background{
+	background:rgba(100,100,100,0.8);
+	height:100%;
+}
+
+.zoomed_card{
+	position:relative;
+	margin:auto;
+	top:15%;
+	height:500px;
+	width:350px;
+	border-radius:30px;
+	background-color:#6E6754;
+	color:black;
+	font-size:180%;
+	line-height:2em;
+}
+
+.modal_image{
+	border-radius:20px;
+}
+
+.zoomed_card a{
+	text-decoration:none;
+	color:white;
+}
+
+#modal_buttons{
+	margin:auto;
+	width:82.5%;
+}
+
+#modal_buttons div{
+	display:inline-block;
+	width:110px;
+	height:30px;
+	border:1px solid black;
+	background: blue;
+	text-align: center;
+	padding:10px;
+	color:white;
+	cursor:pointer;
+	line-height:1.2em;
+}
+
+#modal_play_card{
+	height:30px;
+	margin-left:10px;
+	float:right;
 }

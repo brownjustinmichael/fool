@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<script src="{{STATIC_URL}}jquery.min.js" type="text/javascript"></script>
+		<script src="{{STATIC_URL}}foolBase.js" type="text/javascript"></script>
 		
 		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}style.css">
 		<meta charset="utf-8">
@@ -9,7 +10,15 @@
 			The Fool | {% block title %}{% endblock %}
 		</title>
 		</head>
+		<script type='text/javascript'>
+			$(document).ready(function () {
+				start();
+			});
+		</script>
 	<body>
+		<div class="header">
+			The Fool
+		</div>
 		<div class="content">
 			{% block content %}
 			{% endblock %}
@@ -20,8 +29,7 @@
 			{% for card in hand %}
 				
 				<div class="card_slot">
-					<a href="{{card.get_absolute_url}}?from={{request.path}}">
-						<div class="card">
+						<div class="card" id="card-{{card.id}}">
 							<div class="card_image"></div>
 							<div class="card_inner">
 								<div class="card_title">
@@ -42,11 +50,13 @@
 									<div class="card_socket">
 									</div>
 									<div class="card_socket">
+									</div>
 								</div>
+							<div class='play_card' style="display:none">
+								<a href='{{card.get_absolute_url}}?from={{request.path}}'>Play Card</a>
 							</div>
 							</div>
 						</div>
-					</a>
 				</div>	
 			{% endfor %}
 			</div>
@@ -66,5 +76,35 @@
 			</div>
 			
 		</div>
+		<div id="card_modal">
+			<div id="modal_background">
+					<div class="zoomed_card">
+						<div class="card_image modal_image"></div>
+						<div class="card_inner">
+							<div class="card_title">
+								<h2></h2>
+								<div class="card_level"></div>
+							</div>
+							<p class="card_description">
+								BOOOOOBs booobobobobobobobobbooboboboboboboboboboboboobobobobobbooboobo
+							</p>
+							<div class="card_socket_bin">
+								<div class="card_socket">
+								</div>
+								<div class="card_socket">
+								</div>
+								<div class="card_socket">
+							</div>
+							</div>
+							<div id="modal_buttons">
+								<div id="modal_cancel">Cancel</div>
+								<div id="modal_play_card"></div>
+						</div>
+						</div>
+					</div>
+				
+			</div>
+		</div>
 	</body>
 </html>
+
