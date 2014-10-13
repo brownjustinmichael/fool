@@ -39,8 +39,8 @@ def makePlayers (apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('accounts', '0002_auto_20141013_0058'),
         ('results', '0001_initial'),
-        ('accounts', '0002_auto_20141012_2357'),
         ('cards', '0001_initial'),
         ('locations', '0001_initial'),
     ]
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='deckstatus',
             name='location',
-            field=models.ForeignKey(null=True, to='locations.Location', blank=True),
+            field=models.ForeignKey(blank=True, to='locations.Location', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cardstatus',
             name='targetDeck',
-            field=models.ForeignKey(null=True, default=None, related_name='_unused_1', to='accounts.DeckStatus', blank=True),
+            field=models.ForeignKey(blank=True, related_name='_unused_1', default=None, null=True, to='accounts.DeckStatus'),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(

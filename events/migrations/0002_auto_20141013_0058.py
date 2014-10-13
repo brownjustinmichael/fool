@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 
+from django.db import models, migrations
 from results.models import StatResult, NewEventResult
 from events.models import ResultCondition
 from events.models import Event

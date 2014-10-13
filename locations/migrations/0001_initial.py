@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EventTrigger',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('threshold', models.IntegerField(default=0)),
                 ('event', models.ForeignKey(to='events.Event')),
             ],
@@ -26,14 +26,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Location',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=255)),
-                ('slug', models.SlugField(max_length=255, unique=True)),
+                ('slug', models.SlugField(unique=True, max_length=255)),
                 ('description', models.CharField(max_length=255)),
                 ('published', models.BooleanField(default=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('canshuffle', models.BooleanField(default=False)),
-                ('deck', models.OneToOneField(null=True, to='cards.Deck', blank=True)),
+                ('deck', models.OneToOneField(blank=True, to='cards.Deck', null=True)),
             ],
             options={
                 'ordering': ['-created'],

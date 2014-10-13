@@ -14,9 +14,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Event',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=255)),
-                ('slug', models.SlugField(max_length=255, unique=True)),
+                ('slug', models.SlugField(unique=True, max_length=255)),
                 ('description', models.CharField(max_length=255)),
                 ('content', models.TextField()),
                 ('published', models.BooleanField(default=True)),
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ResultCondition',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('success_threshold', models.IntegerField(default=0)),
                 ('card', models.ForeignKey(to='cards.CardTemplate')),
                 ('event', models.ForeignKey(to='events.Event')),

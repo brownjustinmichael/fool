@@ -138,11 +138,8 @@ class BaseCard (PolymorphicModel):
     
     deck = models.ForeignKey (Deck)
     
-    class Meta:
-        abstract = True
-    
     def __str__ (self):
-        return u"%s %d" % (self.template, self.modifier)
+        return u"%s %d" % (self.getTemplate (), self.modifier)
         
     def isActive (self):
         return True
@@ -213,8 +210,8 @@ class ItemCard (BaseCard):
 class Effect (PolymorphicModel):
     template = models.ForeignKey (CardTemplate)
     
-    class Meta:
-        abstract = True
+    # class Meta:
+    #     abstract = True
         
     @abc.abstractmethod
     def affect (self, multiplier, player, targetDeck):

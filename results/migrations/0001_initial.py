@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Result',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=20)),
                 ('message', models.TextField()),
             ],
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='NewEventResult',
             fields=[
-                ('result_ptr', models.OneToOneField(auto_created=True, parent_link=True, serialize=False, to='results.Result', primary_key=True)),
+                ('result_ptr', models.OneToOneField(serialize=False, to='results.Result', auto_created=True, parent_link=True, primary_key=True)),
                 ('new_event', models.ForeignKey(related_name='_unused_3', to='events.Event')),
             ],
             options={
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EnemyResult',
             fields=[
-                ('result_ptr', models.OneToOneField(auto_created=True, parent_link=True, serialize=False, to='results.Result', primary_key=True)),
+                ('result_ptr', models.OneToOneField(serialize=False, to='results.Result', auto_created=True, parent_link=True, primary_key=True)),
                 ('enemy_name', models.CharField(max_length=20)),
             ],
             options={
@@ -49,8 +49,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='StatResult',
             fields=[
-                ('result_ptr', models.OneToOneField(auto_created=True, parent_link=True, serialize=False, to='results.Result', primary_key=True)),
-                ('stat', models.CharField(null=True, default=None, choices=[('force', 'Force'), ('dash', 'Dash'), ('resist', 'Resist'), ('charm', 'Charm'), ('wisdom', 'Wisdom'), ('power', 'Power'), ('money', 'Money')], max_length=8)),
+                ('result_ptr', models.OneToOneField(serialize=False, to='results.Result', auto_created=True, parent_link=True, primary_key=True)),
+                ('stat', models.CharField(null=True, default=None, max_length=8, choices=[('force', 'Force'), ('dash', 'Dash'), ('resist', 'Resist'), ('charm', 'Charm'), ('wisdom', 'Wisdom'), ('power', 'Power'), ('money', 'Money')])),
                 ('modifier', models.IntegerField(default=0)),
             ],
             options={
@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='result',
             name='polymorphic_ctype',
-            field=models.ForeignKey(null=True, related_name='polymorphic_results.result_set', editable=False, to='contenttypes.ContentType'),
+            field=models.ForeignKey(to='contenttypes.ContentType', related_name='polymorphic_results.result_set', editable=False, null=True),
             preserve_default=True,
         ),
     ]

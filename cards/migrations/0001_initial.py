@@ -20,9 +20,9 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Card',
+            name='BaseCard',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('modifier', models.IntegerField()),
             ],
             options={
@@ -31,9 +31,19 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='Card',
+            fields=[
+                ('basecard_ptr', models.OneToOneField(serialize=False, to='cards.BaseCard', auto_created=True, parent_link=True, primary_key=True)),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=('cards.basecard',),
+        ),
+        migrations.CreateModel(
             name='CardTemplate',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=20)),
                 ('requiresTarget', models.BooleanField(default=False)),
             ],
@@ -45,41 +55,47 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Deck',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
             ],
             options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Effect',
+            fields=[
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
+            ],
+            options={
+                'abstract': False,
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='HealEffect',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
-                ('polymorphic_ctype', models.ForeignKey(null=True, related_name='polymorphic_cards.healeffect_set', editable=False, to='contenttypes.ContentType')),
+                ('effect_ptr', models.OneToOneField(serialize=False, to='cards.Effect', auto_created=True, parent_link=True, primary_key=True)),
             ],
             options={
                 'abstract': False,
             },
-            bases=(models.Model,),
+            bases=('cards.effect',),
         ),
         migrations.CreateModel(
             name='ItemCard',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
-                ('modifier', models.IntegerField()),
-                ('deck', models.ForeignKey(to='cards.Deck')),
-                ('polymorphic_ctype', models.ForeignKey(null=True, related_name='polymorphic_cards.itemcard_set', editable=False, to='contenttypes.ContentType')),
+                ('basecard_ptr', models.OneToOneField(serialize=False, to='cards.BaseCard', auto_created=True, parent_link=True, primary_key=True)),
             ],
             options={
                 'abstract': False,
             },
-            bases=(models.Model,),
+            bases=('cards.basecard',),
         ),
         migrations.CreateModel(
             name='ItemTemplate',
             fields=[
-                ('cardtemplate_ptr', models.OneToOneField(auto_created=True, parent_link=True, serialize=False, to='cards.CardTemplate', primary_key=True)),
-                ('stat', models.CharField(choices=[('force', 'Force'), ('dash', 'Dash'), ('resist', 'Resist'), ('charm', 'Charm'), ('wisdom', 'Wisdom'), ('power', 'Power')], max_length=8, blank=True)),
+                ('cardtemplate_ptr', models.OneToOneField(serialize=False, to='cards.CardTemplate', auto_created=True, parent_link=True, primary_key=True)),
+                ('stat', models.CharField(max_length=8, blank=True, choices=[('force', 'Force'), ('dash', 'Dash'), ('resist', 'Resist'), ('charm', 'Charm'), ('wisdom', 'Wisdom'), ('power', 'Power')])),
             ],
             options={
                 'abstract': False,
@@ -89,22 +105,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PlayerCard',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
-                ('modifier', models.IntegerField()),
+                ('basecard_ptr', models.OneToOneField(serialize=False, to='cards.BaseCard', auto_created=True, parent_link=True, primary_key=True)),
                 ('experience', models.IntegerField(default=0)),
-                ('deck', models.ForeignKey(to='cards.Deck')),
-                ('polymorphic_ctype', models.ForeignKey(null=True, related_name='polymorphic_cards.playercard_set', editable=False, to='contenttypes.ContentType')),
             ],
             options={
                 'abstract': False,
             },
-            bases=(models.Model,),
+            bases=('cards.basecard',),
         ),
         migrations.CreateModel(
             name='StatTemplate',
             fields=[
-                ('cardtemplate_ptr', models.OneToOneField(auto_created=True, parent_link=True, serialize=False, to='cards.CardTemplate', primary_key=True)),
-                ('stat', models.CharField(choices=[('force', 'Force'), ('dash', 'Dash'), ('resist', 'Resist'), ('charm', 'Charm'), ('wisdom', 'Wisdom'), ('power', 'Power')], max_length=8, blank=True)),
+                ('cardtemplate_ptr', models.OneToOneField(serialize=False, to='cards.CardTemplate', auto_created=True, parent_link=True, primary_key=True)),
+                ('stat', models.CharField(max_length=8, blank=True, choices=[('force', 'Force'), ('dash', 'Dash'), ('resist', 'Resist'), ('charm', 'Charm'), ('wisdom', 'Wisdom'), ('power', 'Power')])),
             ],
             options={
                 'abstract': False,
@@ -124,7 +137,13 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='healeffect',
+            model_name='effect',
+            name='polymorphic_ctype',
+            field=models.ForeignKey(to='contenttypes.ContentType', related_name='polymorphic_cards.effect_set', editable=False, null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='effect',
             name='template',
             field=models.ForeignKey(to='cards.CardTemplate'),
             preserve_default=True,
@@ -132,25 +151,25 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cardtemplate',
             name='polymorphic_ctype',
-            field=models.ForeignKey(null=True, related_name='polymorphic_cards.cardtemplate_set', editable=False, to='contenttypes.ContentType'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='card',
-            name='deck',
-            field=models.ForeignKey(to='cards.Deck'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='card',
-            name='polymorphic_ctype',
-            field=models.ForeignKey(null=True, related_name='polymorphic_cards.card_set', editable=False, to='contenttypes.ContentType'),
+            field=models.ForeignKey(to='contenttypes.ContentType', related_name='polymorphic_cards.cardtemplate_set', editable=False, null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='card',
             name='template',
             field=models.ForeignKey(to='cards.CardTemplate'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='basecard',
+            name='deck',
+            field=models.ForeignKey(to='cards.Deck'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='basecard',
+            name='polymorphic_ctype',
+            field=models.ForeignKey(to='contenttypes.ContentType', related_name='polymorphic_cards.basecard_set', editable=False, null=True),
             preserve_default=True,
         ),
         migrations.RunPython (loadTemplates),
