@@ -22,8 +22,8 @@ class Location (models.Model):
     def get_absolute_url(self):
         return reverse('locations.views.location', args=[self.slug])
         
-    def trigger_event (self, player, cardstatus):
-        stat, strength = cardstatus.play ()
+    def trigger_event (self, player, cardstatus, played = True):
+        stat, strength = cardstatus.play (played = played)
         trigger = self.eventtrigger_set.filter (template = cardstatus.card.template).filter (threshold__lte = strength).order_by ('-threshold').first ()
         if trigger is not None:
             player.active_event = trigger.event

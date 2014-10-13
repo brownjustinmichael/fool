@@ -8,7 +8,7 @@ from polymorphic import PolymorphicModel
 
 from events.models import Event
 from locations.models import Location
-from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, CARD_IN_DECK, CARD_IN_DISCARD, CARD_IN_HAND, CARD_IN_PLAY, Deck, Card, PLAYER_STATS, EXTRA_STATS
+from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, CARD_IN_DECK, CARD_IN_DISCARD, CARD_IN_HAND, CARD_IN_PLAY, Deck, Card, BaseCard, PLAYER_STATS, EXTRA_STATS
 from results.models import Result
 
 stats = collections.OrderedDict ()
@@ -16,15 +16,17 @@ for stat in PLAYER_STATS + EXTRA_STATS:
     stats [stat [0]] = models.IntegerField (default = 0)
 
 class CardStatus (models.Model):
-    card = models.ForeignKey (Card)
+    card = models.ForeignKey (BaseCard)
     deck = models.ForeignKey ('DeckStatus')
     status = models.CharField (max_length = 7, choices = CARD_STATUSES, default = CARD_IN_STASH)
     position = models.IntegerField ()
+    played = models.BooleanField (default = False)
     targetDeck = models.ForeignKey ('DeckStatus', blank = True, null = True, default = None, related_name = '_unused_1')
     
     class Meta:
         unique_together = (('deck', 'position', 'status'))
         ordering = ['status', 'position']
+        verbose_name_plural = "Card statuses"
         
     def save (self, *args, **kwargs):
         # self.deck = self.card.deck
@@ -36,10 +38,11 @@ class CardStatus (models.Model):
         self.save ()
         return self
         
-    def play (self, next_status = CARD_IN_PLAY):
+    def play (self, next_status = CARD_IN_PLAY, played = True):
         value = self.card.play (next_status = next_status)
-        targetDeck = self.deck
+        self.targetDeck = self.deck
         self.status = next_status
+        self.played = played
         self.save ()
         return value
         
@@ -61,6 +64,7 @@ class DeckStatus (models.Model):
     
     class Meta:
         unique_together = (('player', 'deck'))
+        verbose_name_plural = "Deck statuses"
         
     def __str__ (self):
         return "%s viewed by %s" % (str (self.deck), str (self.player.user.username))
@@ -111,7 +115,7 @@ class DeckStatus (models.Model):
         if status is None:
             for cardstatus in self.cardstatus_set.filter (**kwargs).all ():
                 cardstatus.delete ()
-            for card in self.deck.card_set.all ():
+            for card in self.deck.basecard_set.all ():
                 if card.isActive ():
                     resetCards.append (card)
         else:

@@ -1,14 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from accounts.models import Player
-from cards.models import Card, Deck, CARD_IN_DISCARD, CARD_IN_HAND
+from cards.models import BaseCard, Card, Deck, CARD_IN_DISCARD, CARD_IN_HAND
 from locations.models import Location
 from django.core.urlresolvers import reverse
 
 @login_required
 def card (request, slug):
     # get the Card object
-    card = get_object_or_404 (Card, id=slug)
+    card = get_object_or_404 (BaseCard, id=slug)
     player = get_object_or_404 (Player, user = request.user)
     # now return the rendered template
     deck = get_object_or_404 (Deck, player = player)

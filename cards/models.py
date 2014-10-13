@@ -164,8 +164,8 @@ class BaseCard (PolymorphicModel):
         return Score (self.template.stat, self.modifier)
         
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
-        for effect in self.getTemplate ().effect_set.all ():
-            effect.affect (self.modifier, player, targetDeck)
+        for effectlink in self.getTemplate ().effectlink_set.all ():
+            effectlink.effect.affect (self.modifier, player, targetDeck)
         return self
         
     def discard (self, next_status = CARD_IN_DISCARD):
@@ -175,7 +175,7 @@ class BaseCard (PolymorphicModel):
 class Card (BaseCard):
     template = models.ForeignKey (CardTemplate)
     
-    def getTemplate ():
+    def getTemplate (self):
         return self.template
     
 class PlayerCard (BaseCard):
@@ -185,7 +185,7 @@ class PlayerCard (BaseCard):
     def __str__ (self):
         return u"%s %d w/ EXP %d" % (self.template, self.modifier, self.experience)
         
-    def getTemplate ():
+    def getTemplate (self):
         return self.template
     
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
@@ -197,18 +197,19 @@ class ItemCard (BaseCard):
     template = models.ForeignKey (ItemTemplate)
     
     def __str__ (self):
-        return u"%s %d w/ EXP %d" % (self.template, self.modifier, self.experience)
+        return u"%s %d" % (self.template, self.modifier)
         
-    def getTemplate ():
+    def getTemplate (self):
         return self.template
         
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
         result = super (ItemCard, self).resolve (player, targetDeck, next_status)
-        self.delete ()
+        if self.getStatus (player).played:
+            self.delete ()
         return result
 
 class Effect (PolymorphicModel):
-    template = models.ForeignKey (CardTemplate)
+    name = models.CharField (max_length = 60, default = "Effect")
     
     # class Meta:
     #     abstract = True
@@ -216,11 +217,21 @@ class Effect (PolymorphicModel):
     @abc.abstractmethod
     def affect (self, multiplier, player, targetDeck):
         pass
+        
+    def __str__ (self):
+        return self.name
     
 class HealEffect (Effect):
     def affect (self, multiplier, player, targetDeck):
-        status = targetDeck.getStatus (player)
-        for cardstatus in status.getCards (status = CARD_IN_DISCARD).order_by ('-position') [:min (self.modifer, status.getNumCards (CARD_IN_DISCARD))]:
+        print (multiplier)
+        if isinstance (targetDeck, Deck):
+            targetDeck = targetDeck.getStatus (player)
+        for cardstatus in targetDeck.getCards (status = CARD_IN_DISCARD).order_by ('-position') [:min (multiplier, targetDeck.getNumCards (CARD_IN_DISCARD))]:
+            print (cardstatus, cardstatus.card)
             cardstatus.status = CARD_IN_DECK
+            cardstatus.save ()
         # status.reshuffle (status = CARD_IN_DECK)
         
+class EffectLink (models.Model):
+    template = models.ForeignKey (CardTemplate)
+    effect = models.ForeignKey (Effect)

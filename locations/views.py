@@ -60,7 +60,7 @@ def draw (request, slug):
 
     # now return the rendered template
     
-    location.trigger_event (player, location_deck.drawCard (player))
+    location.trigger_event (player, location_deck.drawCard (player), played = False)
         
     return redirect (location.get_absolute_url ())
 

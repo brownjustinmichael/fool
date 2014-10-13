@@ -49,7 +49,7 @@ class Event (models.Model):
             else:
                 result = self.generic_result
                 
-            card.resolve ()
+            card.resolve (player)
         else:
             #If the card isn't set to auto and there's no played card, it can't resolve
             if not self.auto:

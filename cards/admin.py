@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cards.models import CardTemplate, StatTemplate, ItemTemplate, BaseCard, Card, PlayerCard, ItemCard, Deck, Effect, HealEffect
+from cards.models import CardTemplate, StatTemplate, ItemTemplate, BaseCard, Card, PlayerCard, ItemCard, Deck, Effect, HealEffect, EffectLink
 
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 
@@ -57,10 +57,19 @@ class BaseCardParentAdmin(PolymorphicParentModelAdmin):
         (PlayerCard, PlayerCardAdmin),
         (ItemCard, ItemCardAdmin),
     )
+
+class EffectLinkInline(admin.TabularInline):
+    model = EffectLink
+    # fk_name = 'itemcard'
+    # readonly_fields = ['basecard_ptr']
     
 class CardTemplateChildAdmin(PolymorphicChildModelAdmin):
     """ Base admin class for all child models """
     base_model = CardTemplate
+    
+    inlines = [
+        EffectLinkInline,
+    ]
 
     # By using these `base_...` attributes instead of the regular ModelAdmin `form` and `fieldsets`,
     # the additional fields of the child models are automatically added to the admin form.
