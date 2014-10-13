@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 import collections
 
+from polymorphic import PolymorphicModel
+
 from events.models import Event
 from locations.models import Location
 from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, CARD_IN_DECK, CARD_IN_DISCARD, CARD_IN_HAND, CARD_IN_PLAY, Deck, Card, PLAYER_STATS, EXTRA_STATS
@@ -18,6 +20,7 @@ class CardStatus (models.Model):
     deck = models.ForeignKey ('DeckStatus')
     status = models.CharField (max_length = 7, choices = CARD_STATUSES, default = CARD_IN_STASH)
     position = models.IntegerField ()
+    targetDeck = models.ForeignKey ('DeckStatus', blank = True, null = True, default = None, related_name = '_unused_1')
     
     class Meta:
         unique_together = (('deck', 'position', 'status'))
@@ -35,15 +38,16 @@ class CardStatus (models.Model):
         
     def play (self, next_status = CARD_IN_PLAY):
         value = self.card.play (next_status = next_status)
+        targetDeck = self.deck
         self.status = next_status
         self.save ()
         return value
         
     def resolve (self, next_status = CARD_IN_DISCARD):
-        self.card.resolve (next_status = next_status)
-        print ("Setting state to ", next_status)
+        print (next_status)
+        self.card.resolve (self.deck.player, self.targetDeck, next_status = next_status)
         self.status = next_status
-        self.save ()    
+        self.save ()
         
     def discard (self, next_status = CARD_IN_DISCARD):
         self.card.discard (next_status = next_status)
@@ -74,11 +78,12 @@ class DeckStatus (models.Model):
         """
         return self.cardstatus_set.filter (status = status).count ()
     
-    def getCards (self, status):
+    def getCards (self, **kwargs):
         """
         Return a list of the cards with current status
         """
-        return self.cardstatus_set.filter (status = status)
+        status = kwargs.pop ('status', CARD_IN_HAND)
+        return self.cardstatus_set.filter (status = status, **kwargs)
         
     def drawCard (self, next_status = CARD_IN_HAND):
         """
@@ -96,21 +101,31 @@ class DeckStatus (models.Model):
         """
         return self.cardstatus_set.filter (card = card).first ().play (next_status)
 
-    def reshuffle (self):
+    def reshuffle (self, **kwargs):
         """
         Move the cards in the discard pile to the deck
         """
-        for cardstatus in self.cardstatus_set.all ():
-            cardstatus.delete ()
-        indices = list (range (self.deck.card_set.count ()))
+        status = kwargs.pop ('status', None)
+
+        resetCards = []
+        if status is None:
+            for cardstatus in self.cardstatus_set.filter (**kwargs).all ():
+                cardstatus.delete ()
+            for card in self.deck.card_set.all ():
+                if card.isActive ():
+                    resetCards.append (card)
+        else:
+            for cardstatus in self.cardstatus_set.filter (status = status, **kwargs).all ():
+                resetCards.append (cardstatus.card)
+                cardstatus.delete ()
+        
+        indices = list (range (len (resetCards)))
         random.shuffle (indices)
         itr = iter (indices)
-        for card in self.deck.card_set.all ():
-            if card.isActive ():
-                pos = next (itr)
-                print (pos)
-                cardstatus = CardStatus (card = card, status = CARD_IN_DECK, deck = self, position = pos)
-                cardstatus.save ()
+        for card in resetCards:
+            pos = next (itr)
+            cardstatus = CardStatus (card = card, status = CARD_IN_DECK, deck = self, position = pos)
+            cardstatus.save ()
 
 class AbstractPlayer (models.Model):
     """

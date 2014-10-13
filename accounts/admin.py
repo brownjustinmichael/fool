@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 
 class CardStatusInline(admin.TabularInline):
     model = CardStatus
+    fk_name = 'deck'
     
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         field = super(CardStatusInline, self).formfield_for_foreignkey(db_field, request, **kwargs)

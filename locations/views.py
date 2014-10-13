@@ -31,6 +31,8 @@ def location (request, slug):
     if location == active_location and event is not None:
         event.resolve (player, location)
         
+    in_play = player.getCards (CARD_IN_PLAY)
+        
     event = player.active_event
     
     if (event is None):
@@ -39,7 +41,7 @@ def location (request, slug):
     
     in_play = player.getCards (CARD_IN_PLAY)
         
-    return render (request, 'exploration/location.html', {'location': location, 'location_deck': location_deck, 'numcardsatlocation': location_deck.getNumCards (player), 'in_play': [card.card for card in in_play], 'hand': [card.card for card in player.getCards (CARD_IN_HAND).all ()], 'request': request, 'userprofile': player, 'numcardsindeck': player.deck.getNumCards (player), 'logs': player.log_set.filter (location = location).all ()})
+    return render (request, 'exploration/location.html', {'location': location, 'location_deck': location_deck, 'numcardsatlocation': location_deck.getNumCards (player) if location_deck is not None else None, 'in_play': [card.card for card in in_play], 'hand': [card.card for card in player.getCards (CARD_IN_HAND).all ()], 'request': request, 'userprofile': player, 'numcardsindeck': player.deck.getNumCards (player), 'logs': player.log_set.filter (location = location).all ()})
 
 @login_required (login_url='/accounts/login/')
 def draw (request, slug):
@@ -75,6 +77,7 @@ def shuffle (request, slug):
             return redirect (location.get_absolute_url ())
     else:
         in_play = []
+        return redirect (location.get_absolute_url ())
 
     # now return the rendered template
     

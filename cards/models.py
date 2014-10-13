@@ -2,6 +2,9 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 
+from polymorphic import PolymorphicModel
+import abc
+
 import random
 
 CARD_IN_HAND = "hand"
@@ -52,15 +55,28 @@ class Score (object):
     def __iter__ (self):
         return iter ((self.stat, self.value))
 
-class CardTemplate (models.Model):
+class CardTemplate (PolymorphicModel):
     """
     This class is designed to contain the more complex workings of the card class, which will include leveling mechanisms, socketing capacity, and subclasses for strange cards like Tarot and Item
     """
     name = models.CharField (max_length = 20)
-    stat = models.CharField (max_length = 8, choices = PLAYER_STATS, blank = True)
+    requiresTarget = models.BooleanField (default = False)
     
     def __str__ (self):
         return u"%s Template" % self.name
+        
+class StatTemplate (CardTemplate):
+    """
+    This class is designed to contain the more complex workings of the card class, which will include leveling mechanisms, socketing capacity, and subclasses for strange cards like Tarot and Item
+    """
+    stat = models.CharField (max_length = 8, choices = PLAYER_STATS, blank = True)
+    
+class ItemTemplate (CardTemplate):
+    """
+    This class is designed to contain the more complex workings of the card class, which will include leveling mechanisms, socketing capacity, and subclasses for strange cards like Tarot and Item
+    """
+    stat = models.CharField (max_length = 8, choices = PLAYER_STATS, blank = True)
+    
 
 class Deck (models.Model):
     def getStatus (self, player):
@@ -113,21 +129,27 @@ class Deck (models.Model):
         except ObjectDoesNotExist:
             pass
         return "Unattached Deck"
-            
-class Card (models.Model):
+
+class BaseCard (PolymorphicModel):
     """
     This is a playable instance of the cardtemplate class. It should contain methods for card use, upgrades, socketing, etc.
     """
     modifier = models.IntegerField ()
     
     deck = models.ForeignKey (Deck)
-    template = models.ForeignKey (CardTemplate)
+    
+    class Meta:
+        abstract = True
     
     def __str__ (self):
         return u"%s %d" % (self.template, self.modifier)
         
     def isActive (self):
         return True
+        
+    @abc.abstractmethod
+    def getTemplate (self):
+        pass
         
     def getStatus (self, player):
         return self.cardstatus_set.filter (deck = self.deck.getStatus (player)).first ()
@@ -142,13 +164,66 @@ class Card (models.Model):
         """
         If playing the card would have a strange effect or unique bonuses, that effect should go here in a subclass
         """
-        print ("I'm playing myself.")
         return Score (self.template.stat, self.modifier)
         
-    def resolve (self, next_status = CARD_IN_DISCARD):
-        print ("RESOLVEING")
+    def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
+        for effect in self.getTemplate ().effect_set.all ():
+            effect.affect (self.modifier, player, targetDeck)
         return self
         
     def discard (self, next_status = CARD_IN_DISCARD):
         self.status = next_status
         self.save ()
+        
+class Card (BaseCard):
+    template = models.ForeignKey (CardTemplate)
+    
+    def getTemplate ():
+        return self.template
+    
+class PlayerCard (BaseCard):
+    template = models.ForeignKey (StatTemplate)
+    experience = models.IntegerField (default = 0)
+    
+    def __str__ (self):
+        return u"%s %d w/ EXP %d" % (self.template, self.modifier, self.experience)
+        
+    def getTemplate ():
+        return self.template
+    
+    def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
+        self.experience += 1
+        self.save ()
+        return super (PlayerCard, self).resolve (player, targetDeck, next_status)
+        
+class ItemCard (BaseCard):
+    template = models.ForeignKey (ItemTemplate)
+    
+    def __str__ (self):
+        return u"%s %d w/ EXP %d" % (self.template, self.modifier, self.experience)
+        
+    def getTemplate ():
+        return self.template
+        
+    def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
+        result = super (ItemCard, self).resolve (player, targetDeck, next_status)
+        self.delete ()
+        return result
+
+class Effect (PolymorphicModel):
+    template = models.ForeignKey (CardTemplate)
+    
+    class Meta:
+        abstract = True
+        
+    @abc.abstractmethod
+    def affect (self, multiplier, player, targetDeck):
+        pass
+    
+class HealEffect (Effect):
+    def affect (self, multiplier, player, targetDeck):
+        status = targetDeck.getStatus (player)
+        for cardstatus in status.getCards (status = CARD_IN_DISCARD).order_by ('-position') [:min (self.modifer, status.getNumCards (CARD_IN_DISCARD))]:
+            cardstatus.status = CARD_IN_DECK
+        # status.reshuffle (status = CARD_IN_DECK)
+        
