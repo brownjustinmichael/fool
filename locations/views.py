@@ -24,11 +24,14 @@ def location (request, slug):
     # now return the rendered template
     player = get_object_or_404 (Player, user = request.user)
     in_play = player.getCards (CARD_IN_PLAY)
+    print ("CARDS IN PLAY", in_play)
     
     event = player.active_event
+    print ("EVENT IS", event)
     active_location = player.active_location
     
     if location == active_location and event is not None:
+        print ("RESOLVING EVENT")
         event.resolve (player, location)
         
     in_play = player.getCards (CARD_IN_PLAY)

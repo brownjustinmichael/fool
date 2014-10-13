@@ -47,10 +47,10 @@ class CardStatus (models.Model):
         return value
         
     def resolve (self, next_status = CARD_IN_DISCARD):
-        print (next_status)
         self.card.resolve (self.deck.player, self.targetDeck, next_status = next_status)
-        self.status = next_status
-        self.save ()
+        if CardStatus.objects.filter (id = self.id).count () > 0:
+            self.status = next_status
+            self.save ()
         
     def discard (self, next_status = CARD_IN_DISCARD):
         self.card.discard (next_status = next_status)
@@ -75,6 +75,17 @@ class DeckStatus (models.Model):
         except ObjectDoesNotExist:
             pass
         return super (DeckStatus, self).save (*args, **kwargs)
+        
+    def addNewCard (self, card, status = CARD_IN_HAND):
+        card.deck = self.deck
+        card.pk = None
+        card.save ()
+        if self.getCards (status = status).count () > 0:
+            newpos = self.getCards (status = status).last ().position + 1
+        else:
+            newpos = 0
+        cardstatus = CardStatus (card = card, deck = self, status = status, position = newpos)
+        cardstatus.save ()
         
     def getNumCards (self, status = CARD_IN_DECK):
         """

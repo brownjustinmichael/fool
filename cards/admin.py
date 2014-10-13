@@ -117,6 +117,7 @@ class EffectParentAdmin(PolymorphicParentModelAdmin):
     )
     
 admin.site.register (Effect, EffectParentAdmin)
+admin.site.register (EffectLink)
 admin.site.register (BaseCard, BaseCardParentAdmin)
 admin.site.register (Deck, DeckAdmin)
 admin.site.register (CardTemplate, CardTemplateParentAdmin)

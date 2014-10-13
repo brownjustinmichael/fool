@@ -21,6 +21,7 @@ def card (request, slug):
         location = Location.objects.filter (slug = slug [13:-1]).first ()
         if location is not None:
             location.trigger_event (player, card.getStatus (player))
+            print ("TRIGGER")
         return redirect (request.GET.get ('from', 'index.html'))
     
     event.resolve (player, location, card)

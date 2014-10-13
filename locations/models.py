@@ -24,12 +24,30 @@ class Location (models.Model):
         
     def trigger_event (self, player, cardstatus, played = True):
         stat, strength = cardstatus.play (played = played)
-        trigger = self.eventtrigger_set.filter (template = cardstatus.card.template).filter (threshold__lte = strength).order_by ('-threshold').first ()
-        if trigger is not None:
-            player.active_event = trigger.event
+        trigger = self.eventtrigger_set.filter (template = cardstatus.card.template).filter (threshold__lte = strength).order_by ('-threshold')
+        if played:
+            print ("I WAS PLAYED")
+            trigger = trigger.filter (onlyWhenNotPlayed = False)
+        if trigger.first () is not None:
+            player.active_event = trigger.first ().event
             player.active_location = self
             player.save ()
-            return trigger.event
+            return trigger.first ().event
+
+        trigger = GlobalEventTrigger.objects.filter (template = cardstatus.card.template).filter (threshold__lte = strength).order_by ('-threshold')
+        if played:
+            trigger = trigger.filter (onlyWhenNotPlayed = False)
+        if trigger.first () is not None:
+            player.active_event = trigger.first ().event
+            player.active_location = self
+            player.save ()
+            return trigger.first ().event
+
+class GlobalEventTrigger (models.Model):
+    template = models.ForeignKey (CardTemplate)
+    event = models.ForeignKey (Event)
+    threshold = models.IntegerField (default = 0)
+    onlyWhenNotPlayed = models.BooleanField (default = False)
 
 class EventTrigger (models.Model):
     """docstring for EventTrigger """
@@ -37,5 +55,6 @@ class EventTrigger (models.Model):
     template = models.ForeignKey (CardTemplate)
     event = models.ForeignKey (Event)
     threshold = models.IntegerField (default = 0)
+    onlyWhenNotPlayed = models.BooleanField (default = False)
 
 # Create your models here.

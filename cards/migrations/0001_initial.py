@@ -173,4 +173,10 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.RunPython (loadTemplates),
+        migrations.AddField(
+            model_name='basecard',
+            name='description',
+            field=models.TextField(null=True, blank=True),
+            preserve_default=True,
+        ),
     ]

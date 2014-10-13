@@ -1,5 +1,5 @@
 from django.contrib import admin
-from locations.models import Location, EventTrigger
+from locations.models import Location, EventTrigger, GlobalEventTrigger
  
 class EventTriggerInline(admin.TabularInline):
     model = EventTrigger
@@ -10,4 +10,5 @@ class LocationAdmin (admin.ModelAdmin):
     ]
  
 admin.site.register (EventTrigger)
-admin.site.register(Location, LocationAdmin)
+admin.site.register (GlobalEventTrigger)
+admin.site.register (Location, LocationAdmin)

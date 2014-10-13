@@ -4,7 +4,7 @@ from django.db.models.query import QuerySet
 
 from polymorphic import PolymorphicModel
 from django.core.urlresolvers import reverse
-from cards.models import PLAYER_STATS, EXTRA_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY
+from cards.models import PLAYER_STATS, EXTRA_STATS, FORCE, DASH, RESIST, CHARM, WISDOM, POWER, MONEY, CardTemplate
 
 class Result (PolymorphicModel):
     """
@@ -67,10 +67,20 @@ class NewEventResult (Result):
         return u"%s -> %s" % (self.name, str (self.new_event))
         
     def enact (self, userprofile):
-        print ("Enacting")
-        print (self.new_event)
         userprofile.active_event = self.new_event
         userprofile.save ()
         return self.message
+        
+class NewCardResult (Result):
+    # This field is required.
+    template = models.ForeignKey (CardTemplate, related_name = "_unused_4")
+    modifier = models.IntegerField (default = 0)
+        
+    def __str__ (self):
+        return u"%s -> %s %d" % (self.name, str (self.template), self.modifier)
+        
+    def enact (self, userprofile):
+        userprofile.deck.getStatus (userprofile).addNewCard (self.template.generateCard (modifier = self.modifier))
+        return super (NewCardResult, self).enact (userprofile)
         
 

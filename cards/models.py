@@ -65,11 +65,18 @@ class CardTemplate (PolymorphicModel):
     def __str__ (self):
         return u"%s Template" % self.name
         
+    @abc.abstractmethod
+    def generateCard (self, **kwargs):
+        pass
+        
 class StatTemplate (CardTemplate):
     """
     This class is designed to contain the more complex workings of the card class, which will include leveling mechanisms, socketing capacity, and subclasses for strange cards like Tarot and Item
     """
     stat = models.CharField (max_length = 8, choices = PLAYER_STATS, blank = True)
+    
+    def generateCard (self, **kwargs):
+        return PlayerCard (template = self, **kwargs)
     
 class ItemTemplate (CardTemplate):
     """
@@ -77,6 +84,8 @@ class ItemTemplate (CardTemplate):
     """
     stat = models.CharField (max_length = 8, choices = PLAYER_STATS, blank = True)
     
+    def generateCard (self, **kwargs):
+        return ItemCard (template = self, **kwargs)
 
 class Deck (models.Model):
     def getStatus (self, player):
@@ -135,7 +144,7 @@ class BaseCard (PolymorphicModel):
     This is a playable instance of the cardtemplate class. It should contain methods for card use, upgrades, socketing, etc.
     """
     modifier = models.IntegerField ()
-    
+    description = models.TextField (blank = True, null = True)
     deck = models.ForeignKey (Deck)
     
     def __str__ (self):
@@ -203,10 +212,9 @@ class ItemCard (BaseCard):
         return self.template
         
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
-        result = super (ItemCard, self).resolve (player, targetDeck, next_status)
         if self.getStatus (player).played:
+            result = super (ItemCard, self).resolve (player, targetDeck, next_status)
             self.delete ()
-        return result
 
 class Effect (PolymorphicModel):
     name = models.CharField (max_length = 60, default = "Effect")
@@ -226,10 +234,10 @@ class HealEffect (Effect):
         print (multiplier)
         if isinstance (targetDeck, Deck):
             targetDeck = targetDeck.getStatus (player)
-        for cardstatus in targetDeck.getCards (status = CARD_IN_DISCARD).order_by ('-position') [:min (multiplier, targetDeck.getNumCards (CARD_IN_DISCARD))]:
-            print (cardstatus, cardstatus.card)
-            cardstatus.status = CARD_IN_DECK
-            cardstatus.save ()
+        if targetDeck is not None:
+            for cardstatus in targetDeck.getCards (status = CARD_IN_DISCARD).order_by ('-position') [:min (multiplier, targetDeck.getNumCards (CARD_IN_DISCARD))]:
+                cardstatus.status = CARD_IN_DECK
+                cardstatus.save ()
         # status.reshuffle (status = CARD_IN_DECK)
         
 class EffectLink (models.Model):
