@@ -24,9 +24,13 @@
 			{% endblock %}
 		</div>
 		<div class="footer">
+			<div id="cards">
+			<div class="card_button" value="back"></div>
 			<div id="card_bin">
 				<div id="card_background"></div>
-			{% for card in hand %}
+				
+				<div id="card_slots">
+				{% for card in hand %}
 				
 				<div class="card_slot">
 						<div class="card" id="card-{{card.id}}">
@@ -59,6 +63,10 @@
 						</div>
 				</div>	
 			{% endfor %}
+			</div>
+			
+			</div>
+			<div class="card_button" value="next"></div>
 			</div>
 			<div id="inventory">
 				<div id="deck">
@@ -107,4 +115,3 @@
 		</div>
 	</body>
 </html>
-

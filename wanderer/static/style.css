@@ -13,6 +13,7 @@ body{
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	background:blue;
 	height:100%;
+	min-width:800px;
 }
 .header{
 	height:50px;
@@ -42,9 +43,16 @@ body{
 
 /*CARD CSS*/
 
-#card_bin{
-	width:80%;
+#cards{
 	margin:auto;
+	width:80%;
+}
+
+#card_bin{
+	width:90%;
+	overflow:hidden;
+	display:inline-block;
+	margin-bottom:-10px;
 }
 
 #card_background{
@@ -53,6 +61,20 @@ body{
 	z-index:1;
 	height: 50px;
 	background-color: #444444;
+}
+
+.card_button{
+	display:inline-block;
+	background:red;
+	margin-bottom:40px;
+	width:35px;
+	height:100px;
+}
+
+#card_slots{
+	position:relative;
+	width:2000px;
+	left:0px;
 }
 
 .card_slot{
