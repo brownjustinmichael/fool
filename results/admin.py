@@ -1,5 +1,5 @@
 from django.contrib import admin
-from results.models import Result, EnemyResult, StatResult, NewEventResult, NewCardResult
+from results.models import Result, EnemyResult, StatResult, NewCardResult
 
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 
@@ -17,10 +17,6 @@ class ResultChildAdmin(PolymorphicChildModelAdmin):
 class StatResultAdmin(ResultChildAdmin):
     # define custom features here
     pass
-
-class NewEventResultAdmin(ResultChildAdmin):
-    # define custom features here
-    pass
     
 class NewCardResultAdmin(ResultChildAdmin):
     # define custom features here
@@ -36,7 +32,6 @@ class ResultParentAdmin(PolymorphicParentModelAdmin):
     child_models = (
         (Result, ResultChildAdmin),
         (StatResult, StatResultAdmin),
-        (NewEventResult, NewEventResultAdmin),
         (EnemyResult, EnemyResultAdmin),
         (NewCardResult, NewCardResultAdmin),
     )

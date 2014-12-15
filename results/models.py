@@ -59,18 +59,6 @@ class EnemyResult (Result):
     def enact (self, userprofile):
         return super (EnemyResult, self).enact (userprofile)
         
-class NewEventResult (Result):
-    # This field is required.
-    new_event = models.ForeignKey ("events.Event", related_name = "_unused_3")
-        
-    def __str__ (self):
-        return u"%s -> %s" % (self.name, str (self.new_event))
-        
-    def enact (self, userprofile):
-        userprofile.active_event = self.new_event
-        userprofile.save ()
-        return self.message
-        
 class NewCardResult (Result):
     # This field is required.
     template = models.ForeignKey (CardTemplate, related_name = "_unused_4")

@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'locations',
     'accounts',
     'results',
+    'npcs',
     'polymorphic',
 )
 

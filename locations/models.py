@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 
 from cards.models import Deck, CardTemplate
 from events.models import Event
+from accounts.models import ActiveEvent
 
 class Location (models.Model):
     title = models.CharField(max_length=255)
@@ -22,26 +23,26 @@ class Location (models.Model):
     def get_absolute_url(self):
         return reverse('locations.views.location', args=[self.slug])
         
-    def trigger_event (self, player, cardstatus, played = True):
-        stat, strength = cardstatus.play (played = played)
-        trigger = self.eventtrigger_set.filter (template = cardstatus.card.template).filter (threshold__lte = strength).order_by ('-threshold')
-        if played:
-            print ("I WAS PLAYED")
-            trigger = trigger.filter (onlyWhenNotPlayed = False)
-        if trigger.first () is not None:
-            player.active_event = trigger.first ().event
-            player.active_location = self
-            player.save ()
-            return trigger.first ().event
-
-        trigger = GlobalEventTrigger.objects.filter (template = cardstatus.card.template).filter (threshold__lte = strength).order_by ('-threshold')
+    def trigger_event (self, player, cardStatus, played = True):
+        stat, strength = cardStatus.play (played = played)
+        # Filter the triggers by type and strength such that the first trigger satisfies the criteria
+        print ("Triggering event now", player.activeevent_set.all ())
+        trigger = self.locationtrigger_set.filter (template = cardStatus.card.template).filter (threshold__lte = strength).order_by ('-threshold')
+        
+        print ("Triggers", trigger.all (), self.locationtrigger_set.all () [0].template, cardStatus.card.template)
+        
+        # Filter out triggers based on whether a user played it
         if played:
             trigger = trigger.filter (onlyWhenNotPlayed = False)
+            
+        # If there is a remaining trigger, add the event to the stack
         if trigger.first () is not None:
-            player.active_event = trigger.first ().event
-            player.active_location = self
-            player.save ()
-            return trigger.first ().event
+            print ("Adding event")
+            event = ActiveEvent (player = player, cardStatus = cardStatus, event = trigger.first ().event, stackOrder = player.activeevent_set.count ())
+            event.save ()
+            #Return the trigger or None
+            print (player.activeevent_set.all ())
+            return trigger.first ()
 
 class GlobalEventTrigger (models.Model):
     template = models.ForeignKey (CardTemplate)
@@ -49,12 +50,13 @@ class GlobalEventTrigger (models.Model):
     threshold = models.IntegerField (default = 0)
     onlyWhenNotPlayed = models.BooleanField (default = False)
 
-class EventTrigger (models.Model):
+class LocationTrigger (models.Model):
     """docstring for EventTrigger """
     location = models.ForeignKey (Location)
     template = models.ForeignKey (CardTemplate)
     event = models.ForeignKey (Event)
     threshold = models.IntegerField (default = 0)
     onlyWhenNotPlayed = models.BooleanField (default = False)
+    content = models.TextField (default = "")
 
 # Create your models here.

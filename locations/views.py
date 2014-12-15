@@ -26,18 +26,23 @@ def location (request, slug):
     in_play = player.getCards (CARD_IN_PLAY)
     print ("CARDS IN PLAY", in_play)
     
-    event = player.active_event
-    print ("EVENT IS", event)
     active_location = player.active_location
     
-    if location == active_location and event is not None:
+    if location == active_location and player.activeevent_set.count () > 0:
+        event = player.activeevent_set.order_by ("stackOrder").last ()
+        print ("EVENT IS", event)
         print ("RESOLVING EVENT")
         event.resolve (player, location)
         
     in_play = player.getCards (CARD_IN_PLAY)
         
-    event = player.active_event
-    
+    event = player.activeevent_set.order_by ("stackOrder").last ()
+    print ("AN EVENT!", event)
+    if event is not None:
+        player.active_event = event.event
+        player.active_location = location
+        player.save ()
+        print (player.active_event.title)
     if (event is None):
         for card in in_play:
             card.resolve ()

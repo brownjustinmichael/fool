@@ -25,17 +25,6 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='NewEventResult',
-            fields=[
-                ('result_ptr', models.OneToOneField(serialize=False, to='results.Result', auto_created=True, parent_link=True, primary_key=True)),
-                ('new_event', models.ForeignKey(related_name='_unused_3', to='events.Event')),
-            ],
-            options={
-                'abstract': False,
-            },
-            bases=('results.result',),
-        ),
-        migrations.CreateModel(
             name='EnemyResult',
             fields=[
                 ('result_ptr', models.OneToOneField(serialize=False, to='results.Result', auto_created=True, parent_link=True, primary_key=True)),

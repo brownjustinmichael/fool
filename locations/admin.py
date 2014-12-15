@@ -1,14 +1,14 @@
 from django.contrib import admin
-from locations.models import Location, EventTrigger, GlobalEventTrigger
+from locations.models import Location, LocationTrigger, GlobalEventTrigger
  
-class EventTriggerInline(admin.TabularInline):
-    model = EventTrigger
+class LocationTriggerInline(admin.TabularInline):
+    model = LocationTrigger
     
 class LocationAdmin (admin.ModelAdmin):
     inlines = [
-        EventTriggerInline,
+        LocationTriggerInline,
     ]
  
-admin.site.register (EventTrigger)
+admin.site.register (LocationTrigger)
 admin.site.register (GlobalEventTrigger)
 admin.site.register (Location, LocationAdmin)

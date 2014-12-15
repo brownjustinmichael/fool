@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from accounts.models import Player
+from accounts.models import Player, CardStatus
 from cards.models import BaseCard, Card, Deck, CARD_IN_DISCARD, CARD_IN_HAND
 from locations.models import Location
 from django.core.urlresolvers import reverse
@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 @login_required
 def card (request, slug):
     # get the Card object
+    # TODO This should really fetch a cardStatus (which should be called a cardInstance)
     card = get_object_or_404 (BaseCard, id=slug)
     player = get_object_or_404 (Player, user = request.user)
     # now return the rendered template

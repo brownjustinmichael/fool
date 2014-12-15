@@ -7,8 +7,7 @@ import collections
 from polymorphic import PolymorphicModel
 
 from events.models import Event
-from locations.models import Location
-from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, CARD_IN_DECK, CARD_IN_DISCARD, CARD_IN_HAND, CARD_IN_PLAY, Deck, Card, BaseCard, PLAYER_STATS, EXTRA_STATS
+from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, CARD_IN_DECK, CARD_IN_DISCARD, CARD_IN_HAND, CARD_IN_PLAY, Deck, Card, BaseCard, PLAYER_STATS, EXTRA_STATS, DEFENSE_BONUS, OFFENSE_BONUS
 from results.models import Result
 
 stats = collections.OrderedDict ()
@@ -60,7 +59,7 @@ class CardStatus (models.Model):
 class DeckStatus (models.Model):
     player = models.ForeignKey ('Player')
     deck = models.ForeignKey (Deck)
-    location = models.ForeignKey (Location, blank = True, null = True)
+    location = models.ForeignKey ("locations.Location", blank = True, null = True)
     
     class Meta:
         unique_together = (('player', 'deck'))
@@ -153,7 +152,7 @@ class AbstractPlayer (models.Model):
     user = models.OneToOneField (User)
 
     active_event = models.ForeignKey (Event, blank = True, null = True)
-    active_location = models.ForeignKey (Location, blank = True, null = True)
+    active_location = models.ForeignKey ("locations.Location", blank = True, null = True)
     
     deck = models.OneToOneField (Deck, null = True, blank = True, related_name = "player")
     
@@ -173,6 +172,11 @@ class AbstractPlayer (models.Model):
             return cardstatus.play () + getattr (self, card.template.stat)
         return cardstatus.play ()
         
+    def discard (self, number):
+        # TODO Implement this
+        print ("Discarding", number, "cards")
+        pass
+        
     def getCards (self, status = CARD_IN_PLAY):
         return CardStatus.objects.filter (deck__player = self).filter (status = status)
         
@@ -180,6 +184,27 @@ class AbstractPlayer (models.Model):
         deckstatus = DeckStatus (deck = deck, player = self)
         deckstatus.save ()
         return deckstatus
+        
+    def attack (self, npc, scores):
+        defenseStat, defenseValue = npc.defend (scores)
+        print (defenseStat)
+        print (scores)
+        damage = -defenseValue
+        for stat, value in scores [:]:
+            damage += value
+            if OFFENSE_BONUS [stat] == defenseStat:
+                # TODO Make this more visible to the player, possibly by passing it through score as a modifier
+                damage += 1
+        if damage >= 0:
+            print ("NPC took ", damage)
+            npc.discard (damage)
+        else:
+            print ("You took ", damage)
+            self.discard (-damage)
+            
+    def addEvent (self, cardStatus, event):
+        event = ActiveEvent (player = self, cardStatus = cardStatus, event = event, stackOrder = self.activeevent_set.count ())
+        event.save ()
 
 stats.update ({"__module__": __name__})
 Player = type ('Player', (AbstractPlayer,), stats)
@@ -188,7 +213,7 @@ class Log (models.Model):
     title = models.CharField (max_length = 255)
     event = models.ForeignKey (Event)
     result = models.ForeignKey (Result)
-    location = models.ForeignKey (Location)
+    location = models.ForeignKey ("locations.Location")
     logged = models.DateTimeField (auto_now_add=True)
     
     user = models.ForeignKey (Player)
@@ -197,3 +222,14 @@ class Log (models.Model):
         #Specify the order that the logging messages should appear "logged" for forward and "-logged" for reverse
         ordering = ['logged']
         
+class ActiveEvent (models.Model):
+    player = models.ForeignKey (Player)
+    event = models.ForeignKey (Event)
+    stackOrder = models.IntegerField ()
+    cardStatus = models.ForeignKey (CardStatus)
+    
+    class Meta:
+        unique_together = ("player", "event", "stackOrder")
+        
+    def resolve (self, player, location):
+        self.event.resolve (player, location)
