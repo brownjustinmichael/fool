@@ -5,8 +5,7 @@ from django.db import models, migrations
 
 from django.db import models, migrations
 from results.models import StatResult
-from events.models import ResultCondition
-from events.models import Event
+from events.models import Event, EventTrigger
 from cards.models import MONEY, FORCE, POWER, StatTemplate
 
 def loadResult (apps, schema_editor):

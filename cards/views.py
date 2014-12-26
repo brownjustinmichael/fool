@@ -14,18 +14,18 @@ def card (request, slug):
     # now return the rendered template
     deck = get_object_or_404 (Deck, player = player)
     
-    event = request.user.player.active_event
     location = request.user.player.active_location
+    
+    event = player.resolve (location)
     
     if event is None:
         slug = request.GET.get ('from', 'index.html')
         location = Location.objects.filter (slug = slug [13:-1]).first ()
         if location is not None:
-            location.trigger_event (player, card.getStatus (player))
-            print ("TRIGGER")
+            location.trigger_event (player, card.getStatus (player), location)
         return redirect (request.GET.get ('from', 'index.html'))
     
-    event.resolve (player, location, card)
+    player.resolve (location, card.getStatus (player))
     
     return redirect (request.GET.get ('from', 'index.html'))
 

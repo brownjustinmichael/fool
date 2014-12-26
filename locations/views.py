@@ -24,20 +24,15 @@ def location (request, slug):
     # now return the rendered template
     player = get_object_or_404 (Player, user = request.user)
     in_play = player.getCards (CARD_IN_PLAY)
-    print ("CARDS IN PLAY", in_play)
     
     active_location = player.active_location
     
-    if location == active_location and player.activeevent_set.count () > 0:
-        event = player.activeevent_set.order_by ("stackOrder").last ()
-        print ("EVENT IS", event)
-        print ("RESOLVING EVENT")
-        event.resolve (player, location)
+    if location == active_location:
+        player.resolve (location)
         
     in_play = player.getCards (CARD_IN_PLAY)
         
-    event = player.activeevent_set.order_by ("stackOrder").last ()
-    print ("AN EVENT!", event)
+    event = player.resolve (location)
     if event is not None:
         player.active_event = event.event
         player.active_location = location
@@ -76,6 +71,10 @@ def draw (request, slug):
 def shuffle (request, slug):
     # get the Location object
     player = get_object_or_404 (Player, user = request.user)
+    
+    # Reset the NPCs when resting. This belongs elsewhere
+    for npc in player.npcinstance_set.all ():
+        npc.delete ()
         
     location = get_object_or_404 (Location, slug=slug)
     location_deck = location.deck

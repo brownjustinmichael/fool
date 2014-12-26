@@ -234,7 +234,6 @@ class Effect (PolymorphicModel):
     
 class HealEffect (Effect):
     def affect (self, multiplier, player, targetDeck):
-        print (multiplier)
         if isinstance (targetDeck, Deck):
             targetDeck = targetDeck.getStatus (player)
         if targetDeck is not None:
@@ -242,6 +241,16 @@ class HealEffect (Effect):
                 cardstatus.status = CARD_IN_DECK
                 cardstatus.save ()
         # status.reshuffle (status = CARD_IN_DECK)
+        
+class StatusChangeEffect (Effect):
+    stat = models.CharField (max_length = 8, choices = PLAYER_STATS)
+    strength = models.IntegerField (default = 0)
+    
+    def __str__ (self):
+        return self.stat + " " + self.strength
+    
+    def affect (self, multiplier, player, targetDeck):
+        player.changeStat (self.stat, self.strength)
         
 class EffectLink (models.Model):
     template = models.ForeignKey (CardTemplate)

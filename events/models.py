@@ -4,6 +4,10 @@ from results.models import Result
 from cards.models import CardTemplate
 from npcs.models import NPC, NPCInstance
 
+# class EffectEventLink (models.Model):
+#     template = models.ForeignKey (CardTemplate)
+#     effect = models.ForeignKey (Effect)
+
 class Event (models.Model):
     """
     This class is designed to contain an event and handle its resolution by choosing the appropriate contained result object 
@@ -33,7 +37,7 @@ class Event (models.Model):
     def __str__(self):
         return u'%s' % self.title
         
-    def trigger_event (self, player, cardStatus, template, strength, npc = None, played = True):
+    def trigger_event (self, player, cardStatus, template, strength, location, npc = None, played = True):
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         # TODO cardStatus could keep track of its play values if it was just played
         if npc is not None:
@@ -47,106 +51,67 @@ class Event (models.Model):
             
         # If there is a remaining trigger, add the event to the stack
         if trigger.first () is not None:
-            player.addEvent (cardStatus = cardStatus, event = trigger.first ().event)
-            #Return the trigger or None
-            return trigger.first ()
-            
-    def trigger_result (self, player, template, strength, npc = None, played = True):
-        # Filter the triggers by type and strength such that the first trigger satisfies the criteria best
-        if self.npc is not None:
-            trigger = self.resultcondition_set.filter (card = template).filter (success_threshold__gte = self.npc.life + npc.life).order_by ('success_threshold')
-        else:
-            trigger = self.resultcondition_set.filter (card = template).filter (success_threshold__lte = strength).order_by ('-success_threshold')
-            
-        # If there is a remaining trigger, enact the result
-        if trigger.first () is not None:
-            trigger.first ().success_result.enact (player)
-            if (trigger.first ().success):
-                lastEvent = player.activeevent_set.last ()
-                if lastEvent is not None:
-                    lastEvent.delete ()
-            player.save ()
+            player.addEvent (cardStatus = cardStatus, event = trigger.first ().event, location = location)
             #Return the trigger or None
             return trigger.first ()
     
-    def resolve (self, player, location, card = None):
-        """
-        Resolve an event with or without a card to play. If the event can't resolve with current conditions, return None
+    def resolve (self, player, location, cardStatus = None):
+        """Resolve an event with or without a card to play. If the event can't resolve with current conditions, return None
         
-        Note: this method calls the card.draw () method, which effectively moves the card to the discard pile and puts any special abilities of that card into effect.
-        """
+        Note: this method calls the card.draw () method, which effectively moves the card to the discard pile and puts any special abilities of that card into effect."""
         
-        if card is None and not self.auto:
-            return None
+        if cardStatus is None and not self.auto:
+            return (None, False)
         
-        if card is not None:
+        if cardStatus is not None:
             # If there is a card, play it
-            stat, value = player.playCard (card)
+            stat, value = player.playCard (cardStatus)
             if self.npc is not None:
                 try:
                     npc = self.npc.npcinstance_set.filter (player = player).first ()
                 except Exception as e:
                     npc = NPCInstance (player = player, npc = self.npc)
                 player.attack (npc, [(stat, value)])
-            
-            # Get the possible result conditionals (0 or 1)
-            resultcondition = self.trigger_result (player, card.template, value, npc, True)
-            if resultcondition is not None:
-                card.resolve (player)
-                print (resultcondition.content)
-                return resultcondition
                 
             # Try to trigger an event with the card
-            eventtrigger = self.trigger_event (player, card.getStatus (player), card.template, value, npc, True)
+            eventtrigger = self.trigger_event (player, cardStatus, cardStatus.card.template, value, location, npc, True)
             if eventtrigger is not None:
-                card.resolve (player)
-                print (eventtrigger.content)
-                return eventtrigger
+                cardStatus.resolve ()
+                return (eventtrigger, False)
                 
-            card.resolve (player)
+            print ("Resolving...")
+            cardStatus.resolve ()
                 
         # If nothing else works, use the generic result
         self.generic_result.enact (player)
-        print (self.generic_content)
-        if (self.generic_resolved):
-            lastEvent = player.activeevent_set.last ()
-            if lastEvent is not None:
-                lastEvent.delete ()
-            player.save ()
-        
-        return None
+        return (self.generic_result, True)
         
 class EventTrigger (models.Model):
-    """docstring for EventTrigger """
+    """
+    The EventTrigger links an event to possible sub-events
+    
+    """
+    
+    # The original event from which this EventTrigger can be triggered
     originalEvent = models.ForeignKey (Event, null = True)
+    
+    # The CardTemplate that this EventTrigger can be triggered by
     template = models.ForeignKey (CardTemplate)
-    event = models.ForeignKey (Event, null = True, related_name = "_unused_2")
+    
+    # The threshold that this card must beat in order to activate successfully. This is either the quantity that the card score must beat or the maximum remaining life of the associated NPC to be successful
     threshold = models.IntegerField (default = 0)
+    
+    # The event triggered by this EventTrigger, if this is None, the EventTrigger happens, but returns to the previous event
+    event = models.ForeignKey (Event, null = True, related_name = "_unused_2")
+    
+    # Particular cards, e.g. item cards, have different effects when found than when played. This boolean is true for an event triggered ONLY when the card is put into play directly from a non-player deck
     onlyWhenNotPlayed = models.BooleanField (default = False)
+    
+    # The content of an EventTrigger is the text displayed as the 'result' text in the log
     content = models.TextField (default = "")
-
-class ResultCondition (models.Model):
-    """
-    This is the table that links results to events. It contains the ability to check whether the value of a card was sufficient for a successful result.
-    In the future, capacities such as overkill and critical failures should be added here.
-    """
-    event = models.ForeignKey (Event)
-    success = models.BooleanField (default = False)
-    success_result = models.ForeignKey (Result, related_name = "_unused_1")
-    card = models.ForeignKey (CardTemplate)
-    content = models.TextField (default = "")
-
-    success_threshold = models.IntegerField (default = 0)
-
-    class Meta:
-      unique_together = ('event', 'card',)
-
-    def checkSuccess (self, cardValue):
-        """
-        The main method of the class, determines whether a cardValue is sufficient for success.
-        """
-        if cardValue >= self.success_threshold:
-            return self.success_result
-        else:
-            return self.fail_result
-            
+    
+    # If this trigger resolves the parent event, this boolean is True
+    resolved = models.BooleanField (default = True)
+    
+    def __str__ (self):
+        return "%s (%s %d) -> %s" % (str (self.originalEvent), str (self.template), self.threshold, str (self.event))

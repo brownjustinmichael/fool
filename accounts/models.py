@@ -114,11 +114,16 @@ class DeckStatus (models.Model):
         Return the Card instance on top of the deck
         """
         return self.cardstatus_set.filter (card = card).first ().play (next_status)
+        
+    def discard (self, number):
+        """Discard the top number cards of the deck"""
+        pass
 
     def reshuffle (self, **kwargs):
         """
         Move the cards in the discard pile to the deck
         """
+        
         status = kwargs.pop ('status', None)
 
         resetCards = []
@@ -163,13 +168,21 @@ class AbstractPlayer (models.Model):
     def __str__ (self):
         return u"%s's Profile" % self.user.username
             
+    def changeStat (self, stat, value):
+        """Change the value of the player's stat by value"""
+        setattr (self, stat, getattr (self, stat) + value)
+        self.save () 
+    
     def recordLog (self, event, result, location):
         Log (title = event.title, event = event, result = result, user = self, location = location).save ()
         
     def playCard (self, card):
-        cardstatus = card.getStatus (self)
-        if card.template.stat is not None:
-            return cardstatus.play () + getattr (self, card.template.stat)
+        if not isinstance (card, CardStatus):
+            cardstatus = card.getStatus (self)
+        else:
+            cardstatus = card
+        if cardstatus.card.template.stat is not None:
+            return cardstatus.play () + getattr (self, cardstatus.card.template.stat)
         return cardstatus.play ()
         
     def discard (self, number):
@@ -202,34 +215,81 @@ class AbstractPlayer (models.Model):
             print ("You took ", damage)
             self.discard (-damage)
             
-    def addEvent (self, cardStatus, event):
+    def addEvent (self, cardStatus, event, location):
         event = ActiveEvent (player = self, cardStatus = cardStatus, event = event, stackOrder = self.activeevent_set.count ())
+        event.log (location)
         event.save ()
+        
+    def resolve (self, location, cardStatus = None):
+        """Resolve anything unresolved on the stack"""
+        lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
+        print (self.activeevent_set.order_by ("stackOrder"))
+        while lastEvent is not None and lastEvent.resolved:
+            if lastEvent.failed:
+                lastEvent.log (location)
+            lastEvent.delete ()
+            lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
+            
+        trigger = None
+        if lastEvent is not None:
+            trigger = lastEvent.resolve (self, location, cardStatus)
+            lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
+            
+        while lastEvent is not None and lastEvent.resolved:
+            if lastEvent.failed:
+                lastEvent.log (location)
+            lastEvent.delete ()
+            lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
+        
+        return lastEvent
 
 stats.update ({"__module__": __name__})
 Player = type ('Player', (AbstractPlayer,), stats)
 
 class Log (models.Model):
-    title = models.CharField (max_length = 255)
     event = models.ForeignKey (Event)
-    result = models.ForeignKey (Result)
+    failed = models.BooleanField (default = False)
     location = models.ForeignKey ("locations.Location")
     logged = models.DateTimeField (auto_now_add=True)
     
     user = models.ForeignKey (Player)
     
+    @property
+    def title ():
+        return self.event.title
+    
+    def getContent (self):
+        print (self.event.content)
+        if self.failed:
+            return self.event.generic_content
+        else:
+            return self.event.content
+
+    content = property (getContent)
+
     class Meta:
         #Specify the order that the logging messages should appear "logged" for forward and "-logged" for reverse
         ordering = ['logged']
         
+    
+    
 class ActiveEvent (models.Model):
     player = models.ForeignKey (Player)
     event = models.ForeignKey (Event)
     stackOrder = models.IntegerField ()
     cardStatus = models.ForeignKey (CardStatus)
+    resolved = models.BooleanField (default = False)
+    failed = models.BooleanField (default = False)
     
     class Meta:
         unique_together = ("player", "event", "stackOrder")
         
-    def resolve (self, player, location):
-        self.event.resolve (player, location)
+    def resolve (self, player, location, cardStatus = None):
+        trigger, self.failed = self.event.resolve (player, location, cardStatus)
+        if trigger is not None and trigger.resolved:
+            self.resolved = True
+            self.save ()
+            
+    def log (self, location):
+        log = Log (event = self.event, failed = self.failed, user = self.player, location = location)
+        log.save ()

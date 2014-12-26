@@ -45,8 +45,7 @@
 		<h2>
 			{{log.title}}
 		</h2>
-		<p>{{log.event.content}}</p>
-		<p>{{log.result.message}}</p>
+		{{log.content | safe}}
 		<p>
 			Logged on
 			<time datetime="{{log.logged|date:"c"}}">

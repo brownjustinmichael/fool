@@ -23,7 +23,7 @@ class Location (models.Model):
     def get_absolute_url(self):
         return reverse('locations.views.location', args=[self.slug])
         
-    def trigger_event (self, player, cardStatus, played = True):
+    def trigger_event (self, player, cardStatus, location, played = True):
         stat, strength = cardStatus.play (played = played)
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         print ("Triggering event now", player.activeevent_set.all ())
@@ -37,11 +37,8 @@ class Location (models.Model):
             
         # If there is a remaining trigger, add the event to the stack
         if trigger.first () is not None:
-            print ("Adding event")
-            event = ActiveEvent (player = player, cardStatus = cardStatus, event = trigger.first ().event, stackOrder = player.activeevent_set.count ())
-            event.save ()
+            player.addEvent (cardStatus = cardStatus, event = trigger.first ().event, location = location)
             #Return the trigger or None
-            print (player.activeevent_set.all ())
             return trigger.first ()
 
 class GlobalEventTrigger (models.Model):

@@ -1,8 +1,6 @@
 from django.contrib import admin
-from events.models import Event, ResultCondition, EventTrigger
+from events.models import Event, EventTrigger
 
-class ResultConditionInline(admin.TabularInline):
-    model = ResultCondition
 
 class EventTriggerInline(admin.TabularInline):
     model = EventTrigger
@@ -11,9 +9,7 @@ class EventTriggerInline(admin.TabularInline):
 class EventAdmin (admin.ModelAdmin):
     inlines = [
         EventTriggerInline,
-        ResultConditionInline,
     ]
  
 admin.site.register (Event, EventAdmin)
 admin.site.register (EventTrigger)
-admin.site.register (ResultCondition)

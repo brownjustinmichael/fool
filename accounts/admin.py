@@ -1,5 +1,5 @@
 from django.contrib import admin
-from accounts.models import Player, CardStatus, DeckStatus
+from accounts.models import Player, CardStatus, DeckStatus, Log
 from django.core.urlresolvers import reverse
 
 class CardStatusInline(admin.TabularInline):
@@ -39,3 +39,4 @@ class PlayerAdmin (admin.ModelAdmin):
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(DeckStatus, DeckStatusAdmin)
 admin.site.register (CardStatus)
+admin.site.register (Log)
