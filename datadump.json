@@ -1,0 +1,182 @@
+[
+{
+    "pk": 1,
+    "fields": {
+        "description": "null",
+        "content": " null",
+        "npc": null,
+        "created": "2014-12-30T06:12:50.596Z",
+        "title": "Null",
+        "published": true,
+        "generic_result": 1,
+        "slug": "null",
+        "auto": false
+    },
+    "model": "events.event"
+},
+{
+    "pk": 2,
+    "fields": {
+        "description": "The Chief's House",
+        "content": "The house is nice. It looks livable, if not very large. It's night, but you think you can see movement in the upstairs window. Perhaps you should take a closer look. Perhaps you should come back when you think the house won't be occupied.\r\n\r\n...or you could just go in with both barrels. Your choice.",
+        "npc": 1,
+        "created": "2014-12-30T06:13:20.500Z",
+        "title": "House",
+        "published": true,
+        "generic_result": 1,
+        "slug": "house",
+        "auto": false
+    },
+    "model": "events.event"
+},
+{
+    "pk": 3,
+    "fields": {
+        "description": "The chief's husband has taken up arms",
+        "content": "You're going to regret this. The chief's husband looks pretty pissed. And pretty armed. Also pretty-armed if you're into that sort of thing... Mmmmmm. Oh right, danger.",
+        "npc": 2,
+        "created": "2014-12-30T06:30:08.510Z",
+        "title": "Fighting the Chief's Husband",
+        "published": true,
+        "generic_result": 1,
+        "slug": "chief_husband_fight",
+        "auto": false
+    },
+    "model": "events.event"
+},
+{
+    "pk": 4,
+    "fields": {
+        "description": "You've entered the living room of the chief",
+        "content": "It's hard to make out much in the dark, but you can make out some of the furniture. You might be able to steer clear of some of the china, but you'll need to be careful. Although, you probably don't have that much time, so whatever you decide, do it quickly!",
+        "npc": 3,
+        "created": "2014-12-30T06:40:42.894Z",
+        "title": "Searching the Room",
+        "published": true,
+        "generic_result": 1,
+        "slug": "searching_the_room",
+        "auto": false
+    },
+    "model": "events.event"
+},
+{
+    "pk": 1,
+    "fields": {
+        "threshold": 0,
+        "content": "With a loud BANG the door crashes inwards. A quick glance at the hinge tells you this door likely will be needing a bit of fixing.\r\n\r\nHalf-naked, the police chief's husband comes racing down the stairs. With a gun. Looks like you can't talk your way out of this one anymore...",
+        "event": 3,
+        "resolved": true,
+        "template": 1,
+        "originalEvent": 2,
+        "onlyWhenNotPlayed": false
+    },
+    "model": "events.eventtrigger"
+},
+{
+    "pk": 2,
+    "fields": {
+        "threshold": 0,
+        "content": "As you finish picking the lock, the door gives way, and you manage to sneak in.",
+        "event": 4,
+        "resolved": true,
+        "template": 2,
+        "originalEvent": 2,
+        "onlyWhenNotPlayed": false
+    },
+    "model": "events.eventtrigger"
+},
+{
+    "pk": 1,
+    "fields": {
+        "description": "It's not much, but it's home.",
+        "title": "Home",
+        "created": "2014-12-30T06:02:30.545Z",
+        "published": true,
+        "deck": null,
+        "slug": "home",
+        "canshuffle": true
+    },
+    "model": "locations.location"
+},
+{
+    "pk": 2,
+    "fields": {
+        "description": "A diverse neighborhood on the border of Prospect Park",
+        "title": "Prospect Heights",
+        "created": "2014-12-30T07:39:00.754Z",
+        "published": true,
+        "deck": null,
+        "slug": "prospect_heights",
+        "canshuffle": false
+    },
+    "model": "locations.location"
+},
+{
+    "pk": 1,
+    "fields": {
+        "threshold": 0,
+        "content": "Null",
+        "location": 2,
+        "event": 2,
+        "template": 1,
+        "onlyWhenNotPlayed": false
+    },
+    "model": "locations.locationtrigger"
+},
+{
+    "pk": 1,
+    "fields": {
+        "polymorphic_ctype": 29,
+        "resolved": true,
+        "name": "Null",
+        "message": "null"
+    },
+    "model": "results.result"
+},
+{
+    "pk": 1,
+    "fields": {
+        "power": 0,
+        "genericEvent": 1,
+        "charm": 99,
+        "dash": 0,
+        "life": 3,
+        "name": "The Chief's House",
+        "wisdom": 99,
+        "resist": 4,
+        "force": 2
+    },
+    "model": "npcs.npc"
+},
+{
+    "pk": 2,
+    "fields": {
+        "power": 0,
+        "genericEvent": 1,
+        "charm": 1,
+        "dash": 2,
+        "life": 4,
+        "name": "Chief's Husband Bob",
+        "wisdom": 0,
+        "resist": 1,
+        "force": 1
+    },
+    "model": "npcs.npc"
+},
+{
+    "pk": 3,
+    "fields": {
+        "power": 0,
+        "genericEvent": 1,
+        "charm": 99,
+        "dash": 0,
+        "life": 6,
+        "name": "Chief's Living Room",
+        "wisdom": 0,
+        "resist": 2,
+        "force": 1
+    },
+    "model": "npcs.npc"
+}
+
+]

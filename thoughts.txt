@@ -1,0 +1,106 @@
+TriggerContainer:
+	EventTriggers:
+		Template
+		Threshold
+		Event
+		
+	trigger (card):
+		triggers = EventTriggers_set.query (template == card.template).order_by (-score).all ()
+		for trigger in triggers:
+			if trigger.check (card):
+				return trigger.event
+
+Location (TriggerContainer):
+		
+EventStack:
+	activeEvent
+	location
+	generateActiveEvent ()
+		if len (eventstack) > 0:
+			event = eventstack [-1]
+		else:
+			event = location
+		while len (eventstack) < len (cardstack):
+			eventstack.append (eventstack [-1].trigger (cardstack [len (eventstack) - 1]))
+		return eventstack [-1]
+	resolve (card)
+		if activeEvent is not None:
+			activeEvent.resolve (self, card)
+		else:
+			stack.append (card)
+		activeEvent = generateActiveEvent ()
+
+Event (TriggerContainer):
+	ResultConditions:
+		template
+		score
+		resolved?
+		Results:
+		enact (stack):
+			for result in results:
+				result.enact (stack)
+			
+	resolve (player, stack, card):
+		results = event.resultConditions_set.query (template == card.template).order_by (-score).all ()
+		score = card.play ()
+		for card in stack.cardstack.reverse ():
+			if card.isNPC ():
+				player.attack (card.getNPC (), score)
+				break
+		final = None
+		for result in results:
+			if result.check (score):
+				final = result
+				break
+		final.enact (stack)
+		
+Result:
+	enact (stack):
+		context dependent
+	
+Every card played is played onto the stack
+The previous card on top of the stack determines how the newly added card resolves according to the associated Event
+Whether or not the Event has an appropriate ResultCondition, any played Action Card constitutes an attack on the highest NPC in the stack
+
+An eventtrigger is an object that, given a card, determines whether a particular event will follow the current one
+
+When a card is played on an event, the event first plays the card and deals relevant damage.
+It then checks whether any results match the card criteria: e.g. Force 2 would mean that the result matches if the card played was Force and the NPC has no more than 2 life remaining (if there's no NPC, then it checks that the card strength is greater than or equal to 2)
+It only uses the strongest matching result for the strongest component of the attack
+If any of the matching results resolve the event, the event and played card resolve instantly
+If the event is still in play, it then checks for matching eventtriggers in much the same way
+If there is a match, the new event is added to the stack
+If there is no matching eventtrigger, the played card resolves, and the default result activates
+
+	
+Example EventStacks:
+	Location >> (Card, Scenario) >> (Card, Scenario) ... >> Card
+	
+	Bar >> (Bartender, Bartender_Discuss) >> (Key, Bartender_Key_Discuss) >> Charm 7
+	Bartender has 2 Charm Resist and 5 action cards, his top action card is Force 1, so he has no defense to Charm, and his top 7 - 2 cards are aligned to you, which is all of them
+	He needs at least 2 cards in his action deck aligned to him to hold onto the key, so Charm 7 results in success, resolving both it and the Key Discussion card
+	The final stack is
+	Bar >> (Bartender, Bartender_Discuss)
+	The player can play Leave
+	Bar >> (Bartender, Bartender_Discuss) >> Leave
+	Leave resolves itself and Bartender
+	
+	Docks
+	The player plays Thug 5
+	Docks >> Thug 5
+	This summons a Level 5 Thug and starts a discussion with him. Thug 5 remains in play. The player plays Force 3
+	Docks >> (Thug 5, Thug_5_Discussion) >> Force 3
+	This resolves as an attack, so
+	Docks >> (Thug 5, Thug_5_Discussion) >> (Force 3, Attack (Thug_5))
+	Thug 5 has 3 Resist and his top card is Resist 3, which gets a bonus of +1 for being used against Force, so the player fails and takes 1 damage
+	Docks >> (Thug 5, Thug_5_Discussion) >> (Force 3, Attack (Thug_5)) >> Resist 3
+	Docks >> (Thug 5, Thug_5_Discussion)
+	
+	
+card play possibilities:
+	play card and trigger event -> return eventtrigger
+	play card and trigger result and resolve event -> return resulttrigger
+	play card and trigger result without resolving event -> return resulttrigger
+	play card and trigger null result -> None
+	play no card and don't trigger null result -> Error
+	play no card and trigger null result -> None

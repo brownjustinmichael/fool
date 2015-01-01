@@ -14,9 +14,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Event',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('title', models.CharField(max_length=255)),
-                ('slug', models.SlugField(unique=True, max_length=255)),
+                ('slug', models.SlugField(max_length=255, unique=True)),
                 ('description', models.CharField(max_length=255)),
                 ('content', models.TextField()),
                 ('published', models.BooleanField(default=True)),
@@ -29,15 +29,26 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='ResultCondition',
+            name='EventTrigger',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
-                ('success_threshold', models.IntegerField(default=0)),
-                ('card', models.ForeignKey(to='cards.CardTemplate')),
-                ('event', models.ForeignKey(to='events.Event')),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('threshold', models.IntegerField(default=0)),
+                ('onlyWhenNotPlayed', models.BooleanField(default=False)),
+                ('content', models.TextField(default='', blank=True)),
+                ('failed_content', models.TextField(default='', blank=True)),
+                ('resolved', models.BooleanField(default=True)),
+                ('event', models.ForeignKey(related_name='_unused_2', null=True, to='events.Event')),
+                ('originalEvent', models.ForeignKey(null=True, to='events.Event')),
+                ('template', models.ForeignKey(to='cards.CardTemplate')),
             ],
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='event',
+            name='generic_result',
+            field=models.ForeignKey(blank=True, related_name='_unused_event_result', null=True, default=None, to='events.EventTrigger'),
+            preserve_default=True,
         ),
     ]

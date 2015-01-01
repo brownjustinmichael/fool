@@ -41,7 +41,6 @@ INSTALLED_APPS = (
     'events',
     'locations',
     'accounts',
-    'results',
     'npcs',
     'polymorphic',
 )

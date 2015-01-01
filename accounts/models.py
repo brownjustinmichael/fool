@@ -2,13 +2,14 @@ import random
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from polymorphic import PolymorphicModel
+
 import collections
 
 from polymorphic import PolymorphicModel
 
-from events.models import Event
+from events.models import Event, EventTrigger
 from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, CARD_IN_DECK, CARD_IN_DISCARD, CARD_IN_HAND, CARD_IN_PLAY, Deck, Card, BaseCard, PLAYER_STATS, EXTRA_STATS, DEFENSE_BONUS, OFFENSE_BONUS
-from results.models import Result
 
 stats = collections.OrderedDict ()
 for stat in PLAYER_STATS + EXTRA_STATS:
@@ -199,6 +200,7 @@ class AbstractPlayer (models.Model):
         return deckstatus
         
     def attack (self, npc, scores):
+        print ("ATTACKING")
         defenseStat, defenseValue = npc.defend (scores)
         print (defenseStat)
         print (scores)
@@ -207,7 +209,8 @@ class AbstractPlayer (models.Model):
             damage += value
             if OFFENSE_BONUS [stat] == defenseStat:
                 # TODO Make this more visible to the player, possibly by passing it through score as a modifier
-                damage += 1
+                # damage += 1
+                pass
         if damage >= 0:
             print ("NPC took ", damage)
             npc.discard (damage)
@@ -223,8 +226,9 @@ class AbstractPlayer (models.Model):
     def resolve (self, location, cardStatus = None):
         """Resolve anything unresolved on the stack"""
         lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
-        print (self.activeevent_set.order_by ("stackOrder"))
+        print ("THE CURRENT EVENTS ARE", self.activeevent_set.order_by ("stackOrder"))
         while lastEvent is not None and lastEvent.resolved:
+            print ("A RESOLVING")
             if lastEvent.failed:
                 lastEvent.log (location)
             lastEvent.delete ()
@@ -232,10 +236,19 @@ class AbstractPlayer (models.Model):
             
         trigger = None
         if lastEvent is not None:
-            trigger = lastEvent.resolve (self, location, cardStatus)
+            print ("ATTEMPT TRIGGER")
+            trigger, failed = lastEvent.resolve (self, location, cardStatus)
+            if trigger is not None:
+                log = TriggerLog (trigger = trigger, user = self, location = location, success = not failed)
+                log.save ()
+                if not failed:
+                    self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
+                else:
+                    print ("Trigger but fail.")
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
             
         while lastEvent is not None and lastEvent.resolved:
+            print ("B RESOLVING")
             if lastEvent.failed:
                 lastEvent.log (location)
             lastEvent.delete ()
@@ -246,9 +259,8 @@ class AbstractPlayer (models.Model):
 stats.update ({"__module__": __name__})
 Player = type ('Player', (AbstractPlayer,), stats)
 
-class Log (models.Model):
-    event = models.ForeignKey (Event)
-    failed = models.BooleanField (default = False)
+class Log (PolymorphicModel):
+    event = models.ForeignKey (Event, null =  True, blank = True)
     location = models.ForeignKey ("locations.Location")
     logged = models.DateTimeField (auto_now_add=True)
     
@@ -259,11 +271,7 @@ class Log (models.Model):
         return self.event.title
     
     def getContent (self):
-        print (self.event.content)
-        if self.failed:
-            return self.event.generic_content
-        else:
-            return self.event.content
+        return self.event.content
 
     content = property (getContent)
 
@@ -271,7 +279,20 @@ class Log (models.Model):
         #Specify the order that the logging messages should appear "logged" for forward and "-logged" for reverse
         ordering = ['logged']
         
+class TriggerLog (Log):
+    trigger = models.ForeignKey (EventTrigger)
+    success = models.BooleanField (default = True)
     
+    @property
+    def title ():
+        return self.trigger.title
+    
+    def getContent (self):
+        if self.success:
+            return self.trigger.content
+        return self.trigger.failed_content
+    
+    content = property (getContent)
     
 class ActiveEvent (models.Model):
     player = models.ForeignKey (Player)
@@ -286,10 +307,11 @@ class ActiveEvent (models.Model):
         
     def resolve (self, player, location, cardStatus = None):
         trigger, self.failed = self.event.resolve (player, location, cardStatus)
-        if trigger is not None and trigger.resolved:
+        if trigger is not None and not self.failed and trigger.resolved:
             self.resolved = True
             self.save ()
+        return trigger, self.failed
             
     def log (self, location):
-        log = Log (event = self.event, failed = self.failed, user = self.player, location = location)
+        log = Log (event = self.event, user = self.player, location = location)
         log.save ()

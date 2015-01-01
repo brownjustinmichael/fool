@@ -4,20 +4,28 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 
 
+def loadLocations (apps, schema_editor):
+    Location = apps.get_model ("locations", "Location")
+    db_alias = schema_editor.connection.alias
+    
+    Location.objects.create (title = "Home", slug = "home", description = "It's not much, but it's home.", canshuffle = True)
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cards', '0001_initial'),
         ('events', '0001_initial'),
+        ('cards', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='EventTrigger',
+            name='GlobalEventTrigger',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('threshold', models.IntegerField(default=0)),
+                ('onlyWhenNotPlayed', models.BooleanField(default=False)),
                 ('event', models.ForeignKey(to='events.Event')),
+                ('template', models.ForeignKey(to='cards.CardTemplate')),
             ],
             options={
             },
@@ -26,30 +34,34 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Location',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
                 ('title', models.CharField(max_length=255)),
-                ('slug', models.SlugField(unique=True, max_length=255)),
+                ('slug', models.SlugField(max_length=255, unique=True)),
                 ('description', models.CharField(max_length=255)),
                 ('published', models.BooleanField(default=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('canshuffle', models.BooleanField(default=False)),
-                ('deck', models.OneToOneField(blank=True, to='cards.Deck', null=True)),
+                ('deck', models.OneToOneField(blank=True, null=True, to='cards.Deck')),
             ],
             options={
                 'ordering': ['-created'],
             },
             bases=(models.Model,),
         ),
-        migrations.AddField(
-            model_name='eventtrigger',
-            name='location',
-            field=models.ForeignKey(to='locations.Location'),
-            preserve_default=True,
+        migrations.CreateModel(
+            name='LocationTrigger',
+            fields=[
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('threshold', models.IntegerField(default=0)),
+                ('onlyWhenNotPlayed', models.BooleanField(default=False)),
+                ('content', models.TextField(default='')),
+                ('event', models.ForeignKey(to='events.Event')),
+                ('location', models.ForeignKey(to='locations.Location')),
+                ('template', models.ForeignKey(to='cards.CardTemplate')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
         ),
-        migrations.AddField(
-            model_name='eventtrigger',
-            name='template',
-            field=models.ForeignKey(to='cards.CardTemplate'),
-            preserve_default=True,
-        ),
+        migrations.RunPython (loadLocations),
     ]

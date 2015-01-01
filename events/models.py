@@ -1,6 +1,5 @@
 from django.db import models
 
-from results.models import Result
 from cards.models import CardTemplate
 from npcs.models import NPC, NPCInstance
 
@@ -25,10 +24,8 @@ class Event (models.Model):
     published = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     
-    # The generic result is what happens when the event is forced to resolve, but no 
-    generic_result = models.ForeignKey (Result)
-    generic_resolved = models.BooleanField (default = False)
-    generic_content = models.TextField (default = "")
+    # The generic result is what happens when the event is forced to resolve, but no triggers have been matched
+    generic_result = models.ForeignKey ("events.EventTrigger", default = None, null = True, related_name = "_unused_event_result", blank = True)
     auto = models.BooleanField (default = False)
 
     class Meta:
@@ -41,19 +38,28 @@ class Event (models.Model):
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         # TODO cardStatus could keep track of its play values if it was just played
         if npc is not None:
-            trigger = self.eventtrigger_set.filter (template = template).filter (threshold__gte = self.npc.life + npc.life).order_by ('threshold')
+            trigger = self.eventtrigger_set.filter (template = template).order_by ('threshold')
         else:
-            trigger = self.eventtrigger_set.filter (template = template).filter (threshold__lte = strength).order_by ('-threshold')
+            trigger = self.eventtrigger_set.filter (template = template).order_by ('-threshold')
             
         # Filter out triggers based on whether a user played it
         if played:
             trigger = trigger.filter (onlyWhenNotPlayed = False)
             
         # If there is a remaining trigger, add the event to the stack
-        if trigger.first () is not None:
-            player.addEvent (cardStatus = cardStatus, event = trigger.first ().event, location = location)
-            #Return the trigger or None
-            return trigger.first ()
+        last = None
+        success = False
+        for tr in trigger.all ():
+            last = tr
+            if npc is not None:
+                if self.npc.life + npc.life <= tr.threshold:
+                    success = True
+                    break
+            else:
+                if strength >= tr.threshold:
+                    success = True
+                    break
+        return (last, success)
     
     def resolve (self, player, location, cardStatus = None):
         """Resolve an event with or without a card to play. If the event can't resolve with current conditions, return None
@@ -67,24 +73,27 @@ class Event (models.Model):
             # If there is a card, play it
             stat, value = player.playCard (cardStatus)
             if self.npc is not None:
-                try:
-                    npc = self.npc.npcinstance_set.filter (player = player).first ()
-                except Exception as e:
+                npc = self.npc.npcinstance_set.filter (player = player).first ()
+                if npc is None:
                     npc = NPCInstance (player = player, npc = self.npc)
+                    npc.save ()
+                print (npc)
                 player.attack (npc, [(stat, value)])
                 
             # Try to trigger an event with the card
-            eventtrigger = self.trigger_event (player, cardStatus, cardStatus.card.template, value, location, npc, True)
+            eventtrigger, success = self.trigger_event (player, cardStatus, cardStatus.card.template, value, location, npc, True)
+            print ("Any triggers? ", eventtrigger, success)
             if eventtrigger is not None:
-                cardStatus.resolve ()
-                return (eventtrigger, False)
+                # cardStatus.resolve ()
+                return (eventtrigger, not success)
                 
             print ("Resolving...")
             cardStatus.resolve ()
                 
         # If nothing else works, use the generic result
-        self.generic_result.enact (player)
-        return (self.generic_result, True)
+        if self.generic_result is not None:
+            return (self.generic_result, True)
+        return (None, True)
         
 class EventTrigger (models.Model):
     """
@@ -108,7 +117,8 @@ class EventTrigger (models.Model):
     onlyWhenNotPlayed = models.BooleanField (default = False)
     
     # The content of an EventTrigger is the text displayed as the 'result' text in the log
-    content = models.TextField (default = "")
+    content = models.TextField (default = "", blank = True)
+    failed_content = models.TextField (default = "", blank = True)
     
     # If this trigger resolves the parent event, this boolean is True
     resolved = models.BooleanField (default = True)

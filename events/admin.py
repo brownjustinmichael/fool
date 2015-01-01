@@ -13,3 +13,4 @@ class EventAdmin (admin.ModelAdmin):
  
 admin.site.register (Event, EventAdmin)
 admin.site.register (EventTrigger)
+

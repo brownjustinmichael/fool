@@ -1,6 +1,8 @@
 from django.contrib import admin
-from accounts.models import Player, CardStatus, DeckStatus, Log
+from accounts.models import Player, CardStatus, DeckStatus, Log, TriggerLog, ActiveEvent
 from django.core.urlresolvers import reverse
+from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
+
 
 class CardStatusInline(admin.TabularInline):
     model = CardStatus
@@ -15,6 +17,9 @@ class CardStatusInline(admin.TabularInline):
             field.queryset = field.queryset.none()
 
         return field
+        
+class ActiveEventInline(admin.TabularInline):
+    model = ActiveEvent
 
 class DeckStatusInline(admin.TabularInline):
     model = DeckStatus
@@ -34,9 +39,36 @@ class PlayerAdmin (admin.ModelAdmin):
             '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', # jquery
             'script.js',       # project static folder
         )
-    inlines = [DeckStatusInline]
+    inlines = [DeckStatusInline, ActiveEventInline]
     
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(DeckStatus, DeckStatusAdmin)
 admin.site.register (CardStatus)
-admin.site.register (Log)
+# admin.site.register (Log)
+
+
+class LogChildAdmin(PolymorphicChildModelAdmin):
+    """ Base admin class for all child models """
+    base_model = Log
+
+    # By using these `base_...` attributes instead of the regular ModelAdmin `form` and `fieldsets`,
+    # the additional fields of the child models are automatically added to the admin form.
+    # base_form = ...
+    # base_fieldsets = (
+        # ...
+    # )
+
+class TriggerLogAdmin(LogChildAdmin):
+    # define custom features here
+    pass
+    
+class LogParentAdmin(PolymorphicParentModelAdmin):
+    """ The parent model admin """
+    base_model = Log
+    child_models = (
+        (Log, LogChildAdmin),
+        (TriggerLog, TriggerLogAdmin),
+    )
+
+# Only the parent needs to be registered:
+admin.site.register(Log, LogParentAdmin)

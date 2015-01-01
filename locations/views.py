@@ -31,6 +31,7 @@ def location (request, slug):
         player.resolve (location)
         
     in_play = player.getCards (CARD_IN_PLAY)
+    print ("THE CARDS IN PLAY ARE", in_play)
         
     event = player.resolve (location)
     if event is not None:
@@ -39,6 +40,9 @@ def location (request, slug):
         player.save ()
         print (player.active_event.title)
     if (event is None):
+        print ("THE EVENT IS NONE, RESOLVE ALL CARDS")
+        player.active_event = None
+        player.active_location = None
         for card in in_play:
             card.resolve ()
     
