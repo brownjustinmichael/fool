@@ -25,11 +25,8 @@ class Location (models.Model):
     def trigger_event (self, player, cardStatus, played = True):
         stat, strength = cardStatus.play (played = played)
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
-        print ("Triggering event now", player.activeevent_set.all ())
         trigger = self.locationtrigger_set.filter (template = cardStatus.card.template).filter (threshold__lte = strength).order_by ('-threshold')
-        
-        print ("Triggers", trigger.all (), self.locationtrigger_set.all () [0].template, cardStatus.card.template)
-        
+                
         # Filter out triggers based on whether a user played it
         if played:
             trigger = trigger.filter (onlyWhenNotPlayed = False)
