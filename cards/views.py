@@ -5,6 +5,8 @@ from cards.models import BaseCard, Card, Deck, CARD_IN_DISCARD, CARD_IN_HAND
 from locations.models import Location
 from django.core.urlresolvers import reverse
 
+import re
+
 @login_required
 def card (request, slug):
     # get the Card object
@@ -22,7 +24,7 @@ def card (request, slug):
         slug = request.GET.get ('from', 'index.html')
         location = Location.objects.filter (slug = slug [13:-1]).first ()
         if location is not None:
-            location.trigger_event (player, card.getStatus (player), location)
+            location.trigger_event (player, card.getStatus (player))
         return redirect (request.GET.get ('from', 'index.html'))
     
     player.resolve (location, card.getStatus (player))
@@ -34,9 +36,15 @@ def draw (request):
     # now return the rendered template
     username = None
     player = get_object_or_404 (Player, user = request.user)
-    deck = get_object_or_404 (Deck, player = player)
+    # TODO do this correctly
+    slug = request.GET.get ('from', 'index.html').split ("/") [-2]
+    location = get_object_or_404 (Location, slug = slug)
 
-    card = deck.drawCard (player)
+    player.draw ()
+    try:
+        location.drawCard (player)
+    except RuntimeError:
+        pass
     # card.status = CARD_IN_HAND
     # card.save ()
     return redirect (request.GET.get ('from', 'index.html'))
@@ -47,6 +55,6 @@ def shuffle (request):
     username = None
     if request.user.is_authenticated():
         username = request.user.username
-    request.user.player.deck.reshuffle (request.user.player)
+    request.user.player.reshuffleAll ()
     return redirect (request.GET.get ('from', 'index.html'))
 

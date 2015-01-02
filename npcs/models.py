@@ -11,7 +11,8 @@ class AbstractNPC (models.Model):
     """An NPC class is a database entry for a non-playable character. These can be people or objects."""
     # This is the event called when the NPC card is the top card in the event stack
     name = models.CharField (max_length = 30)
-    genericEvent = models.ForeignKey ("events.Event", related_name = "_unused_4")
+    slug = models.SlugField (unique=True, max_length=255, null = True, blank = True)
+    genericEvent = models.ForeignKey ("events.Event", blank = True, null = True, related_name = "_unused_4")
     
     life = models.IntegerField ()
     
@@ -21,7 +22,6 @@ class AbstractNPC (models.Model):
     def __str__ (self):
         return self.name
         
-
 playerStats.update ({"__module__": __name__})
 NPC = type ('NPC', (AbstractNPC,), playerStats)
 
@@ -43,4 +43,8 @@ class NPCInstance (models.Model):
     class Meta:
         unique_together = ("player", "npc")
     
+class NPCLink (models.Model):
+    npc = models.ForeignKey (NPC)
+    location = models.ForeignKey ("locations.Location")
+    card = models.ForeignKey ("cards.BaseCard", blank = True, null = True)
     

@@ -72,25 +72,59 @@ class CardTemplate (PolymorphicModel):
     def generateCard (self, **kwargs):
         pass
         
+    @abc.abstractmethod
+    def _getStat (self):
+        pass
+        
+    def getStat (self):
+        return self._getStat ()
+        
+    stat = property (getStat)
+        
 class StatTemplate (CardTemplate):
     """
     This class is designed to contain the more complex workings of the card class, which will include leveling mechanisms, socketing capacity, and subclasses for strange cards like Tarot and Item
     """
-    stat = models.CharField (max_length = 8, choices = PLAYER_STATS, blank = True)
+    statistic = models.CharField (max_length = 8, choices = PLAYER_STATS, blank = True)
     
     def generateCard (self, **kwargs):
         return PlayerCard (template = self, **kwargs)
+        
+    def _getStat (self):
+        print ("CALLING XSTAT STAT")
+        print (self.statistic)
+        return self.statistic
     
 class ItemTemplate (CardTemplate):
     """
     This class is designed to contain the more complex workings of the card class, which will include leveling mechanisms, socketing capacity, and subclasses for strange cards like Tarot and Item
     """
-    stat = models.CharField (max_length = 8, choices = PLAYER_STATS, blank = True)
+    statistic = models.CharField (max_length = 8, choices = PLAYER_STATS, blank = True)
     
     def generateCard (self, **kwargs):
         return ItemCard (template = self, **kwargs)
+        
+    def _getStat (self):
+        print ("CALLING XSTAT ITEM")
+        
+        return self.statistic
+        
+class NPCTemplate (CardTemplate):
+    """
+    This class is designed to contain the more complex workings of the card class, which will include leveling mechanisms, socketing capacity, and subclasses for strange cards like Tarot and Item
+    """
+    npc = models.ForeignKey ("npcs.NPC")
+    
+    def generateCard (self, **kwargs):
+        return NPCCard (template = self, **kwargs)
+        
+    def _getStat (self):
+        print ("CALLING XSTAT NPC")
+        return None
 
 class Deck (models.Model):
+    # TODO Almost every method of this class is redundant with those of DeckStatus
+    
     def getStatus (self, player):
         deckstatus = self.deckstatus_set.filter (player = player).first ()
         if deckstatus is None:
@@ -103,20 +137,20 @@ class Deck (models.Model):
         Return the number of cards currently in the deck
         """
         return self.getStatus (player).getNumCards (status)
-    
+
     def getCards (self, player, status = CARD_IN_HAND):
         """
         Return a list of the cards with current status
         """
         return self.getStatus (player).getCards (status)
-        
+
     def drawCard (self, player):
         """
         Return the Card instance on top of the deck
         """
         print ("I'm drawing a card...")
         return self.getStatus (player).drawCard ()
-        
+
     def playCard (self, player, card):
         """
         Return the Card instance on top of the deck
@@ -148,7 +182,7 @@ class BaseCard (PolymorphicModel):
     """
     modifier = models.IntegerField ()
     description = models.TextField (blank = True, null = True)
-    deck = models.ForeignKey (Deck)
+    deck = models.ForeignKey (Deck, null = True, blank = True)
     
     def __str__ (self):
         return u"%s %d" % (self.getTemplate (), self.modifier)
@@ -201,6 +235,7 @@ class PlayerCard (BaseCard):
         return self.template
     
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
+        # TODO Player Cards shouldn't gain experience when played outside of context
         self.experience += 1
         self.save ()
         return super (PlayerCard, self).resolve (player, targetDeck, next_status)
@@ -218,6 +253,19 @@ class ItemCard (BaseCard):
         if self.getStatus (player).played:
             result = super (ItemCard, self).resolve (player, targetDeck, next_status)
             self.delete ()
+
+class NPCCard (BaseCard):
+    """
+    An NPC Card is a representation of an NPC that, when played, adds an interaction with the NPC onto the stack
+    """
+    template = models.ForeignKey (NPCTemplate)
+    
+    def __str__ (self):
+        return u"%s %d" % (self.template, self.modifier)
+        
+    def getTemplate (self):
+        return self.template
+    
 
 class Effect (PolymorphicModel):
     name = models.CharField (max_length = 60, default = "Effect")

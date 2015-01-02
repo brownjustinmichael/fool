@@ -27,6 +27,8 @@ def location (request, slug):
     
     active_location = player.active_location
     
+    print ("THE ACTIVE LOCATION IS ", active_location)
+    
     if location == active_location:
         player.resolve (location)
         
@@ -34,15 +36,8 @@ def location (request, slug):
     print ("THE CARDS IN PLAY ARE", in_play)
         
     event = player.resolve (location)
-    if event is not None:
-        player.active_event = event.event
-        player.active_location = location
-        player.save ()
-        print (player.active_event.title)
     if (event is None):
         print ("THE EVENT IS NONE, RESOLVE ALL CARDS")
-        player.active_event = None
-        player.active_location = None
         for card in in_play:
             card.resolve ()
     
@@ -56,42 +51,8 @@ def draw (request, slug):
     player = get_object_or_404 (Player, user = request.user)
         
     location = get_object_or_404 (Location, slug=slug)
-    location_deck = location.deck
-    if (location_deck is not None):
-        in_play = player.getCards (CARD_IN_PLAY).all ()
-        if location_deck.getNumCards (player, CARD_IN_PLAY) > 0:
-            # If there are cards in play, you can't draw a card, duh.
-            return redirect (location.get_absolute_url ())
-    else:
-        in_play = []
 
-    # now return the rendered template
-    
-    location.trigger_event (player, location_deck.drawCard (player), played = False)
-        
+    location.drawCard (player)
+
     return redirect (location.get_absolute_url ())
 
-@login_required (login_url='/accounts/login/')
-def shuffle (request, slug):
-    # get the Location object
-    player = get_object_or_404 (Player, user = request.user)
-    
-    # Reset the NPCs when resting. This belongs elsewhere
-    for npc in player.npcinstance_set.all ():
-        npc.delete ()
-        
-    location = get_object_or_404 (Location, slug=slug)
-    location_deck = location.deck
-    if (location_deck is not None):
-        if player.getCards (CARD_IN_PLAY).count () > 0:
-            # If there are cards in play, you can't draw a card, duh.
-            return redirect (location.get_absolute_url ())
-    else:
-        in_play = []
-        return redirect (location.get_absolute_url ())
-
-    # now return the rendered template
-    
-    location_deck.reshuffle (player)
-        
-    return redirect (location.get_absolute_url ())

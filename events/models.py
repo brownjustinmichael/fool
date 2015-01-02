@@ -34,6 +34,12 @@ class Event (models.Model):
     def __str__(self):
         return u'%s' % self.title
         
+    def getLife (self):
+        if self.npc is not None:
+            return self.npc.life
+            
+    life = property (getLife)
+        
     def trigger_event (self, player, cardStatus, template, strength, location, npc = None, played = True):
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         # TODO cardStatus could keep track of its play values if it was just played
@@ -60,6 +66,14 @@ class Event (models.Model):
                     success = True
                     break
         return (last, success)
+        
+    def generateNPCInstance (self, player):
+        if self.npc is not None:
+            npc = self.npc.npcinstance_set.filter (player = player).first ()
+            if npc is None:
+                npc = NPCInstance (player = player, npc = self.npc)
+                npc.save ()
+            return npc
     
     def resolve (self, player, location, cardStatus = None):
         """Resolve an event with or without a card to play. If the event can't resolve with current conditions, return None
@@ -72,12 +86,8 @@ class Event (models.Model):
         if cardStatus is not None:
             # If there is a card, play it
             stat, value = player.playCard (cardStatus)
-            if self.npc is not None:
-                npc = self.npc.npcinstance_set.filter (player = player).first ()
-                if npc is None:
-                    npc = NPCInstance (player = player, npc = self.npc)
-                    npc.save ()
-                print (npc)
+            npc = self.generateNPCInstance (player)
+            if npc is not None:
                 player.attack (npc, [(stat, value)])
                 
             # Try to trigger an event with the card

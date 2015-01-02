@@ -1,9 +1,8 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 
-from cards.models import Deck, CardTemplate
+from cards.models import Deck, CardTemplate, NPCCard
 from events.models import Event
-from accounts.models import ActiveEvent
 
 class Location (models.Model):
     title = models.CharField(max_length=255)
@@ -23,7 +22,7 @@ class Location (models.Model):
     def get_absolute_url(self):
         return reverse('locations.views.location', args=[self.slug])
         
-    def trigger_event (self, player, cardStatus, location, played = True):
+    def trigger_event (self, player, cardStatus, played = True):
         stat, strength = cardStatus.play (played = played)
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         print ("Triggering event now", player.activeevent_set.all ())
@@ -37,9 +36,24 @@ class Location (models.Model):
             
         # If there is a remaining trigger, add the event to the stack
         if trigger.first () is not None:
-            player.addEvent (cardStatus = cardStatus, event = trigger.first ().event, location = location)
+            player.addEvent (cardStatus = cardStatus, event = trigger.first ().event, location = self)
             #Return the trigger or None
             return trigger.first ()
+            
+    def drawCard (self, player):
+        """
+        Draw a card from the location deck. Check whether this card triggers any events.
+        """
+        if self.deck is not None:
+            if player.activeevent_set.count () > 0:
+                raise RuntimeError ("You can't draw from the location deck if there are still active events.")
+            else:
+                self.trigger_event (player, self.deck.drawCard (player), played = False)
+                
+    def getNPCLinks (self):
+        return self.npclink_set.all ()
+        
+    npcLinks = property (getNPCLinks)
 
 class GlobalEventTrigger (models.Model):
     template = models.ForeignKey (CardTemplate)

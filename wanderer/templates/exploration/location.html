@@ -10,21 +10,25 @@
 			<a href="draw/">Deck</a>
 		</h2>
 		{% endif %}
+		<!-- <h2>
+			<a href="shuffle">Rest</a>
+		</h2> -->
+		{% for event in userprofile.active_events %}
 		<h2>
-			<a href="shuffle">Shuffle</a>
-		</h2>
-		{% for card in in_play %}
-		<h2>
-			{{card.template.name}} {{card.modifier}}
+			{{event.cardStatus.card.template.name}} {{event.cardStatus.card.modifier}} : {{event.event.title}}
 		</h2>
 		{% endfor %}
 		{% if userprofile.active_location == location %}
 		<h2>
-			{{userprofile.active_event.title}}
+			{{userprofile.active_event.event.title}} (Life: {{userprofile.active_event.life}})
 		</h2>
-		{{userprofile.active_event.content}}
-		{% else %}
+		{{userprofile.active_event.event.content}}
+		{% elif userprofile.active_location != None %}
 		No active scenario here. Go to {{userprofile.active_location}}.
+		{% else %}
+		{% for link in location.npcLinks %}
+			<a href="/npc?id={{link.id}}?from={{request.path}}">{{ link.npc.name }}</a>
+		{% endfor %}
 		{% endif %}
 		<h1> {{location.title}} </h1>
 		<p>
@@ -34,7 +38,7 @@
 			</time>
 		</p>
 		{% if location.canshuffle %}
-		<h2><a href="/shuffle?from={{request.path}}">Shuffle</a></h2>
+		<h2><a href="/shuffle?from={{request.path}}">Rest</a></h2>
 		{% endif %}
 	</header>
 	<p class="description">

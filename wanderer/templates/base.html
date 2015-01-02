@@ -72,7 +72,11 @@
 				<div id="deck">
 					{% if numcardsindeck > 0 %}
 						<h2>
-							<a href="/draw?from={{request.path}}">Deck</a>
+							<a href="/draw?from={{request.path}}">Deck ({{numcardsindeck}})</a>
+						</h2>
+					{% else %}
+						<h2>
+							Deck ({{numcardsindeck}})
 						</h2>
 					{% endif %}
 				</div>

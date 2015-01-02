@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cards.models import CardTemplate, StatTemplate, ItemTemplate, BaseCard, Card, PlayerCard, ItemCard, Deck, Effect, HealEffect, EffectLink
+from cards.models import CardTemplate, StatTemplate, ItemTemplate, BaseCard, Card, PlayerCard, ItemCard, Deck, Effect, HealEffect, EffectLink, NPCCard, NPCTemplate
 
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 
@@ -18,11 +18,17 @@ class ItemCardInline(admin.TabularInline):
     # fk_name = 'itemcard'
     readonly_fields = ['basecard_ptr']
 
+class NPCCardInline(admin.TabularInline):
+    model = NPCCard
+    # fk_name = 'itemcard'
+    readonly_fields = ['basecard_ptr']
+
 class DeckAdmin (admin.ModelAdmin):
     inlines = [
         CardInline,
         PlayerCardInline,
         ItemCardInline,
+        NPCCardInline,
     ]
     
 class BaseCardChildAdmin(PolymorphicChildModelAdmin):
@@ -47,6 +53,10 @@ class PlayerCardAdmin(BaseCardChildAdmin):
 class ItemCardAdmin(BaseCardChildAdmin):
     # define custom features here
     pass
+    
+class NPCCardAdmin(BaseCardChildAdmin):
+    # define custom features here
+    pass
 
 class BaseCardParentAdmin(PolymorphicParentModelAdmin):
     """ The parent model admin """
@@ -56,6 +66,7 @@ class BaseCardParentAdmin(PolymorphicParentModelAdmin):
         (Card, CardAdmin),
         (PlayerCard, PlayerCardAdmin),
         (ItemCard, ItemCardAdmin),
+        (NPCCard, NPCCardAdmin),
     )
 
 class EffectLinkInline(admin.TabularInline):
@@ -85,6 +96,10 @@ class StatTemplateAdmin(CardTemplateChildAdmin):
 class ItemTemplateAdmin(CardTemplateChildAdmin):
     # define custom features here
     pass
+    
+class NPCTemplateAdmin(CardTemplateChildAdmin):
+    # define custom features here
+    pass
 
 class CardTemplateParentAdmin(PolymorphicParentModelAdmin):
     """ The parent model admin """
@@ -92,6 +107,7 @@ class CardTemplateParentAdmin(PolymorphicParentModelAdmin):
     child_models = (
         (StatTemplate, StatTemplateAdmin),
         (ItemTemplate, ItemTemplateAdmin),
+        (NPCTemplate, NPCTemplateAdmin),
     )
     
 class EffectChildAdmin(PolymorphicChildModelAdmin):
