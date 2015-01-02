@@ -27,7 +27,7 @@
 		No active scenario here. Go to {{userprofile.active_location}}.
 		{% else %}
 		{% for link in location.npcLinks %}
-			<a href="/npc?id={{link.id}}?from={{request.path}}">{{ link.npc.name }}</a>
+			<a href="/npc/{{link.id}}?from={{request.path}}">{{ link.npc.name }}</a>
 		{% endfor %}
 		{% endif %}
 		<h1> {{location.title}} </h1>

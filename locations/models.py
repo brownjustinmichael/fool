@@ -50,6 +50,15 @@ class Location (models.Model):
             else:
                 self.trigger_event (player, self.deck.drawCard (player), played = False)
                 
+    def playCard (self, player, cardStatus):
+        """
+        Draw a card from the location deck. Check whether this card triggers any events.
+        """
+        if player.activeevent_set.count () > 0:
+            raise RuntimeError ("You can't play from the location deck if there are still active events.")
+        else:
+            self.trigger_event (player, cardStatus, played = False)
+                
     def getNPCLinks (self):
         return self.npclink_set.all ()
         

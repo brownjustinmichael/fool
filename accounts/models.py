@@ -23,7 +23,7 @@ class CardStatus (models.Model):
     A CardStatus object is an instance of a Card object
     """
     card = models.ForeignKey (BaseCard)
-    deck = models.ForeignKey ('DeckStatus', null = True, blank = True)
+    deck = models.ForeignKey ('DeckStatus')
     status = models.CharField (max_length = 7, choices = CARD_STATUSES, default = CARD_IN_STASH)
     position = models.IntegerField ()
     played = models.BooleanField (default = False)
@@ -117,6 +117,15 @@ class DeckStatus (models.Model):
             newpos = 0
         cardstatus = CardStatus (card = card, deck = self, status = status, position = newpos)
         cardstatus.save ()
+        
+    def addCardStatus (self, card, status = CARD_IN_PLAY):
+        if self.getCards (status = status).count () > 0:
+            newpos = self.getCards (status = status).last ().position + 1
+        else:
+            newpos = 0
+        cardstatus = CardStatus (card = card, deck = self, status = status, position = newpos)
+        cardstatus.save ()
+        return cardstatus
         
     def getNumCards (self, status = CARD_IN_DECK):
         """
