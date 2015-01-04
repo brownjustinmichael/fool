@@ -1,3110 +1,2525 @@
 [
 {
-    "model": "contenttypes.contenttype",
+    "pk": 1,
     "fields": {
-        "app_label": "cards",
+        "model": "stattemplate",
         "name": "stat template",
-        "model": "stattemplate"
+        "app_label": "cards"
     },
-    "pk": 1
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 2,
     "fields": {
-        "app_label": "cards",
+        "model": "playercard",
         "name": "player card",
-        "model": "playercard"
+        "app_label": "cards"
     },
-    "pk": 2
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 3,
     "fields": {
-        "app_label": "auth",
+        "model": "permission",
         "name": "permission",
-        "model": "permission"
+        "app_label": "auth"
     },
-    "pk": 3
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 4,
     "fields": {
-        "app_label": "auth",
+        "model": "group",
         "name": "group",
-        "model": "group"
+        "app_label": "auth"
     },
-    "pk": 4
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 5,
     "fields": {
-        "app_label": "auth",
+        "model": "user",
         "name": "user",
-        "model": "user"
+        "app_label": "auth"
     },
-    "pk": 5
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 6,
     "fields": {
-        "app_label": "contenttypes",
+        "model": "contenttype",
         "name": "content type",
-        "model": "contenttype"
+        "app_label": "contenttypes"
     },
-    "pk": 6
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 7,
     "fields": {
-        "app_label": "sessions",
+        "model": "session",
         "name": "session",
-        "model": "session"
+        "app_label": "sessions"
     },
-    "pk": 7
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 8,
     "fields": {
-        "app_label": "admin",
+        "model": "logentry",
         "name": "log entry",
-        "model": "logentry"
+        "app_label": "admin"
     },
-    "pk": 8
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 9,
     "fields": {
-        "app_label": "cards",
+        "model": "cardtemplate",
         "name": "card template",
-        "model": "cardtemplate"
+        "app_label": "cards"
     },
-    "pk": 9
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 10,
     "fields": {
-        "app_label": "cards",
+        "model": "itemtemplate",
         "name": "item template",
-        "model": "itemtemplate"
+        "app_label": "cards"
     },
-    "pk": 10
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 11,
     "fields": {
-        "app_label": "cards",
-        "name": "deck",
-        "model": "deck"
-    },
-    "pk": 11
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "cards",
-        "name": "base card",
-        "model": "basecard"
-    },
-    "pk": 12
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "cards",
-        "name": "card",
-        "model": "card"
-    },
-    "pk": 13
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "cards",
-        "name": "item card",
-        "model": "itemcard"
-    },
-    "pk": 14
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "cards",
-        "name": "effect",
-        "model": "effect"
-    },
-    "pk": 15
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "cards",
-        "name": "heal effect",
-        "model": "healeffect"
-    },
-    "pk": 16
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "cards",
-        "name": "status change effect",
-        "model": "statuschangeeffect"
-    },
-    "pk": 17
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "cards",
-        "name": "effect link",
-        "model": "effectlink"
-    },
-    "pk": 18
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "events",
-        "name": "event",
-        "model": "event"
-    },
-    "pk": 19
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "events",
-        "name": "event trigger",
-        "model": "eventtrigger"
-    },
-    "pk": 20
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "locations",
-        "name": "location",
-        "model": "location"
-    },
-    "pk": 21
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "locations",
-        "name": "global event trigger",
-        "model": "globaleventtrigger"
-    },
-    "pk": 22
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "locations",
-        "name": "location trigger",
-        "model": "locationtrigger"
-    },
-    "pk": 23
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "accounts",
-        "name": "card status",
-        "model": "cardstatus"
-    },
-    "pk": 24
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "accounts",
-        "name": "deck status",
-        "model": "deckstatus"
-    },
-    "pk": 25
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "accounts",
-        "name": "player",
-        "model": "player"
-    },
-    "pk": 26
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "accounts",
-        "name": "log",
-        "model": "log"
-    },
-    "pk": 27
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "accounts",
-        "name": "trigger log",
-        "model": "triggerlog"
-    },
-    "pk": 28
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "accounts",
-        "name": "active event",
-        "model": "activeevent"
-    },
-    "pk": 29
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "npcs",
-        "name": "npc",
-        "model": "npc"
-    },
-    "pk": 30
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "npcs",
-        "name": "npc instance",
-        "model": "npcinstance"
-    },
-    "pk": 31
-},
-{
-    "model": "contenttypes.contenttype",
-    "fields": {
-        "app_label": "cards",
+        "model": "npctemplate",
         "name": "npc template",
-        "model": "npctemplate"
+        "app_label": "cards"
     },
-    "pk": 32
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 12,
     "fields": {
-        "app_label": "cards",
+        "model": "deck",
+        "name": "deck",
+        "app_label": "cards"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 13,
+    "fields": {
+        "model": "basecard",
+        "name": "base card",
+        "app_label": "cards"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 14,
+    "fields": {
+        "model": "card",
+        "name": "card",
+        "app_label": "cards"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 15,
+    "fields": {
+        "model": "itemcard",
+        "name": "item card",
+        "app_label": "cards"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 16,
+    "fields": {
+        "model": "npccard",
         "name": "npc card",
-        "model": "npccard"
+        "app_label": "cards"
     },
-    "pk": 33
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "contenttypes.contenttype",
+    "pk": 17,
     "fields": {
-        "app_label": "npcs",
+        "model": "effect",
+        "name": "effect",
+        "app_label": "cards"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 18,
+    "fields": {
+        "model": "healeffect",
+        "name": "heal effect",
+        "app_label": "cards"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 19,
+    "fields": {
+        "model": "statuschangeeffect",
+        "name": "status change effect",
+        "app_label": "cards"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 20,
+    "fields": {
+        "model": "effectlink",
+        "name": "effect link",
+        "app_label": "cards"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 21,
+    "fields": {
+        "model": "event",
+        "name": "event",
+        "app_label": "events"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 22,
+    "fields": {
+        "model": "eventtrigger",
+        "name": "event trigger",
+        "app_label": "events"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 23,
+    "fields": {
+        "model": "location",
+        "name": "location",
+        "app_label": "locations"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 24,
+    "fields": {
+        "model": "globaleventtrigger",
+        "name": "global event trigger",
+        "app_label": "locations"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 25,
+    "fields": {
+        "model": "locationtrigger",
+        "name": "location trigger",
+        "app_label": "locations"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 26,
+    "fields": {
+        "model": "cardstatus",
+        "name": "card status",
+        "app_label": "accounts"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 27,
+    "fields": {
+        "model": "deckstatus",
+        "name": "deck status",
+        "app_label": "accounts"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 28,
+    "fields": {
+        "model": "player",
+        "name": "player",
+        "app_label": "accounts"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 29,
+    "fields": {
+        "model": "log",
+        "name": "log",
+        "app_label": "accounts"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 30,
+    "fields": {
+        "model": "triggerlog",
+        "name": "trigger log",
+        "app_label": "accounts"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 31,
+    "fields": {
+        "model": "activeevent",
+        "name": "active event",
+        "app_label": "accounts"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 32,
+    "fields": {
+        "model": "npc",
+        "name": "npc",
+        "app_label": "npcs"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 33,
+    "fields": {
+        "model": "npcinstance",
+        "name": "npc instance",
+        "app_label": "npcs"
+    },
+    "model": "contenttypes.contenttype"
+},
+{
+    "pk": 34,
+    "fields": {
+        "model": "npclink",
         "name": "npc link",
-        "model": "npclink"
+        "app_label": "npcs"
     },
-    "pk": 34
+    "model": "contenttypes.contenttype"
 },
 {
-    "model": "sessions.session",
+    "pk": "sn9xkkpy6r668yoh9osjokh0e9ssrc4r",
     "fields": {
-        "expire_date": "2015-01-18T03:45:43.841Z",
-        "session_data": "NzVjYzhhY2ViMjA2MDAwMmZjYWVhYjA0NTRjMTM2ZjQyYzUxNzE3ZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjYyZmRjZDQ2YzNhNTczOWUzMjBkYmM4NjgyOTdmZTlkZjEyNjRjNjMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOjF9"
+        "expire_date": "2015-01-18T04:52:53.470Z",
+        "session_data": "NzI2MDBhNWY1NDczNWY2OGI3MGVlZWY3MWZjYjU1YmUzODcyZDQwMTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiNjJmZGNkNDZjM2E1NzM5ZTMyMGRiYzg2ODI5N2ZlOWRmMTI2NGM2MyIsIl9tZXNzYWdlcyI6IltbXCJfX2pzb25fbWVzc2FnZVwiLDAsMjUsXCJUaGUgbG9jYXRpb24gXFxcIkhvbWVcXFwiIHdhcyBhZGRlZCBzdWNjZXNzZnVsbHkuXCJdLFtcIl9fanNvbl9tZXNzYWdlXCIsMCwyNSxcIlRoZSBsb2NhdGlvbiBcXFwiUHJvc3BlY3QgSGVpZ2h0c1xcXCIgd2FzIGFkZGVkIHN1Y2Nlc3NmdWxseS5cIl0sW1wiX19qc29uX21lc3NhZ2VcIiwwLDI1LFwiVGhlIG5wYyB0ZW1wbGF0ZSBcXFwiSG91c2UgVGVtcGxhdGVcXFwiIHdhcyBhZGRlZCBzdWNjZXNzZnVsbHkuXCJdLFtcIl9fanNvbl9tZXNzYWdlXCIsMCwyNSxcIlRoZSBsb2NhdGlvbiBcXFwiUHJvc3BlY3QgSGVpZ2h0c1xcXCIgd2FzIGNoYW5nZWQgc3VjY2Vzc2Z1bGx5LlwiXSxbXCJfX2pzb25fbWVzc2FnZVwiLDAsMjUsXCJUaGUgZXZlbnQgXFxcIkhPVVNFXFxcIiB3YXMgY2hhbmdlZCBzdWNjZXNzZnVsbHkuXCJdLFtcIl9fanNvbl9tZXNzYWdlXCIsMCwyNSxcIlRoZSBldmVudCBcXFwiTGl2aW5nIFJvb21cXFwiIHdhcyBjaGFuZ2VkIHN1Y2Nlc3NmdWxseS5cIl0sW1wiX19qc29uX21lc3NhZ2VcIiwwLDI1LFwiVGhlIGV2ZW50IFxcXCJSYW5zYWNrZWRcXFwiIHdhcyBjaGFuZ2VkIHN1Y2Nlc3NmdWxseS5cIl0sW1wiX19qc29uX21lc3NhZ2VcIiwwLDI1LFwiVGhlIGV2ZW50IFxcXCJEcmF3ZXJcXFwiIHdhcyBjaGFuZ2VkIHN1Y2Nlc3NmdWxseS5cIl0sW1wiX19qc29uX21lc3NhZ2VcIiwwLDI1LFwiVGhlIGxvY2F0aW9uIFxcXCJQcm9zcGVjdCBIZWlnaHRzXFxcIiB3YXMgY2hhbmdlZCBzdWNjZXNzZnVsbHkuXCJdXSIsIl9hdXRoX3VzZXJfaWQiOjF9"
     },
-    "pk": "a1lx4g3s3jdsfqqlny7h28a69iqecp7l"
+    "model": "sessions.session"
 },
 {
-    "model": "sessions.session",
+    "pk": 1,
     "fields": {
-        "expire_date": "2015-01-18T02:25:05.747Z",
-        "session_data": "ZGRlMmRmYzA2MTNiZTAyNjNlOTQ3ZDM2OWFhYjM2NGI1ZmQyZTZkYzp7Il9hdXRoX3VzZXJfaGFzaCI6IjYyZmRjZDQ2YzNhNTczOWUzMjBkYmM4NjgyOTdmZTlkZjEyNjRjNjMiLCJfYXV0aF91c2VyX2lkIjoxLCJfbWVzc2FnZXMiOiJbW1wiX19qc29uX21lc3NhZ2VcIiwwLDI1LFwiVGhlIGRlY2sgc3RhdHVzIFxcXCJqdXN0aW5icm93bidzIERlY2sgdmlld2VkIGJ5IGp1c3RpbmJyb3duXFxcIiB3YXMgY2hhbmdlZCBzdWNjZXNzZnVsbHkuXCJdLFtcIl9fanNvbl9tZXNzYWdlXCIsMCwyNSxcIlRoZSBwbGF5ZXIgXFxcImp1c3RpbmJyb3duJ3MgUHJvZmlsZVxcXCIgd2FzIGNoYW5nZWQgc3VjY2Vzc2Z1bGx5LlwiXSxbXCJfX2pzb25fbWVzc2FnZVwiLDAsMjUsXCJUaGUgbnBjIHRlbXBsYXRlIFxcXCJIb3VzZSBUZW1wbGF0ZVxcXCIgd2FzIGFkZGVkIHN1Y2Nlc3NmdWxseS5cIl0sW1wiX19qc29uX21lc3NhZ2VcIiwwLDI1LFwiVGhlIGxvY2F0aW9uIFxcXCJQcm9zcGVjdCBIZWlnaHRzXFxcIiB3YXMgY2hhbmdlZCBzdWNjZXNzZnVsbHkuXCJdLFtcIl9fanNvbl9tZXNzYWdlXCIsMCwyNSxcIlRoZSBsb2NhdGlvbiBcXFwiUHJvc3BlY3QgSGVpZ2h0c1xcXCIgd2FzIGNoYW5nZWQgc3VjY2Vzc2Z1bGx5LlwiXSxbXCJfX2pzb25fbWVzc2FnZVwiLDAsMjUsXCJUaGUgcGxheWVyIFxcXCJqdXN0aW5icm93bidzIFByb2ZpbGVcXFwiIHdhcyBjaGFuZ2VkIHN1Y2Nlc3NmdWxseS5cIl0sW1wiX19qc29uX21lc3NhZ2VcIiwwLDI1LFwiU3VjY2Vzc2Z1bGx5IGRlbGV0ZWQgMiBEZWNrIHN0YXR1c2VzLlwiXSxbXCJfX2pzb25fbWVzc2FnZVwiLDAsMjUsXCJUaGUgcGxheWVyIFxcXCJqdXN0aW5icm93bidzIFByb2ZpbGVcXFwiIHdhcyBjaGFuZ2VkIHN1Y2Nlc3NmdWxseS5cIl0sW1wiX19qc29uX21lc3NhZ2VcIiwwLDI1LFwiVGhlIGRlY2sgc3RhdHVzIFxcXCJqdXN0aW5icm93bidzIERlY2sgdmlld2VkIGJ5IGp1c3RpbmJyb3duXFxcIiB3YXMgY2hhbmdlZCBzdWNjZXNzZnVsbHkuXCJdLFtcIl9fanNvbl9tZXNzYWdlXCIsMCwyNSxcIlRoZSBwbGF5ZXIgXFxcImp1c3RpbmJyb3duJ3MgUHJvZmlsZVxcXCIgd2FzIGNoYW5nZWQgc3VjY2Vzc2Z1bGx5LlwiXSxbXCJfX2pzb25fbWVzc2FnZVwiLDAsMjUsXCJUaGUgcGxheWVyIFxcXCJqdXN0aW5icm93bidzIFByb2ZpbGVcXFwiIHdhcyBjaGFuZ2VkIHN1Y2Nlc3NmdWxseS5cIl0sW1wiX19qc29uX21lc3NhZ2VcIiwwLDI1LFwiVGhlIGV2ZW50IFxcXCJIb3VzZVxcXCIgd2FzIGNoYW5nZWQgc3VjY2Vzc2Z1bGx5LlwiXSxbXCJfX2pzb25fbWVzc2FnZVwiLDAsMjUsXCJUaGUgcGxheWVyIFxcXCJqdXN0aW5icm93bidzIFByb2ZpbGVcXFwiIHdhcyBjaGFuZ2VkIHN1Y2Nlc3NmdWxseS5cIl1dIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQifQ=="
-    },
-    "pk": "euegt4ky6ougk2l6aovkoewf8rj1l9tv"
-},
-{
-    "model": "cards.cardtemplate",
-    "fields": {
-        "polymorphic_ctype": 1,
         "requiresTarget": false,
+        "polymorphic_ctype": 1,
         "name": "Force"
     },
-    "pk": 1
+    "model": "cards.cardtemplate"
 },
 {
-    "model": "cards.cardtemplate",
+    "pk": 2,
     "fields": {
-        "polymorphic_ctype": 1,
         "requiresTarget": false,
+        "polymorphic_ctype": 1,
         "name": "Dash"
     },
-    "pk": 2
+    "model": "cards.cardtemplate"
 },
 {
-    "model": "cards.cardtemplate",
+    "pk": 3,
     "fields": {
-        "polymorphic_ctype": 1,
         "requiresTarget": false,
+        "polymorphic_ctype": 1,
         "name": "Resist"
     },
-    "pk": 3
+    "model": "cards.cardtemplate"
 },
 {
-    "model": "cards.cardtemplate",
+    "pk": 4,
     "fields": {
-        "polymorphic_ctype": 1,
         "requiresTarget": false,
+        "polymorphic_ctype": 1,
         "name": "Charm"
     },
-    "pk": 4
+    "model": "cards.cardtemplate"
 },
 {
-    "model": "cards.cardtemplate",
+    "pk": 5,
     "fields": {
-        "polymorphic_ctype": 1,
         "requiresTarget": false,
+        "polymorphic_ctype": 1,
         "name": "Wisdom"
     },
-    "pk": 5
+    "model": "cards.cardtemplate"
 },
 {
-    "model": "cards.cardtemplate",
+    "pk": 6,
     "fields": {
-        "polymorphic_ctype": 1,
         "requiresTarget": false,
+        "polymorphic_ctype": 1,
         "name": "Power"
     },
-    "pk": 6
+    "model": "cards.cardtemplate"
 },
 {
-    "model": "cards.cardtemplate",
+    "pk": 7,
     "fields": {
-        "polymorphic_ctype": 32,
         "requiresTarget": false,
+        "polymorphic_ctype": 11,
         "name": "House"
     },
-    "pk": 7
+    "model": "cards.cardtemplate"
 },
 {
-    "model": "cards.stattemplate",
+    "pk": 1,
     "fields": {
         "statistic": "force"
     },
-    "pk": 1
+    "model": "cards.stattemplate"
 },
 {
-    "model": "cards.stattemplate",
+    "pk": 2,
     "fields": {
         "statistic": "dash"
     },
-    "pk": 2
+    "model": "cards.stattemplate"
 },
 {
-    "model": "cards.stattemplate",
+    "pk": 3,
     "fields": {
         "statistic": "resist"
     },
-    "pk": 3
+    "model": "cards.stattemplate"
 },
 {
-    "model": "cards.stattemplate",
+    "pk": 4,
     "fields": {
         "statistic": "charm"
     },
-    "pk": 4
+    "model": "cards.stattemplate"
 },
 {
-    "model": "cards.stattemplate",
+    "pk": 5,
     "fields": {
         "statistic": "wisdom"
     },
-    "pk": 5
+    "model": "cards.stattemplate"
 },
 {
-    "model": "cards.stattemplate",
+    "pk": 6,
     "fields": {
         "statistic": "power"
     },
-    "pk": 6
+    "model": "cards.stattemplate"
 },
 {
-    "model": "cards.npctemplate",
+    "pk": 7,
     "fields": {
         "npc": 1
     },
-    "pk": 7
+    "model": "cards.npctemplate"
 },
 {
-    "model": "cards.deck",
+    "pk": 1,
     "fields": {},
-    "pk": 1
+    "model": "cards.deck"
 },
 {
-    "model": "cards.deck",
+    "pk": 2,
     "fields": {},
-    "pk": 2
+    "model": "cards.deck"
 },
 {
-    "model": "cards.deck",
+    "pk": 3,
     "fields": {},
-    "pk": 3
+    "model": "cards.deck"
 },
 {
-    "model": "cards.deck",
+    "pk": 4,
     "fields": {},
-    "pk": 4
+    "model": "cards.deck"
 },
 {
-    "model": "cards.deck",
-    "fields": {},
-    "pk": 5
-},
-{
-    "model": "cards.basecard",
+    "pk": 1,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 1
+        "deck": 1,
+        "modifier": 1
     },
-    "pk": 1
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 2,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 2,
         "description": null,
-        "deck": 1
+        "deck": 1,
+        "modifier": 2
     },
-    "pk": 2
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 3,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 3,
         "description": null,
-        "deck": 1
+        "deck": 1,
+        "modifier": 3
     },
-    "pk": 3
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 4,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 1
+        "deck": 1,
+        "modifier": 1
     },
-    "pk": 4
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 5,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 2,
         "description": null,
-        "deck": 1
+        "deck": 1,
+        "modifier": 2
     },
-    "pk": 5
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 6,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 1
+        "deck": 1,
+        "modifier": 1
     },
-    "pk": 6
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 7,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 2,
         "description": null,
-        "deck": 1
+        "deck": 1,
+        "modifier": 2
     },
-    "pk": 7
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 8,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 1
+        "deck": 1,
+        "modifier": 1
     },
-    "pk": 8
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 9,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 2
+        "deck": 2,
+        "modifier": 1
     },
-    "pk": 9
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 10,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 2,
         "description": null,
-        "deck": 2
+        "deck": 2,
+        "modifier": 2
     },
-    "pk": 10
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 11,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 3,
         "description": null,
-        "deck": 2
+        "deck": 2,
+        "modifier": 3
     },
-    "pk": 11
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 12,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 2
+        "deck": 2,
+        "modifier": 1
     },
-    "pk": 12
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 13,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 2,
         "description": null,
-        "deck": 2
+        "deck": 2,
+        "modifier": 2
     },
-    "pk": 13
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 14,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 2
+        "deck": 2,
+        "modifier": 1
     },
-    "pk": 14
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 15,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 2,
         "description": null,
-        "deck": 2
+        "deck": 2,
+        "modifier": 2
     },
-    "pk": 15
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 16,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 2
+        "deck": 2,
+        "modifier": 1
     },
-    "pk": 16
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 17,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 3
+        "deck": 3,
+        "modifier": 1
     },
-    "pk": 17
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 18,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 2,
         "description": null,
-        "deck": 3
+        "deck": 3,
+        "modifier": 2
     },
-    "pk": 18
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 19,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 3,
         "description": null,
-        "deck": 3
+        "deck": 3,
+        "modifier": 3
     },
-    "pk": 19
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 20,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 3
+        "deck": 3,
+        "modifier": 1
     },
-    "pk": 20
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 21,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 2,
         "description": null,
-        "deck": 3
+        "deck": 3,
+        "modifier": 2
     },
-    "pk": 21
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 22,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 3
+        "deck": 3,
+        "modifier": 1
     },
-    "pk": 22
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 23,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 2,
         "description": null,
-        "deck": 3
+        "deck": 3,
+        "modifier": 2
     },
-    "pk": 23
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 24,
     "fields": {
         "polymorphic_ctype": 2,
-        "modifier": 1,
         "description": null,
-        "deck": 3
+        "deck": 3,
+        "modifier": 1
     },
-    "pk": 24
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
+    "pk": 25,
     "fields": {
-        "polymorphic_ctype": 33,
-        "modifier": 0,
+        "polymorphic_ctype": 14,
         "description": "",
-        "deck": null
+        "deck": 4,
+        "modifier": 0
     },
-    "pk": 25
+    "model": "cards.basecard"
 },
 {
-    "model": "cards.basecard",
-    "fields": {
-        "polymorphic_ctype": 33,
-        "modifier": 0,
-        "description": "",
-        "deck": 4
-    },
-    "pk": 26
-},
-{
-    "model": "cards.basecard",
-    "fields": {
-        "polymorphic_ctype": 13,
-        "modifier": 1,
-        "description": "",
-        "deck": 5
-    },
-    "pk": 27
-},
-{
-    "model": "cards.card",
+    "pk": 25,
     "fields": {
         "template": 7
     },
-    "pk": 27
+    "model": "cards.card"
 },
 {
-    "model": "cards.playercard",
+    "pk": 1,
     "fields": {
-        "template": 1,
-        "experience": 2
+        "experience": 0,
+        "template": 1
     },
-    "pk": 1
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 2,
     "fields": {
-        "template": 1,
-        "experience": 6
+        "experience": 0,
+        "template": 1
     },
-    "pk": 2
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 3,
     "fields": {
-        "template": 1,
-        "experience": 3
+        "experience": 0,
+        "template": 1
     },
-    "pk": 3
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 4,
     "fields": {
-        "template": 2,
-        "experience": 1
+        "experience": 0,
+        "template": 2
     },
-    "pk": 4
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 5,
     "fields": {
-        "template": 2,
-        "experience": 1
+        "experience": 0,
+        "template": 2
     },
-    "pk": 5
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 6,
     "fields": {
-        "template": 3,
-        "experience": 3
+        "experience": 0,
+        "template": 3
     },
-    "pk": 6
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 7,
     "fields": {
-        "template": 3,
-        "experience": 2
+        "experience": 0,
+        "template": 3
     },
-    "pk": 7
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 8,
     "fields": {
-        "template": 4,
-        "experience": 3
+        "experience": 0,
+        "template": 4
     },
-    "pk": 8
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 9,
     "fields": {
-        "template": 1,
-        "experience": 0
+        "experience": 0,
+        "template": 1
     },
-    "pk": 9
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 10,
     "fields": {
-        "template": 1,
-        "experience": 0
+        "experience": 0,
+        "template": 1
     },
-    "pk": 10
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 11,
     "fields": {
-        "template": 1,
-        "experience": 0
+        "experience": 0,
+        "template": 1
     },
-    "pk": 11
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 12,
     "fields": {
-        "template": 2,
-        "experience": 0
+        "experience": 0,
+        "template": 2
     },
-    "pk": 12
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 13,
     "fields": {
-        "template": 2,
-        "experience": 0
+        "experience": 0,
+        "template": 2
     },
-    "pk": 13
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 14,
     "fields": {
-        "template": 3,
-        "experience": 0
+        "experience": 0,
+        "template": 3
     },
-    "pk": 14
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 15,
     "fields": {
-        "template": 3,
-        "experience": 0
+        "experience": 0,
+        "template": 3
     },
-    "pk": 15
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 16,
     "fields": {
-        "template": 4,
-        "experience": 0
+        "experience": 0,
+        "template": 4
     },
-    "pk": 16
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 17,
     "fields": {
-        "template": 1,
-        "experience": 0
+        "experience": 0,
+        "template": 1
     },
-    "pk": 17
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 18,
     "fields": {
-        "template": 1,
-        "experience": 0
+        "experience": 0,
+        "template": 1
     },
-    "pk": 18
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 19,
     "fields": {
-        "template": 1,
-        "experience": 0
+        "experience": 0,
+        "template": 1
     },
-    "pk": 19
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 20,
     "fields": {
-        "template": 2,
-        "experience": 0
+        "experience": 0,
+        "template": 2
     },
-    "pk": 20
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 21,
     "fields": {
-        "template": 2,
-        "experience": 0
+        "experience": 0,
+        "template": 2
     },
-    "pk": 21
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 22,
     "fields": {
-        "template": 3,
-        "experience": 0
+        "experience": 0,
+        "template": 3
     },
-    "pk": 22
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 23,
     "fields": {
-        "template": 3,
-        "experience": 0
+        "experience": 0,
+        "template": 3
     },
-    "pk": 23
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.playercard",
+    "pk": 24,
     "fields": {
-        "template": 4,
-        "experience": 0
+        "experience": 0,
+        "template": 4
     },
-    "pk": 24
+    "model": "cards.playercard"
 },
 {
-    "model": "cards.npccard",
+    "pk": 1,
     "fields": {
-        "template": 7
-    },
-    "pk": 25
-},
-{
-    "model": "cards.npccard",
-    "fields": {
-        "template": 7
-    },
-    "pk": 26
-},
-{
-    "model": "events.event",
-    "fields": {
-        "deck": 5,
-        "content": "The police chief's house looks a bit small, but not uncomfortable.",
-        "title": "House",
-        "description": "The chief's house",
-        "created": "2015-01-01T20:40:04.174Z",
+        "published": true,
+        "auto": false,
+        "created": "2015-01-04T04:46:06.349Z",
+        "generic_result": null,
+        "content": "House content",
+        "title": "HOUSE",
+        "description": "GET INTO THE HOUSE",
+        "deck": null,
         "slug": "house",
-        "published": true,
-        "npc": 1,
-        "generic_result": null,
-        "auto": false
+        "npc": 1
     },
-    "pk": 1
+    "model": "events.event"
 },
 {
-    "model": "events.event",
+    "pk": 2,
     "fields": {
-        "deck": null,
-        "content": "It's a bit dark, but you might be able to find something incriminating in here.",
+        "published": true,
+        "auto": false,
+        "created": "2015-01-04T04:47:53.959Z",
+        "generic_result": null,
+        "content": "You're in the living room",
         "title": "Living Room",
-        "description": "The chief's living room",
-        "created": "2015-01-01T20:42:08.392Z",
+        "description": "Living Room",
+        "deck": null,
         "slug": "living_room",
-        "published": true,
-        "npc": 2,
-        "generic_result": null,
-        "auto": false
+        "npc": 2
     },
-    "pk": 2
+    "model": "events.event"
 },
 {
-    "model": "events.event",
+    "pk": 3,
     "fields": {
-        "deck": null,
-        "content": "Inside the once-locked drawer, you find a letter. The author was clearly quite discreet, and you can only make out a set of initials.",
-        "title": "Inside the Drawer",
-        "description": "There's something inside the drawer",
-        "created": "2015-01-01T20:52:08.300Z",
-        "slug": "inside_the_drawer",
         "published": true,
-        "npc": null,
+        "auto": true,
+        "created": "2015-01-04T04:49:17.022Z",
         "generic_result": null,
-        "auto": true
+        "content": "There's a locket in the drawer",
+        "title": "Drawer",
+        "description": "Drawer",
+        "deck": null,
+        "slug": "drawer",
+        "npc": null
     },
-    "pk": 3
+    "model": "events.event"
 },
 {
-    "model": "events.event",
+    "pk": 4,
     "fields": {
-        "deck": null,
-        "content": "You destroyed the place, but you find an engraved pocket watch in the process.",
+        "published": true,
+        "auto": true,
+        "created": "2015-01-04T04:50:11.052Z",
+        "generic_result": null,
+        "content": "You ransacked the place. After much effort, you find a few stray notes.",
         "title": "Ransacked",
-        "description": "A living room in shambles",
-        "created": "2015-01-01T20:54:11.050Z",
+        "description": "Ransacked",
+        "deck": null,
         "slug": "ransacked",
-        "published": true,
-        "npc": 2,
-        "generic_result": null,
-        "auto": false
+        "npc": null
     },
-    "pk": 4
+    "model": "events.event"
 },
 {
-    "model": "events.eventtrigger",
+    "pk": 1,
     "fields": {
-        "content": "You were able to pick the lock.",
+        "resolved": true,
+        "failed_content": "You failed to break in.",
+        "template": 1,
+        "onlyWhenNotPlayed": false,
         "originalEvent": 1,
-        "resolved": true,
-        "template": 2,
-        "failed_content": "Your lock pick breaks.",
+        "content": "You break into the living room",
         "event": 2,
-        "threshold": 0,
-        "onlyWhenNotPlayed": false
+        "threshold": 0
     },
-    "pk": 1
+    "model": "events.eventtrigger"
 },
 {
-    "model": "events.eventtrigger",
+    "pk": 2,
     "fields": {
-        "content": "You break the drawer.",
-        "originalEvent": 2,
-        "resolved": false,
-        "template": 1,
-        "failed_content": "",
-        "event": 3,
-        "threshold": 2,
-        "onlyWhenNotPlayed": false
-    },
-    "pk": 2
-},
-{
-    "model": "events.eventtrigger",
-    "fields": {
-        "content": "You pick the lock on the drawer.",
-        "originalEvent": 2,
-        "resolved": false,
-        "template": 2,
-        "failed_content": "",
-        "event": 3,
-        "threshold": 2,
-        "onlyWhenNotPlayed": false
-    },
-    "pk": 3
-},
-{
-    "model": "events.eventtrigger",
-    "fields": {
-        "content": "",
-        "originalEvent": 2,
         "resolved": true,
-        "template": 1,
-        "failed_content": "",
-        "event": 4,
-        "threshold": 0,
-        "onlyWhenNotPlayed": false
+        "failed_content": "The lock pick breaks.",
+        "template": 2,
+        "onlyWhenNotPlayed": false,
+        "originalEvent": 1,
+        "content": "You pick the lock.",
+        "event": 2,
+        "threshold": 0
     },
-    "pk": 4
+    "model": "events.eventtrigger"
 },
 {
-    "model": "locations.location",
+    "pk": 3,
     "fields": {
+        "resolved": true,
+        "failed_content": "Nothing of interest.",
+        "template": 2,
+        "onlyWhenNotPlayed": false,
+        "originalEvent": 2,
+        "content": "Sneaking around, you quietly find a locked drawer that you pick open.",
+        "event": 3,
+        "threshold": 0
+    },
+    "model": "events.eventtrigger"
+},
+{
+    "pk": 4,
+    "fields": {
+        "resolved": true,
+        "failed_content": "In a fit of rage, you punch a wall, but nothing happens.",
+        "template": 1,
+        "onlyWhenNotPlayed": false,
+        "originalEvent": 2,
+        "content": "You ransack the place.",
+        "event": 4,
+        "threshold": 0
+    },
+    "model": "events.eventtrigger"
+},
+{
+    "pk": 1,
+    "fields": {
+        "description": "Where the heart is",
+        "canshuffle": true,
         "title": "Home",
         "published": true,
-        "created": "2015-01-01T20:30:01.391Z",
-        "slug": "home",
-        "description": "It's not much, but it's home.",
-        "canshuffle": true,
-        "deck": null
+        "created": "2015-01-04T04:43:38.614Z",
+        "deck": null,
+        "slug": "home"
     },
-    "pk": 1
+    "model": "locations.location"
 },
 {
-    "model": "locations.location",
+    "pk": 2,
     "fields": {
+        "description": "A diverse area on the border of Prospect Park",
+        "canshuffle": false,
         "title": "Prospect Heights",
         "published": true,
-        "created": "2015-01-01T22:12:42.926Z",
-        "slug": "prospect_heights",
-        "description": "A diverse area bordering Prospect Park",
-        "canshuffle": false,
-        "deck": 4
-    },
-    "pk": 2
-},
-{
-    "model": "locations.locationtrigger",
-    "fields": {
-        "content": "You approach the Police Chief's house.",
-        "location": 2,
-        "template": 7,
-        "event": 1,
-        "threshold": 0,
-        "onlyWhenNotPlayed": false
-    },
-    "pk": 1
-},
-{
-    "model": "accounts.cardstatus",
-    "fields": {
-        "position": 3,
-        "played": true,
-        "deck": 18,
-        "card": 1,
-        "status": "discard",
-        "targetDeck": 18
-    },
-    "pk": 84
-},
-{
-    "model": "accounts.cardstatus",
-    "fields": {
-        "position": 0,
-        "played": true,
-        "deck": 18,
-        "card": 2,
-        "status": "discard",
-        "targetDeck": 18
-    },
-    "pk": 85
-},
-{
-    "model": "accounts.cardstatus",
-    "fields": {
-        "position": 1,
-        "played": true,
-        "deck": 18,
-        "card": 3,
-        "status": "discard",
-        "targetDeck": 18
-    },
-    "pk": 86
-},
-{
-    "model": "accounts.cardstatus",
-    "fields": {
-        "position": 5,
-        "played": true,
-        "deck": 18,
-        "card": 4,
-        "status": "discard",
-        "targetDeck": 18
-    },
-    "pk": 87
-},
-{
-    "model": "accounts.cardstatus",
-    "fields": {
-        "position": 2,
-        "played": true,
-        "deck": 18,
-        "card": 5,
-        "status": "discard",
-        "targetDeck": 18
-    },
-    "pk": 88
-},
-{
-    "model": "accounts.cardstatus",
-    "fields": {
-        "position": 7,
-        "played": false,
-        "deck": 18,
-        "card": 6,
-        "status": "deck",
-        "targetDeck": null
-    },
-    "pk": 89
-},
-{
-    "model": "accounts.cardstatus",
-    "fields": {
-        "position": 4,
-        "played": true,
-        "deck": 18,
-        "card": 7,
-        "status": "discard",
-        "targetDeck": 18
-    },
-    "pk": 90
-},
-{
-    "model": "accounts.cardstatus",
-    "fields": {
-        "position": 6,
-        "played": false,
-        "deck": 18,
-        "card": 8,
-        "status": "discard",
-        "targetDeck": null
-    },
-    "pk": 91
-},
-{
-    "model": "accounts.cardstatus",
-    "fields": {
-        "position": 0,
-        "played": false,
-        "deck": 17,
-        "card": 26,
-        "status": "play",
-        "targetDeck": 17
-    },
-    "pk": 92
-},
-{
-    "model": "accounts.cardstatus",
-    "fields": {
-        "position": 0,
-        "played": false,
-        "deck": 19,
-        "card": 27,
-        "status": "hand",
-        "targetDeck": null
-    },
-    "pk": 93
-},
-{
-    "model": "accounts.deckstatus",
-    "fields": {
-        "location": 2,
+        "created": "2015-01-04T04:44:39.472Z",
         "deck": 4,
-        "initialized": true,
-        "player": 1
+        "slug": "prospect_heights"
     },
-    "pk": 17
+    "model": "locations.location"
 },
 {
-    "model": "accounts.deckstatus",
+    "pk": 1,
     "fields": {
-        "location": null,
+        "template": 7,
+        "location": 2,
+        "onlyWhenNotPlayed": false,
+        "content": "Not shown",
+        "event": 1,
+        "threshold": 0
+    },
+    "model": "locations.locationtrigger"
+},
+{
+    "pk": 17,
+    "fields": {
+        "targetDeck": null,
+        "status": "deck",
+        "played": false,
+        "deck": 3,
+        "position": 7,
+        "card": 1
+    },
+    "model": "accounts.cardstatus"
+},
+{
+    "pk": 18,
+    "fields": {
+        "targetDeck": 3,
+        "status": "play",
+        "played": true,
+        "deck": 3,
+        "position": 0,
+        "card": 2
+    },
+    "model": "accounts.cardstatus"
+},
+{
+    "pk": 19,
+    "fields": {
+        "targetDeck": null,
+        "status": "deck",
+        "played": false,
+        "deck": 3,
+        "position": 6,
+        "card": 3
+    },
+    "model": "accounts.cardstatus"
+},
+{
+    "pk": 20,
+    "fields": {
+        "targetDeck": null,
+        "status": "deck",
+        "played": false,
+        "deck": 3,
+        "position": 5,
+        "card": 4
+    },
+    "model": "accounts.cardstatus"
+},
+{
+    "pk": 21,
+    "fields": {
+        "targetDeck": null,
+        "status": "deck",
+        "played": false,
+        "deck": 3,
+        "position": 2,
+        "card": 5
+    },
+    "model": "accounts.cardstatus"
+},
+{
+    "pk": 22,
+    "fields": {
+        "targetDeck": null,
+        "status": "deck",
+        "played": false,
+        "deck": 3,
+        "position": 4,
+        "card": 6
+    },
+    "model": "accounts.cardstatus"
+},
+{
+    "pk": 23,
+    "fields": {
+        "targetDeck": null,
+        "status": "hand",
+        "played": false,
+        "deck": 3,
+        "position": 1,
+        "card": 7
+    },
+    "model": "accounts.cardstatus"
+},
+{
+    "pk": 24,
+    "fields": {
+        "targetDeck": null,
+        "status": "deck",
+        "played": false,
+        "deck": 3,
+        "position": 3,
+        "card": 8
+    },
+    "model": "accounts.cardstatus"
+},
+{
+    "pk": 25,
+    "fields": {
+        "targetDeck": 4,
+        "status": "play",
+        "played": false,
+        "deck": 4,
+        "position": 0,
+        "card": 25
+    },
+    "model": "accounts.cardstatus"
+},
+{
+    "pk": 3,
+    "fields": {
         "deck": 1,
+        "player": 1,
         "initialized": true,
-        "player": 1
+        "location": null
     },
-    "pk": 18
+    "model": "accounts.deckstatus"
 },
 {
-    "model": "accounts.deckstatus",
+    "pk": 4,
     "fields": {
-        "location": null,
-        "deck": 5,
+        "deck": 4,
+        "player": 1,
         "initialized": true,
-        "player": 1
-    },
-    "pk": 19
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 27,
-        "logged": "2015-01-01T22:13:03.584Z",
-        "location": 2,
-        "event": 1,
-        "user": 1
-    },
-    "pk": 1
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 28,
-        "logged": "2015-01-01T22:27:26.591Z",
-        "location": 2,
-        "event": null,
-        "user": 1
-    },
-    "pk": 2
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 28,
-        "logged": "2015-01-01T22:30:35.880Z",
-        "location": 2,
-        "event": null,
-        "user": 1
-    },
-    "pk": 3
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 28,
-        "logged": "2015-01-01T22:39:24.139Z",
-        "location": 2,
-        "event": null,
-        "user": 1
-    },
-    "pk": 4
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 28,
-        "logged": "2015-01-01T22:40:15.544Z",
-        "location": 2,
-        "event": null,
-        "user": 1
-    },
-    "pk": 5
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 28,
-        "logged": "2015-01-01T22:42:16.801Z",
-        "location": 2,
-        "event": null,
-        "user": 1
-    },
-    "pk": 6
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 27,
-        "logged": "2015-01-01T22:42:16.804Z",
-        "location": 2,
-        "event": 2,
-        "user": 1
-    },
-    "pk": 7
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 28,
-        "logged": "2015-01-01T22:43:56.387Z",
-        "location": 2,
-        "event": null,
-        "user": 1
-    },
-    "pk": 8
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 27,
-        "logged": "2015-01-01T22:43:56.390Z",
-        "location": 2,
-        "event": 4,
-        "user": 1
-    },
-    "pk": 9
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 27,
-        "logged": "2015-01-02T02:31:36.735Z",
-        "location": 2,
-        "event": 1,
-        "user": 1
-    },
-    "pk": 10
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 27,
-        "logged": "2015-01-02T03:38:58.324Z",
-        "location": 2,
-        "event": 1,
-        "user": 1
-    },
-    "pk": 11
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 27,
-        "logged": "2015-01-02T04:32:37.466Z",
-        "location": 2,
-        "event": 1,
-        "user": 1
-    },
-    "pk": 12
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 27,
-        "logged": "2015-01-02T04:52:03.379Z",
-        "location": 2,
-        "event": 1,
-        "user": 1
-    },
-    "pk": 13
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 27,
-        "logged": "2015-01-02T05:21:59.427Z",
-        "location": 2,
-        "event": 1,
-        "user": 1
-    },
-    "pk": 14
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 27,
-        "logged": "2015-01-02T05:27:01.892Z",
-        "location": 2,
-        "event": 1,
-        "user": 1
-    },
-    "pk": 15
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 28,
-        "logged": "2015-01-02T05:27:22.592Z",
-        "location": 2,
-        "event": null,
-        "user": 1
-    },
-    "pk": 16
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 27,
-        "logged": "2015-01-02T05:27:22.595Z",
-        "location": 2,
-        "event": 2,
-        "user": 1
-    },
-    "pk": 17
-},
-{
-    "model": "accounts.log",
-    "fields": {
-        "polymorphic_ctype": 28,
-        "logged": "2015-01-02T05:27:35.587Z",
-        "location": 2,
-        "event": null,
-        "user": 1
-    },
-    "pk": 18
-},
-{
-    "model": "accounts.triggerlog",
-    "fields": {
-        "success": false,
-        "trigger": 1
-    },
-    "pk": 2
-},
-{
-    "model": "accounts.triggerlog",
-    "fields": {
-        "success": false,
-        "trigger": 1
-    },
-    "pk": 3
-},
-{
-    "model": "accounts.triggerlog",
-    "fields": {
-        "success": false,
-        "trigger": 1
-    },
-    "pk": 4
-},
-{
-    "model": "accounts.triggerlog",
-    "fields": {
-        "success": false,
-        "trigger": 1
-    },
-    "pk": 5
-},
-{
-    "model": "accounts.triggerlog",
-    "fields": {
-        "success": true,
-        "trigger": 1
-    },
-    "pk": 6
-},
-{
-    "model": "accounts.triggerlog",
-    "fields": {
-        "success": true,
-        "trigger": 4
-    },
-    "pk": 8
-},
-{
-    "model": "accounts.triggerlog",
-    "fields": {
-        "success": true,
-        "trigger": 1
-    },
-    "pk": 16
-},
-{
-    "model": "accounts.triggerlog",
-    "fields": {
-        "success": false,
-        "trigger": 3
-    },
-    "pk": 18
-},
-{
-    "model": "accounts.activeevent",
-    "fields": {
-        "location": 2,
-        "stackOrder": 0,
-        "resolved": false,
-        "failed": false,
-        "event": 1,
-        "cardStatus": 92,
-        "player": 1
-    },
-    "pk": 6
-},
-{
-    "model": "npcs.npc",
-    "fields": {
-        "charm": -1,
-        "wisdom": -1,
-        "genericEvent": null,
-        "dash": 0,
-        "slug": "",
-        "power": 0,
-        "resist": 4,
-        "force": 2,
-        "life": 2,
-        "name": "Chief's House"
-    },
-    "pk": 1
-},
-{
-    "model": "npcs.npc",
-    "fields": {
-        "charm": 0,
-        "wisdom": 0,
-        "genericEvent": null,
-        "dash": 0,
-        "slug": null,
-        "power": 0,
-        "resist": 2,
-        "force": 4,
-        "life": 6,
-        "name": "Chief's Living Room"
-    },
-    "pk": 2
-},
-{
-    "model": "npcs.npcinstance",
-    "fields": {
-        "npc": 1,
-        "life": -5,
-        "player": 1
-    },
-    "pk": 7
-},
-{
-    "model": "npcs.npcinstance",
-    "fields": {
-        "npc": 2,
-        "life": -2,
-        "player": 1
-    },
-    "pk": 8
-},
-{
-    "model": "npcs.npclink",
-    "fields": {
-        "card": 25,
-        "npc": 1,
         "location": 2
     },
-    "pk": 1
+    "model": "accounts.deckstatus"
 },
 {
-    "model": "auth.permission",
+    "pk": 1,
     "fields": {
-        "content_type": 3,
+        "polymorphic_ctype": 29,
+        "event": 1,
+        "logged": "2015-01-04T04:53:00.410Z",
+        "location": 2,
+        "user": 1
+    },
+    "model": "accounts.log"
+},
+{
+    "pk": 2,
+    "fields": {
+        "polymorphic_ctype": 30,
+        "event": null,
+        "logged": "2015-01-04T04:53:06.026Z",
+        "location": 2,
+        "user": 1
+    },
+    "model": "accounts.log"
+},
+{
+    "pk": 3,
+    "fields": {
+        "polymorphic_ctype": 29,
+        "event": 2,
+        "logged": "2015-01-04T04:53:06.029Z",
+        "location": 2,
+        "user": 1
+    },
+    "model": "accounts.log"
+},
+{
+    "pk": 2,
+    "fields": {
+        "success": true,
+        "trigger": 1
+    },
+    "model": "accounts.triggerlog"
+},
+{
+    "pk": 1,
+    "fields": {
+        "stackOrder": 0,
+        "resolved": true,
+        "failed": false,
+        "location": 2,
+        "event": 1,
+        "player": 1,
+        "cardStatus": 25
+    },
+    "model": "accounts.activeevent"
+},
+{
+    "pk": 2,
+    "fields": {
+        "stackOrder": 1,
+        "resolved": false,
+        "failed": false,
+        "location": 2,
+        "event": 2,
+        "player": 1,
+        "cardStatus": 18
+    },
+    "model": "accounts.activeevent"
+},
+{
+    "pk": 1,
+    "fields": {
+        "wisdom": 0,
+        "genericEvent": null,
+        "resist": 0,
+        "power": 0,
+        "charm": 0,
+        "dash": 0,
+        "life": 1,
+        "force": 0,
+        "name": "House",
+        "slug": "house"
+    },
+    "model": "npcs.npc"
+},
+{
+    "pk": 2,
+    "fields": {
+        "wisdom": 0,
+        "genericEvent": null,
+        "resist": 0,
+        "power": 0,
+        "charm": 0,
+        "dash": 0,
+        "life": 1,
+        "force": 0,
+        "name": "Living Room",
+        "slug": "living_room"
+    },
+    "model": "npcs.npc"
+},
+{
+    "pk": 1,
+    "fields": {
+        "life": -5,
+        "player": 1,
+        "npc": 1
+    },
+    "model": "npcs.npcinstance"
+},
+{
+    "pk": 2,
+    "fields": {
+        "life": 0,
+        "player": 1,
+        "npc": 2
+    },
+    "model": "npcs.npcinstance"
+},
+{
+    "pk": 1,
+    "fields": {
         "codename": "add_permission",
-        "name": "Can add permission"
+        "name": "Can add permission",
+        "content_type": 3
     },
-    "pk": 1
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 2,
     "fields": {
-        "content_type": 3,
         "codename": "change_permission",
-        "name": "Can change permission"
+        "name": "Can change permission",
+        "content_type": 3
     },
-    "pk": 2
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 3,
     "fields": {
-        "content_type": 3,
         "codename": "delete_permission",
-        "name": "Can delete permission"
+        "name": "Can delete permission",
+        "content_type": 3
     },
-    "pk": 3
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 4,
     "fields": {
-        "content_type": 4,
         "codename": "add_group",
-        "name": "Can add group"
+        "name": "Can add group",
+        "content_type": 4
     },
-    "pk": 4
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 5,
     "fields": {
-        "content_type": 4,
         "codename": "change_group",
-        "name": "Can change group"
+        "name": "Can change group",
+        "content_type": 4
     },
-    "pk": 5
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 6,
     "fields": {
-        "content_type": 4,
         "codename": "delete_group",
-        "name": "Can delete group"
+        "name": "Can delete group",
+        "content_type": 4
     },
-    "pk": 6
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 7,
     "fields": {
-        "content_type": 5,
         "codename": "add_user",
-        "name": "Can add user"
+        "name": "Can add user",
+        "content_type": 5
     },
-    "pk": 7
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 8,
     "fields": {
-        "content_type": 5,
         "codename": "change_user",
-        "name": "Can change user"
+        "name": "Can change user",
+        "content_type": 5
     },
-    "pk": 8
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 9,
     "fields": {
-        "content_type": 5,
         "codename": "delete_user",
-        "name": "Can delete user"
+        "name": "Can delete user",
+        "content_type": 5
     },
-    "pk": 9
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 10,
     "fields": {
-        "content_type": 6,
         "codename": "add_contenttype",
-        "name": "Can add content type"
+        "name": "Can add content type",
+        "content_type": 6
     },
-    "pk": 10
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 11,
     "fields": {
-        "content_type": 6,
         "codename": "change_contenttype",
-        "name": "Can change content type"
+        "name": "Can change content type",
+        "content_type": 6
     },
-    "pk": 11
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 12,
     "fields": {
-        "content_type": 6,
         "codename": "delete_contenttype",
-        "name": "Can delete content type"
+        "name": "Can delete content type",
+        "content_type": 6
     },
-    "pk": 12
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 13,
     "fields": {
-        "content_type": 7,
         "codename": "add_session",
-        "name": "Can add session"
+        "name": "Can add session",
+        "content_type": 7
     },
-    "pk": 13
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 14,
     "fields": {
-        "content_type": 7,
         "codename": "change_session",
-        "name": "Can change session"
+        "name": "Can change session",
+        "content_type": 7
     },
-    "pk": 14
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 15,
     "fields": {
-        "content_type": 7,
         "codename": "delete_session",
-        "name": "Can delete session"
+        "name": "Can delete session",
+        "content_type": 7
     },
-    "pk": 15
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 16,
     "fields": {
-        "content_type": 8,
         "codename": "add_logentry",
-        "name": "Can add log entry"
+        "name": "Can add log entry",
+        "content_type": 8
     },
-    "pk": 16
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 17,
     "fields": {
-        "content_type": 8,
         "codename": "change_logentry",
-        "name": "Can change log entry"
+        "name": "Can change log entry",
+        "content_type": 8
     },
-    "pk": 17
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 18,
     "fields": {
-        "content_type": 8,
         "codename": "delete_logentry",
-        "name": "Can delete log entry"
+        "name": "Can delete log entry",
+        "content_type": 8
     },
-    "pk": 18
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 19,
     "fields": {
-        "content_type": 9,
         "codename": "add_cardtemplate",
-        "name": "Can add card template"
+        "name": "Can add card template",
+        "content_type": 9
     },
-    "pk": 19
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 20,
     "fields": {
-        "content_type": 9,
         "codename": "change_cardtemplate",
-        "name": "Can change card template"
+        "name": "Can change card template",
+        "content_type": 9
     },
-    "pk": 20
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 21,
     "fields": {
-        "content_type": 9,
         "codename": "delete_cardtemplate",
-        "name": "Can delete card template"
+        "name": "Can delete card template",
+        "content_type": 9
     },
-    "pk": 21
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 22,
     "fields": {
-        "content_type": 1,
         "codename": "add_stattemplate",
-        "name": "Can add stat template"
+        "name": "Can add stat template",
+        "content_type": 1
     },
-    "pk": 22
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 23,
     "fields": {
-        "content_type": 1,
         "codename": "change_stattemplate",
-        "name": "Can change stat template"
+        "name": "Can change stat template",
+        "content_type": 1
     },
-    "pk": 23
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 24,
     "fields": {
-        "content_type": 1,
         "codename": "delete_stattemplate",
-        "name": "Can delete stat template"
+        "name": "Can delete stat template",
+        "content_type": 1
     },
-    "pk": 24
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 25,
     "fields": {
-        "content_type": 10,
         "codename": "add_itemtemplate",
-        "name": "Can add item template"
+        "name": "Can add item template",
+        "content_type": 10
     },
-    "pk": 25
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 26,
     "fields": {
-        "content_type": 10,
         "codename": "change_itemtemplate",
-        "name": "Can change item template"
+        "name": "Can change item template",
+        "content_type": 10
     },
-    "pk": 26
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 27,
     "fields": {
-        "content_type": 10,
         "codename": "delete_itemtemplate",
-        "name": "Can delete item template"
+        "name": "Can delete item template",
+        "content_type": 10
     },
-    "pk": 27
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 28,
     "fields": {
-        "content_type": 11,
-        "codename": "add_deck",
-        "name": "Can add deck"
-    },
-    "pk": 28
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 11,
-        "codename": "change_deck",
-        "name": "Can change deck"
-    },
-    "pk": 29
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 11,
-        "codename": "delete_deck",
-        "name": "Can delete deck"
-    },
-    "pk": 30
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 12,
-        "codename": "add_basecard",
-        "name": "Can add base card"
-    },
-    "pk": 31
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 12,
-        "codename": "change_basecard",
-        "name": "Can change base card"
-    },
-    "pk": 32
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 12,
-        "codename": "delete_basecard",
-        "name": "Can delete base card"
-    },
-    "pk": 33
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 13,
-        "codename": "add_card",
-        "name": "Can add card"
-    },
-    "pk": 34
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 13,
-        "codename": "change_card",
-        "name": "Can change card"
-    },
-    "pk": 35
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 13,
-        "codename": "delete_card",
-        "name": "Can delete card"
-    },
-    "pk": 36
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 2,
-        "codename": "add_playercard",
-        "name": "Can add player card"
-    },
-    "pk": 37
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 2,
-        "codename": "change_playercard",
-        "name": "Can change player card"
-    },
-    "pk": 38
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 2,
-        "codename": "delete_playercard",
-        "name": "Can delete player card"
-    },
-    "pk": 39
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 14,
-        "codename": "add_itemcard",
-        "name": "Can add item card"
-    },
-    "pk": 40
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 14,
-        "codename": "change_itemcard",
-        "name": "Can change item card"
-    },
-    "pk": 41
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 14,
-        "codename": "delete_itemcard",
-        "name": "Can delete item card"
-    },
-    "pk": 42
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 15,
-        "codename": "add_effect",
-        "name": "Can add effect"
-    },
-    "pk": 43
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 15,
-        "codename": "change_effect",
-        "name": "Can change effect"
-    },
-    "pk": 44
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 15,
-        "codename": "delete_effect",
-        "name": "Can delete effect"
-    },
-    "pk": 45
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 16,
-        "codename": "add_healeffect",
-        "name": "Can add heal effect"
-    },
-    "pk": 46
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 16,
-        "codename": "change_healeffect",
-        "name": "Can change heal effect"
-    },
-    "pk": 47
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 16,
-        "codename": "delete_healeffect",
-        "name": "Can delete heal effect"
-    },
-    "pk": 48
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 17,
-        "codename": "add_statuschangeeffect",
-        "name": "Can add status change effect"
-    },
-    "pk": 49
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 17,
-        "codename": "change_statuschangeeffect",
-        "name": "Can change status change effect"
-    },
-    "pk": 50
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 17,
-        "codename": "delete_statuschangeeffect",
-        "name": "Can delete status change effect"
-    },
-    "pk": 51
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 18,
-        "codename": "add_effectlink",
-        "name": "Can add effect link"
-    },
-    "pk": 52
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 18,
-        "codename": "change_effectlink",
-        "name": "Can change effect link"
-    },
-    "pk": 53
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 18,
-        "codename": "delete_effectlink",
-        "name": "Can delete effect link"
-    },
-    "pk": 54
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 19,
-        "codename": "add_event",
-        "name": "Can add event"
-    },
-    "pk": 55
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 19,
-        "codename": "change_event",
-        "name": "Can change event"
-    },
-    "pk": 56
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 19,
-        "codename": "delete_event",
-        "name": "Can delete event"
-    },
-    "pk": 57
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 20,
-        "codename": "add_eventtrigger",
-        "name": "Can add event trigger"
-    },
-    "pk": 58
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 20,
-        "codename": "change_eventtrigger",
-        "name": "Can change event trigger"
-    },
-    "pk": 59
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 20,
-        "codename": "delete_eventtrigger",
-        "name": "Can delete event trigger"
-    },
-    "pk": 60
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 21,
-        "codename": "add_location",
-        "name": "Can add location"
-    },
-    "pk": 61
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 21,
-        "codename": "change_location",
-        "name": "Can change location"
-    },
-    "pk": 62
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 21,
-        "codename": "delete_location",
-        "name": "Can delete location"
-    },
-    "pk": 63
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 22,
-        "codename": "add_globaleventtrigger",
-        "name": "Can add global event trigger"
-    },
-    "pk": 64
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 22,
-        "codename": "change_globaleventtrigger",
-        "name": "Can change global event trigger"
-    },
-    "pk": 65
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 22,
-        "codename": "delete_globaleventtrigger",
-        "name": "Can delete global event trigger"
-    },
-    "pk": 66
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 23,
-        "codename": "add_locationtrigger",
-        "name": "Can add location trigger"
-    },
-    "pk": 67
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 23,
-        "codename": "change_locationtrigger",
-        "name": "Can change location trigger"
-    },
-    "pk": 68
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 23,
-        "codename": "delete_locationtrigger",
-        "name": "Can delete location trigger"
-    },
-    "pk": 69
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 24,
-        "codename": "add_cardstatus",
-        "name": "Can add card status"
-    },
-    "pk": 70
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 24,
-        "codename": "change_cardstatus",
-        "name": "Can change card status"
-    },
-    "pk": 71
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 24,
-        "codename": "delete_cardstatus",
-        "name": "Can delete card status"
-    },
-    "pk": 72
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 25,
-        "codename": "add_deckstatus",
-        "name": "Can add deck status"
-    },
-    "pk": 73
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 25,
-        "codename": "change_deckstatus",
-        "name": "Can change deck status"
-    },
-    "pk": 74
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 25,
-        "codename": "delete_deckstatus",
-        "name": "Can delete deck status"
-    },
-    "pk": 75
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 26,
-        "codename": "add_player",
-        "name": "Can add player"
-    },
-    "pk": 76
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 26,
-        "codename": "change_player",
-        "name": "Can change player"
-    },
-    "pk": 77
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 26,
-        "codename": "delete_player",
-        "name": "Can delete player"
-    },
-    "pk": 78
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 27,
-        "codename": "add_log",
-        "name": "Can add log"
-    },
-    "pk": 79
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 27,
-        "codename": "change_log",
-        "name": "Can change log"
-    },
-    "pk": 80
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 27,
-        "codename": "delete_log",
-        "name": "Can delete log"
-    },
-    "pk": 81
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 28,
-        "codename": "add_triggerlog",
-        "name": "Can add trigger log"
-    },
-    "pk": 82
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 28,
-        "codename": "change_triggerlog",
-        "name": "Can change trigger log"
-    },
-    "pk": 83
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 28,
-        "codename": "delete_triggerlog",
-        "name": "Can delete trigger log"
-    },
-    "pk": 84
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 29,
-        "codename": "add_activeevent",
-        "name": "Can add active event"
-    },
-    "pk": 85
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 29,
-        "codename": "change_activeevent",
-        "name": "Can change active event"
-    },
-    "pk": 86
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 29,
-        "codename": "delete_activeevent",
-        "name": "Can delete active event"
-    },
-    "pk": 87
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 30,
-        "codename": "add_npc",
-        "name": "Can add npc"
-    },
-    "pk": 88
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 30,
-        "codename": "change_npc",
-        "name": "Can change npc"
-    },
-    "pk": 89
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 30,
-        "codename": "delete_npc",
-        "name": "Can delete npc"
-    },
-    "pk": 90
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 31,
-        "codename": "add_npcinstance",
-        "name": "Can add npc instance"
-    },
-    "pk": 91
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 31,
-        "codename": "change_npcinstance",
-        "name": "Can change npc instance"
-    },
-    "pk": 92
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 31,
-        "codename": "delete_npcinstance",
-        "name": "Can delete npc instance"
-    },
-    "pk": 93
-},
-{
-    "model": "auth.permission",
-    "fields": {
-        "content_type": 32,
         "codename": "add_npctemplate",
-        "name": "Can add npc template"
+        "name": "Can add npc template",
+        "content_type": 11
     },
-    "pk": 94
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 29,
     "fields": {
-        "content_type": 32,
         "codename": "change_npctemplate",
-        "name": "Can change npc template"
+        "name": "Can change npc template",
+        "content_type": 11
     },
-    "pk": 95
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 30,
     "fields": {
-        "content_type": 32,
         "codename": "delete_npctemplate",
-        "name": "Can delete npc template"
+        "name": "Can delete npc template",
+        "content_type": 11
     },
-    "pk": 96
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 31,
     "fields": {
-        "content_type": 33,
+        "codename": "add_deck",
+        "name": "Can add deck",
+        "content_type": 12
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 32,
+    "fields": {
+        "codename": "change_deck",
+        "name": "Can change deck",
+        "content_type": 12
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 33,
+    "fields": {
+        "codename": "delete_deck",
+        "name": "Can delete deck",
+        "content_type": 12
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 34,
+    "fields": {
+        "codename": "add_basecard",
+        "name": "Can add base card",
+        "content_type": 13
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 35,
+    "fields": {
+        "codename": "change_basecard",
+        "name": "Can change base card",
+        "content_type": 13
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 36,
+    "fields": {
+        "codename": "delete_basecard",
+        "name": "Can delete base card",
+        "content_type": 13
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 37,
+    "fields": {
+        "codename": "add_card",
+        "name": "Can add card",
+        "content_type": 14
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 38,
+    "fields": {
+        "codename": "change_card",
+        "name": "Can change card",
+        "content_type": 14
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 39,
+    "fields": {
+        "codename": "delete_card",
+        "name": "Can delete card",
+        "content_type": 14
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 40,
+    "fields": {
+        "codename": "add_playercard",
+        "name": "Can add player card",
+        "content_type": 2
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 41,
+    "fields": {
+        "codename": "change_playercard",
+        "name": "Can change player card",
+        "content_type": 2
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 42,
+    "fields": {
+        "codename": "delete_playercard",
+        "name": "Can delete player card",
+        "content_type": 2
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 43,
+    "fields": {
+        "codename": "add_itemcard",
+        "name": "Can add item card",
+        "content_type": 15
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 44,
+    "fields": {
+        "codename": "change_itemcard",
+        "name": "Can change item card",
+        "content_type": 15
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 45,
+    "fields": {
+        "codename": "delete_itemcard",
+        "name": "Can delete item card",
+        "content_type": 15
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 46,
+    "fields": {
         "codename": "add_npccard",
-        "name": "Can add npc card"
+        "name": "Can add npc card",
+        "content_type": 16
     },
-    "pk": 97
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 47,
     "fields": {
-        "content_type": 33,
         "codename": "change_npccard",
-        "name": "Can change npc card"
+        "name": "Can change npc card",
+        "content_type": 16
     },
-    "pk": 98
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 48,
     "fields": {
-        "content_type": 33,
         "codename": "delete_npccard",
-        "name": "Can delete npc card"
+        "name": "Can delete npc card",
+        "content_type": 16
     },
-    "pk": 99
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 49,
     "fields": {
-        "content_type": 34,
+        "codename": "add_effect",
+        "name": "Can add effect",
+        "content_type": 17
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 50,
+    "fields": {
+        "codename": "change_effect",
+        "name": "Can change effect",
+        "content_type": 17
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 51,
+    "fields": {
+        "codename": "delete_effect",
+        "name": "Can delete effect",
+        "content_type": 17
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 52,
+    "fields": {
+        "codename": "add_healeffect",
+        "name": "Can add heal effect",
+        "content_type": 18
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 53,
+    "fields": {
+        "codename": "change_healeffect",
+        "name": "Can change heal effect",
+        "content_type": 18
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 54,
+    "fields": {
+        "codename": "delete_healeffect",
+        "name": "Can delete heal effect",
+        "content_type": 18
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 55,
+    "fields": {
+        "codename": "add_statuschangeeffect",
+        "name": "Can add status change effect",
+        "content_type": 19
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 56,
+    "fields": {
+        "codename": "change_statuschangeeffect",
+        "name": "Can change status change effect",
+        "content_type": 19
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 57,
+    "fields": {
+        "codename": "delete_statuschangeeffect",
+        "name": "Can delete status change effect",
+        "content_type": 19
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 58,
+    "fields": {
+        "codename": "add_effectlink",
+        "name": "Can add effect link",
+        "content_type": 20
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 59,
+    "fields": {
+        "codename": "change_effectlink",
+        "name": "Can change effect link",
+        "content_type": 20
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 60,
+    "fields": {
+        "codename": "delete_effectlink",
+        "name": "Can delete effect link",
+        "content_type": 20
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 61,
+    "fields": {
+        "codename": "add_event",
+        "name": "Can add event",
+        "content_type": 21
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 62,
+    "fields": {
+        "codename": "change_event",
+        "name": "Can change event",
+        "content_type": 21
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 63,
+    "fields": {
+        "codename": "delete_event",
+        "name": "Can delete event",
+        "content_type": 21
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 64,
+    "fields": {
+        "codename": "add_eventtrigger",
+        "name": "Can add event trigger",
+        "content_type": 22
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 65,
+    "fields": {
+        "codename": "change_eventtrigger",
+        "name": "Can change event trigger",
+        "content_type": 22
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 66,
+    "fields": {
+        "codename": "delete_eventtrigger",
+        "name": "Can delete event trigger",
+        "content_type": 22
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 67,
+    "fields": {
+        "codename": "add_location",
+        "name": "Can add location",
+        "content_type": 23
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 68,
+    "fields": {
+        "codename": "change_location",
+        "name": "Can change location",
+        "content_type": 23
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 69,
+    "fields": {
+        "codename": "delete_location",
+        "name": "Can delete location",
+        "content_type": 23
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 70,
+    "fields": {
+        "codename": "add_globaleventtrigger",
+        "name": "Can add global event trigger",
+        "content_type": 24
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 71,
+    "fields": {
+        "codename": "change_globaleventtrigger",
+        "name": "Can change global event trigger",
+        "content_type": 24
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 72,
+    "fields": {
+        "codename": "delete_globaleventtrigger",
+        "name": "Can delete global event trigger",
+        "content_type": 24
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 73,
+    "fields": {
+        "codename": "add_locationtrigger",
+        "name": "Can add location trigger",
+        "content_type": 25
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 74,
+    "fields": {
+        "codename": "change_locationtrigger",
+        "name": "Can change location trigger",
+        "content_type": 25
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 75,
+    "fields": {
+        "codename": "delete_locationtrigger",
+        "name": "Can delete location trigger",
+        "content_type": 25
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 76,
+    "fields": {
+        "codename": "add_cardstatus",
+        "name": "Can add card status",
+        "content_type": 26
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 77,
+    "fields": {
+        "codename": "change_cardstatus",
+        "name": "Can change card status",
+        "content_type": 26
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 78,
+    "fields": {
+        "codename": "delete_cardstatus",
+        "name": "Can delete card status",
+        "content_type": 26
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 79,
+    "fields": {
+        "codename": "add_deckstatus",
+        "name": "Can add deck status",
+        "content_type": 27
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 80,
+    "fields": {
+        "codename": "change_deckstatus",
+        "name": "Can change deck status",
+        "content_type": 27
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 81,
+    "fields": {
+        "codename": "delete_deckstatus",
+        "name": "Can delete deck status",
+        "content_type": 27
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 82,
+    "fields": {
+        "codename": "add_player",
+        "name": "Can add player",
+        "content_type": 28
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 83,
+    "fields": {
+        "codename": "change_player",
+        "name": "Can change player",
+        "content_type": 28
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 84,
+    "fields": {
+        "codename": "delete_player",
+        "name": "Can delete player",
+        "content_type": 28
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 85,
+    "fields": {
+        "codename": "add_log",
+        "name": "Can add log",
+        "content_type": 29
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 86,
+    "fields": {
+        "codename": "change_log",
+        "name": "Can change log",
+        "content_type": 29
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 87,
+    "fields": {
+        "codename": "delete_log",
+        "name": "Can delete log",
+        "content_type": 29
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 88,
+    "fields": {
+        "codename": "add_triggerlog",
+        "name": "Can add trigger log",
+        "content_type": 30
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 89,
+    "fields": {
+        "codename": "change_triggerlog",
+        "name": "Can change trigger log",
+        "content_type": 30
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 90,
+    "fields": {
+        "codename": "delete_triggerlog",
+        "name": "Can delete trigger log",
+        "content_type": 30
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 91,
+    "fields": {
+        "codename": "add_activeevent",
+        "name": "Can add active event",
+        "content_type": 31
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 92,
+    "fields": {
+        "codename": "change_activeevent",
+        "name": "Can change active event",
+        "content_type": 31
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 93,
+    "fields": {
+        "codename": "delete_activeevent",
+        "name": "Can delete active event",
+        "content_type": 31
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 94,
+    "fields": {
+        "codename": "add_npc",
+        "name": "Can add npc",
+        "content_type": 32
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 95,
+    "fields": {
+        "codename": "change_npc",
+        "name": "Can change npc",
+        "content_type": 32
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 96,
+    "fields": {
+        "codename": "delete_npc",
+        "name": "Can delete npc",
+        "content_type": 32
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 97,
+    "fields": {
+        "codename": "add_npcinstance",
+        "name": "Can add npc instance",
+        "content_type": 33
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 98,
+    "fields": {
+        "codename": "change_npcinstance",
+        "name": "Can change npc instance",
+        "content_type": 33
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 99,
+    "fields": {
+        "codename": "delete_npcinstance",
+        "name": "Can delete npc instance",
+        "content_type": 33
+    },
+    "model": "auth.permission"
+},
+{
+    "pk": 100,
+    "fields": {
         "codename": "add_npclink",
-        "name": "Can add npc link"
+        "name": "Can add npc link",
+        "content_type": 34
     },
-    "pk": 100
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 101,
     "fields": {
-        "content_type": 34,
         "codename": "change_npclink",
-        "name": "Can change npc link"
+        "name": "Can change npc link",
+        "content_type": 34
     },
-    "pk": 101
+    "model": "auth.permission"
 },
 {
-    "model": "auth.permission",
+    "pk": 102,
     "fields": {
-        "content_type": 34,
         "codename": "delete_npclink",
-        "name": "Can delete npc link"
+        "name": "Can delete npc link",
+        "content_type": 34
     },
-    "pk": 102
+    "model": "auth.permission"
 },
 {
-    "model": "auth.user",
+    "pk": 1,
     "fields": {
+        "last_login": "2015-01-04T04:51:37.516Z",
         "email": "brown.justin.michael@gmail.com",
-        "is_active": true,
-        "last_login": "2015-01-04T03:45:43.839Z",
-        "user_permissions": [],
-        "groups": [],
-        "last_name": "Brown",
-        "is_staff": true,
-        "username": "justinbrown",
         "date_joined": "2014-09-24T06:03:56.267Z",
-        "password": "pbkdf2_sha256$12000$JgAopSkAH1aN$jFKrm6ma6yVZ2+Ua1dImHOIXu6Ols/bdfUns7DpRJDI=",
-        "first_name": "Justin",
-        "is_superuser": true
-    },
-    "pk": 1
-},
-{
-    "model": "auth.user",
-    "fields": {
-        "email": "Brown.Nathan.Andrew@gmail.com",
-        "is_active": true,
-        "last_login": "2014-09-23T04:29:44Z",
-        "user_permissions": [],
-        "groups": [],
         "last_name": "Brown",
-        "is_staff": true,
-        "username": "NathanBrown",
-        "date_joined": "2014-09-23T04:29:44Z",
-        "password": "pbkdf2_sha256$12000$RJubOgT7a0Kp$pq2n0N9+HUq49f80Bk75nky2NBlWX+lZAa00ixW+l+A=",
-        "first_name": "Nathan",
-        "is_superuser": true
-    },
-    "pk": 2
-},
-{
-    "model": "auth.user",
-    "fields": {
-        "email": "Allattos@gmail.com",
-        "is_active": true,
-        "last_login": "2014-09-23T04:31:32Z",
+        "is_superuser": true,
         "user_permissions": [],
-        "groups": [],
-        "last_name": "Thomas",
+        "first_name": "Justin",
+        "username": "justinbrown",
         "is_staff": true,
-        "username": "RichardThomas",
+        "is_active": true,
+        "password": "pbkdf2_sha256$12000$JgAopSkAH1aN$jFKrm6ma6yVZ2+Ua1dImHOIXu6Ols/bdfUns7DpRJDI=",
+        "groups": []
+    },
+    "model": "auth.user"
+},
+{
+    "pk": 2,
+    "fields": {
+        "last_login": "2014-09-23T04:29:44Z",
+        "email": "Brown.Nathan.Andrew@gmail.com",
+        "date_joined": "2014-09-23T04:29:44Z",
+        "last_name": "Brown",
+        "is_superuser": true,
+        "user_permissions": [],
+        "first_name": "Nathan",
+        "username": "NathanBrown",
+        "is_staff": true,
+        "is_active": true,
+        "password": "pbkdf2_sha256$12000$RJubOgT7a0Kp$pq2n0N9+HUq49f80Bk75nky2NBlWX+lZAa00ixW+l+A=",
+        "groups": []
+    },
+    "model": "auth.user"
+},
+{
+    "pk": 3,
+    "fields": {
+        "last_login": "2014-09-23T04:31:32Z",
+        "email": "Allattos@gmail.com",
         "date_joined": "2014-09-23T04:31:32Z",
-        "password": "pbkdf2_sha256$12000$BK8XF5EbsDeY$o7vwY2vNkNcc2JJEe/d0vwGXqpj2OFpwsaQrTea15Ow=",
+        "last_name": "Thomas",
+        "is_superuser": true,
+        "user_permissions": [],
         "first_name": "Richard",
-        "is_superuser": true
+        "username": "RichardThomas",
+        "is_staff": true,
+        "is_active": true,
+        "password": "pbkdf2_sha256$12000$BK8XF5EbsDeY$o7vwY2vNkNcc2JJEe/d0vwGXqpj2OFpwsaQrTea15Ow=",
+        "groups": []
     },
-    "pk": 3
+    "model": "auth.user"
 },
 {
-    "model": "admin.logentry",
+    "pk": 1,
     "fields": {
-        "content_type": 30,
+        "action_time": "2015-01-04T04:43:38.616Z",
+        "action_flag": 1,
         "change_message": "",
         "object_id": "1",
+        "object_repr": "Home",
         "user": 1,
-        "object_repr": "Chief's House",
-        "action_flag": 1,
-        "action_time": "2015-01-01T20:38:45.360Z"
+        "content_type": 23
     },
-    "pk": 1
+    "model": "admin.logentry"
 },
 {
-    "model": "admin.logentry",
+    "pk": 2,
     "fields": {
-        "content_type": 19,
-        "change_message": "",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "House",
+        "action_time": "2015-01-04T04:44:39.473Z",
         "action_flag": 1,
-        "action_time": "2015-01-01T20:40:04.175Z"
-    },
-    "pk": 2
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 30,
         "change_message": "",
         "object_id": "2",
-        "user": 1,
-        "object_repr": "Chief's Living Room",
-        "action_flag": 1,
-        "action_time": "2015-01-01T20:42:00.570Z"
-    },
-    "pk": 3
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 19,
-        "change_message": "",
-        "object_id": "2",
-        "user": 1,
-        "object_repr": "Living Room",
-        "action_flag": 1,
-        "action_time": "2015-01-01T20:42:08.394Z"
-    },
-    "pk": 4
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 19,
-        "change_message": "Added event trigger \"House (Dash Template 0) -> Living Room\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "House",
-        "action_flag": 2,
-        "action_time": "2015-01-01T20:42:30.580Z"
-    },
-    "pk": 5
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 19,
-        "change_message": "",
-        "object_id": "3",
-        "user": 1,
-        "object_repr": "Inside the Drawer",
-        "action_flag": 1,
-        "action_time": "2015-01-01T20:52:08.301Z"
-    },
-    "pk": 6
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 19,
-        "change_message": "",
-        "object_id": "4",
-        "user": 1,
-        "object_repr": "Ransacked",
-        "action_flag": 1,
-        "action_time": "2015-01-01T20:54:11.051Z"
-    },
-    "pk": 7
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 19,
-        "change_message": "Added event trigger \"Living Room (Force Template 2) -> Inside the Drawer\". Added event trigger \"Living Room (Dash Template 2) -> Inside the Drawer\". Added event trigger \"Living Room (Force Template 0) -> Ransacked\".",
-        "object_id": "2",
-        "user": 1,
-        "object_repr": "Living Room",
-        "action_flag": 2,
-        "action_time": "2015-01-01T20:54:25.594Z"
-    },
-    "pk": 8
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 19,
-        "change_message": "No fields changed.",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "House",
-        "action_flag": 2,
-        "action_time": "2015-01-01T22:11:11.989Z"
-    },
-    "pk": 9
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 21,
-        "change_message": "",
-        "object_id": "2",
-        "user": 1,
         "object_repr": "Prospect Heights",
+        "user": 1,
+        "content_type": 23
+    },
+    "model": "admin.logentry"
+},
+{
+    "pk": 3,
+    "fields": {
+        "action_time": "2015-01-04T04:45:14.541Z",
         "action_flag": 1,
-        "action_time": "2015-01-01T22:12:42.927Z"
-    },
-    "pk": 10
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 30,
-        "change_message": "Changed charm and wisdom.",
+        "change_message": "",
         "object_id": "1",
+        "object_repr": "House",
         "user": 1,
-        "object_repr": "Chief's House",
-        "action_flag": 2,
-        "action_time": "2015-01-01T22:32:01.534Z"
+        "content_type": 32
     },
-    "pk": 11
+    "model": "admin.logentry"
 },
 {
-    "model": "admin.logentry",
+    "pk": 4,
     "fields": {
-        "content_type": 25,
-        "change_message": "Changed status for card status \"CardStatus object\". Changed status for card status \"CardStatus object\". Changed status for card status \"CardStatus object\". Changed status for card status \"CardStatus object\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "justinbrown's Deck viewed by justinbrown",
-        "action_flag": 2,
-        "action_time": "2015-01-01T22:37:08.926Z"
-    },
-    "pk": 12
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 25,
-        "change_message": "Changed status for card status \"CardStatus object\". Changed status for card status \"CardStatus object\". Changed status for card status \"CardStatus object\". Changed status for card status \"CardStatus object\". Changed status for card status \"CardStatus object\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "justinbrown's Deck viewed by justinbrown",
-        "action_flag": 2,
-        "action_time": "2015-01-01T22:39:59.873Z"
-    },
-    "pk": 13
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 25,
-        "change_message": "Changed status for card status \"CardStatus object\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "justinbrown's Deck viewed by justinbrown",
-        "action_flag": 2,
-        "action_time": "2015-01-02T02:19:42.251Z"
-    },
-    "pk": 14
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 24,
+        "action_time": "2015-01-04T04:45:17.107Z",
+        "action_flag": 1,
         "change_message": "",
         "object_id": "7",
-        "user": 1,
-        "object_repr": "CardStatus object",
-        "action_flag": 3,
-        "action_time": "2015-01-02T02:29:34.648Z"
-    },
-    "pk": 15
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 24,
-        "change_message": "",
-        "object_id": "8",
-        "user": 1,
-        "object_repr": "CardStatus object",
-        "action_flag": 3,
-        "action_time": "2015-01-02T02:29:34.651Z"
-    },
-    "pk": 16
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 24,
-        "change_message": "",
-        "object_id": "3",
-        "user": 1,
-        "object_repr": "CardStatus object",
-        "action_flag": 3,
-        "action_time": "2015-01-02T02:29:34.652Z"
-    },
-    "pk": 17
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 24,
-        "change_message": "",
-        "object_id": "6",
-        "user": 1,
-        "object_repr": "CardStatus object",
-        "action_flag": 3,
-        "action_time": "2015-01-02T02:29:34.653Z"
-    },
-    "pk": 18
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 24,
-        "change_message": "",
-        "object_id": "4",
-        "user": 1,
-        "object_repr": "CardStatus object",
-        "action_flag": 3,
-        "action_time": "2015-01-02T02:29:34.654Z"
-    },
-    "pk": 19
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 24,
-        "change_message": "",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "CardStatus object",
-        "action_flag": 3,
-        "action_time": "2015-01-02T02:29:34.655Z"
-    },
-    "pk": 20
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 24,
-        "change_message": "",
-        "object_id": "5",
-        "user": 1,
-        "object_repr": "CardStatus object",
-        "action_flag": 3,
-        "action_time": "2015-01-02T02:29:34.656Z"
-    },
-    "pk": 21
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 24,
-        "change_message": "",
-        "object_id": "2",
-        "user": 1,
-        "object_repr": "CardStatus object",
-        "action_flag": 3,
-        "action_time": "2015-01-02T02:29:34.657Z"
-    },
-    "pk": 22
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 25,
-        "change_message": "Changed status for card status \"CardStatus object\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "justinbrown's Deck viewed by justinbrown",
-        "action_flag": 2,
-        "action_time": "2015-01-02T02:49:11.525Z"
-    },
-    "pk": 23
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 26,
-        "change_message": "Changed resolved for active event \"ActiveEvent object\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "justinbrown's Profile",
-        "action_flag": 2,
-        "action_time": "2015-01-02T03:00:29.846Z"
-    },
-    "pk": 24
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 32,
-        "change_message": "",
-        "object_id": "7",
-        "user": 1,
         "object_repr": "House Template",
-        "action_flag": 1,
-        "action_time": "2015-01-02T03:17:07.081Z"
+        "user": 1,
+        "content_type": 11
     },
-    "pk": 25
+    "model": "admin.logentry"
 },
 {
-    "model": "admin.logentry",
+    "pk": 5,
     "fields": {
-        "content_type": 33,
+        "action_time": "2015-01-04T04:46:06.350Z",
+        "action_flag": 1,
         "change_message": "",
-        "object_id": "25",
+        "object_id": "1",
+        "object_repr": "HOUSE",
         "user": 1,
-        "object_repr": "House Template 0",
-        "action_flag": 1,
-        "action_time": "2015-01-02T03:20:36.997Z"
+        "content_type": 21
     },
-    "pk": 26
+    "model": "admin.logentry"
 },
 {
-    "model": "admin.logentry",
+    "pk": 6,
     "fields": {
-        "content_type": 21,
-        "change_message": "Added npc link \"NPCLink object\".",
-        "object_id": "2",
-        "user": 1,
-        "object_repr": "Prospect Heights",
+        "action_time": "2015-01-04T04:46:21.315Z",
         "action_flag": 2,
-        "action_time": "2015-01-02T03:20:40.684Z"
+        "change_message": "Added location trigger \"LocationTrigger object\".",
+        "object_id": "2",
+        "object_repr": "Prospect Heights",
+        "user": 1,
+        "content_type": 23
     },
-    "pk": 27
+    "model": "admin.logentry"
 },
 {
-    "model": "admin.logentry",
+    "pk": 7,
     "fields": {
-        "content_type": 11,
+        "action_time": "2015-01-04T04:47:39.939Z",
+        "action_flag": 1,
+        "change_message": "",
+        "object_id": "2",
+        "object_repr": "Living Room",
+        "user": 1,
+        "content_type": 32
+    },
+    "model": "admin.logentry"
+},
+{
+    "pk": 8,
+    "fields": {
+        "action_time": "2015-01-04T04:47:53.961Z",
+        "action_flag": 1,
+        "change_message": "",
+        "object_id": "2",
+        "object_repr": "Living Room",
+        "user": 1,
+        "content_type": 21
+    },
+    "model": "admin.logentry"
+},
+{
+    "pk": 9,
+    "fields": {
+        "action_time": "2015-01-04T04:48:31.030Z",
+        "action_flag": 2,
+        "change_message": "Added event trigger \"HOUSE (Force Template 0) -> Living Room\". Added event trigger \"HOUSE (Dash Template 0) -> Living Room\".",
+        "object_id": "1",
+        "object_repr": "HOUSE",
+        "user": 1,
+        "content_type": 21
+    },
+    "model": "admin.logentry"
+},
+{
+    "pk": 10,
+    "fields": {
+        "action_time": "2015-01-04T04:49:17.023Z",
+        "action_flag": 1,
+        "change_message": "",
+        "object_id": "3",
+        "object_repr": "Drawer",
+        "user": 1,
+        "content_type": 21
+    },
+    "model": "admin.logentry"
+},
+{
+    "pk": 11,
+    "fields": {
+        "action_time": "2015-01-04T04:50:11.053Z",
+        "action_flag": 1,
         "change_message": "",
         "object_id": "4",
+        "object_repr": "Ransacked",
         "user": 1,
-        "object_repr": "Unattached Deck",
-        "action_flag": 1,
-        "action_time": "2015-01-02T03:35:17.665Z"
+        "content_type": 21
     },
-    "pk": 28
+    "model": "admin.logentry"
 },
 {
-    "model": "admin.logentry",
+    "pk": 12,
     "fields": {
-        "content_type": 21,
-        "change_message": "Changed deck. Changed template and content for location trigger \"LocationTrigger object\".",
+        "action_time": "2015-01-04T04:51:06.300Z",
+        "action_flag": 2,
+        "change_message": "Added event trigger \"Living Room (Dash Template 0) -> Drawer\". Added event trigger \"Living Room (Force Template 0) -> Ransacked\".",
         "object_id": "2",
+        "object_repr": "Living Room",
         "user": 1,
-        "object_repr": "Prospect Heights",
+        "content_type": 21
+    },
+    "model": "admin.logentry"
+},
+{
+    "pk": 13,
+    "fields": {
+        "action_time": "2015-01-04T04:51:10.743Z",
         "action_flag": 2,
-        "action_time": "2015-01-02T03:36:04.033Z"
+        "change_message": "Changed auto.",
+        "object_id": "4",
+        "object_repr": "Ransacked",
+        "user": 1,
+        "content_type": 21
     },
-    "pk": 29
+    "model": "admin.logentry"
 },
 {
-    "model": "admin.logentry",
+    "pk": 14,
     "fields": {
-        "content_type": 26,
-        "change_message": "Changed resolved for active event \"ActiveEvent object\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "justinbrown's Profile",
+        "action_time": "2015-01-04T04:51:29.199Z",
         "action_flag": 2,
-        "action_time": "2015-01-02T03:55:54.623Z"
+        "change_message": "Changed auto.",
+        "object_id": "3",
+        "object_repr": "Drawer",
+        "user": 1,
+        "content_type": 21
     },
-    "pk": 30
+    "model": "admin.logentry"
 },
 {
-    "model": "admin.logentry",
+    "pk": 15,
     "fields": {
-        "content_type": 25,
-        "change_message": "",
-        "object_id": "6",
-        "user": 1,
-        "object_repr": "Deck at Prospect Heights viewed by justinbrown",
-        "action_flag": 3,
-        "action_time": "2015-01-02T04:32:07.360Z"
-    },
-    "pk": 31
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 25,
-        "change_message": "",
-        "object_id": "5",
-        "user": 1,
-        "object_repr": "justinbrown's Deck viewed by justinbrown",
-        "action_flag": 3,
-        "action_time": "2015-01-02T04:32:07.363Z"
-    },
-    "pk": 32
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 26,
-        "change_message": "Changed resolved for active event \"ActiveEvent object\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "justinbrown's Profile",
-        "action_flag": 2,
-        "action_time": "2015-01-02T04:33:05.548Z"
-    },
-    "pk": 33
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 25,
-        "change_message": "Changed initialized.",
-        "object_id": "10",
-        "user": 1,
-        "object_repr": "justinbrown's Deck viewed by justinbrown",
-        "action_flag": 2,
-        "action_time": "2015-01-02T04:37:00.582Z"
-    },
-    "pk": 34
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 26,
-        "change_message": "Changed resolved for active event \"ActiveEvent object\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "justinbrown's Profile",
-        "action_flag": 2,
-        "action_time": "2015-01-02T04:53:21.064Z"
-    },
-    "pk": 35
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 26,
-        "change_message": "Changed resolved for active event \"ActiveEvent object\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "justinbrown's Profile",
-        "action_flag": 2,
-        "action_time": "2015-01-02T05:24:27.415Z"
-    },
-    "pk": 36
-},
-{
-    "model": "admin.logentry",
-    "fields": {
-        "content_type": 11,
-        "change_message": "",
-        "object_id": "5",
-        "user": 1,
-        "object_repr": "Unattached Deck",
+        "action_time": "2015-01-04T04:52:26.431Z",
         "action_flag": 1,
-        "action_time": "2015-01-04T02:17:09.170Z"
+        "change_message": "",
+        "object_id": "4",
+        "object_repr": "Unattached Deck",
+        "user": 1,
+        "content_type": 12
     },
-    "pk": 37
+    "model": "admin.logentry"
 },
 {
-    "model": "admin.logentry",
+    "pk": 16,
     "fields": {
-        "content_type": 19,
+        "action_time": "2015-01-04T04:52:53.462Z",
+        "action_flag": 2,
         "change_message": "Changed deck.",
-        "object_id": "1",
+        "object_id": "2",
+        "object_repr": "Prospect Heights",
         "user": 1,
-        "object_repr": "House",
-        "action_flag": 2,
-        "action_time": "2015-01-04T02:17:11.927Z"
+        "content_type": 23
     },
-    "pk": 38
+    "model": "admin.logentry"
 },
 {
-    "model": "admin.logentry",
+    "pk": 1,
     "fields": {
-        "content_type": 26,
-        "change_message": "Changed resolved for active event \"ActiveEvent object\". Changed resolved for active event \"ActiveEvent object\".",
-        "object_id": "1",
-        "user": 1,
-        "object_repr": "justinbrown's Profile",
-        "action_flag": 2,
-        "action_time": "2015-01-04T02:25:05.734Z"
-    },
-    "pk": 39
-},
-{
-    "model": "accounts.player",
-    "fields": {
-        "charm": 1,
         "wisdom": 0,
-        "money": 0,
-        "dash": 2,
-        "user": 1,
-        "power": 0,
         "resist": 2,
+        "power": 0,
+        "charm": 1,
+        "dash": 2,
         "force": 3,
-        "deck": 1
+        "deck": 1,
+        "money": 0,
+        "user": 1
     },
-    "pk": 1
+    "model": "accounts.player"
 },
 {
-    "model": "accounts.player",
+    "pk": 2,
     "fields": {
-        "charm": 1,
         "wisdom": 0,
-        "money": 0,
-        "dash": 2,
-        "user": 2,
-        "power": 0,
         "resist": 2,
+        "power": 0,
+        "charm": 1,
+        "dash": 2,
         "force": 3,
-        "deck": 2
+        "deck": 2,
+        "money": 0,
+        "user": 2
     },
-    "pk": 2
+    "model": "accounts.player"
 },
 {
-    "model": "accounts.player",
+    "pk": 3,
     "fields": {
-        "charm": 1,
         "wisdom": 0,
-        "money": 0,
-        "dash": 2,
-        "user": 3,
-        "power": 0,
         "resist": 2,
+        "power": 0,
+        "charm": 1,
+        "dash": 2,
         "force": 3,
-        "deck": 3
+        "deck": 3,
+        "money": 0,
+        "user": 3
     },
-    "pk": 3
+    "model": "accounts.player"
 }
 ]
