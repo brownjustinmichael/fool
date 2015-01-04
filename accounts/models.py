@@ -83,7 +83,10 @@ class DeckStatus (models.Model):
         if not self.initialized:
             self.initialize ()
         
-    def initialize (self):
+    def initialize (self, default = CARD_IN_DECK):
+        for cardstatus in self.cardstatus_set.all ():
+            cardstatus.delete ()
+        
         resetCards = []
         for card in self.deck.basecard_set.all ():
             if card.isActive ():
@@ -94,7 +97,7 @@ class DeckStatus (models.Model):
         itr = iter (indices)
         for card in resetCards:
             pos = next (itr)
-            cardstatus = CardStatus (card = card, status = CARD_IN_DECK, deck = self, position = pos)
+            cardstatus = CardStatus (card = card, status = default, deck = self, position = pos)
             cardstatus.save ()
         
         self.initialized = True
@@ -427,6 +430,16 @@ class ActiveEvent (models.Model):
     class Meta:
         unique_together = ("player", "event", "stackOrder")
         
+    def __init__(self, *args, **kwargs):
+        super(ActiveEvent, self).__init__(*args, **kwargs)
+            
+    def getCards (self, player, status):
+        if self.event.deck is not None:
+            deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
+            deckStatus.initialize (CARD_IN_HAND)
+            return deckStatus.getCards (CARD_IN_HAND)
+        return []
+                
     def getLife (self):
         if self.event.life is not None:
             return self.event.life + self.event.generateNPCInstance (self.player).life

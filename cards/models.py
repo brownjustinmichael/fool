@@ -125,11 +125,14 @@ class NPCTemplate (CardTemplate):
 class Deck (models.Model):
     # TODO Almost every method of this class is redundant with those of DeckStatus
     
-    def getStatus (self, player):
+    def getStatus (self, player, **kwargs):
+        """
+        If there's a deckStatus object associated with this deck and player, return it; otherwise, make one and return that
+        """
         deckstatus = self.deckstatus_set.filter (player = player).first ()
         if deckstatus is None:
             deckstatus = player.addDeckStatus (self)
-        print (deckstatus)
+            # deckstatus.initialize (**kwargs)
         return deckstatus
     
     def getNumCards (self, player, status = CARD_IN_DECK):

@@ -1,6 +1,6 @@
 from django.db import models
 
-from cards.models import CardTemplate
+from cards.models import CardTemplate, Deck
 from npcs.models import NPC, NPCInstance
 
 # class EffectEventLink (models.Model):
@@ -27,6 +27,8 @@ class Event (models.Model):
     # The generic result is what happens when the event is forced to resolve, but no triggers have been matched
     generic_result = models.ForeignKey ("events.EventTrigger", default = None, null = True, related_name = "_unused_event_result", blank = True)
     auto = models.BooleanField (default = False)
+    
+    deck = models.ForeignKey (Deck, null = True, blank = True)
 
     class Meta:
         ordering = ['-created']
