@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Event',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('title', models.CharField(max_length=255)),
                 ('slug', models.SlugField(max_length=255, unique=True)),
                 ('description', models.CharField(max_length=255)),
@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
                 ('published', models.BooleanField(default=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('auto', models.BooleanField(default=False)),
+                ('deck', models.ForeignKey(null=True, blank=True, to='cards.Deck')),
             ],
             options={
                 'ordering': ['-created'],
@@ -31,13 +32,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EventTrigger',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('threshold', models.IntegerField(default=0)),
                 ('onlyWhenNotPlayed', models.BooleanField(default=False)),
                 ('content', models.TextField(default='', blank=True)),
                 ('failed_content', models.TextField(default='', blank=True)),
                 ('resolved', models.BooleanField(default=True)),
-                ('event', models.ForeignKey(related_name='_unused_2', null=True, to='events.Event')),
+                ('event', models.ForeignKey(null=True, to='events.Event', related_name='_unused_2')),
                 ('originalEvent', models.ForeignKey(null=True, to='events.Event')),
                 ('template', models.ForeignKey(to='cards.CardTemplate')),
             ],
@@ -48,7 +49,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='generic_result',
-            field=models.ForeignKey(blank=True, related_name='_unused_event_result', null=True, default=None, to='events.EventTrigger'),
+            field=models.ForeignKey(null=True, blank=True, default=None, to='events.EventTrigger', related_name='_unused_event_result'),
             preserve_default=True,
         ),
     ]

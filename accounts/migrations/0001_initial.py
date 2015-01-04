@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -12,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ActiveEvent',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('stackOrder', models.IntegerField()),
                 ('resolved', models.BooleanField(default=False)),
                 ('failed', models.BooleanField(default=False)),
@@ -24,8 +25,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CardStatus',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
-                ('status', models.CharField(max_length=7, default='stash', choices=[('hand', 'Hand'), ('deck', 'Deck'), ('discard', 'Discard'), ('stash', 'Stash'), ('play', 'Play')])),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('status', models.CharField(choices=[('hand', 'Hand'), ('deck', 'Deck'), ('discard', 'Discard'), ('stash', 'Stash'), ('play', 'Play')], default='stash', max_length=7)),
                 ('position', models.IntegerField()),
                 ('played', models.BooleanField(default=False)),
             ],
@@ -38,7 +39,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DeckStatus',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
+                ('initialized', models.BooleanField(default=False)),
             ],
             options={
                 'verbose_name_plural': 'Deck statuses',
@@ -48,7 +50,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Log',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('logged', models.DateTimeField(auto_now_add=True)),
             ],
             options={
@@ -59,7 +61,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Player',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('force', models.IntegerField(default=0)),
                 ('dash', models.IntegerField(default=0)),
                 ('resist', models.IntegerField(default=0)),
@@ -76,7 +78,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TriggerLog',
             fields=[
-                ('log_ptr', models.OneToOneField(auto_created=True, primary_key=True, serialize=False, parent_link=True, to='accounts.Log')),
+                ('log_ptr', models.OneToOneField(to='accounts.Log', serialize=False, parent_link=True, auto_created=True, primary_key=True)),
                 ('success', models.BooleanField(default=True)),
             ],
             options={

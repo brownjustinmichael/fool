@@ -32,7 +32,7 @@ def makePlayers (apps, schema_editor):
     
     for player in Player.objects.all ():
         for stat in PLAYER_STATS:
-            template = Template.objects.filter (stat = stat [0]).first ()
+            template = Template.objects.filter (statistic = stat [0]).first ()
             for i in range (getattr (player, stat [0])):
                 Card.objects.create (
                     modifier = i + 1, deck = player.deck, template = template
@@ -42,12 +42,12 @@ def makePlayers (apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0001_initial'),
         ('accounts', '0001_initial'),
-        ('locations', '0001_initial'),
-        ('events', '0002_event_npc'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('cards', '0001_initial'),
+        ('locations', '0001_initial'),
+        ('contenttypes', '0001_initial'),
+        ('cards', '0002_auto_20150104_0422'),
+        ('events', '0002_event_npc'),
     ]
 
     operations = [
@@ -59,20 +59,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='player',
-            name='active_event',
-            field=models.ForeignKey(blank=True, null=True, to='events.Event'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='player',
-            name='active_location',
-            field=models.ForeignKey(blank=True, null=True, to='locations.Location'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='player',
             name='deck',
-            field=models.OneToOneField(blank=True, related_name='player', null=True, to='cards.Deck'),
+            field=models.OneToOneField(null=True, blank=True, to='cards.Deck', related_name='player'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -84,7 +72,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='log',
             name='event',
-            field=models.ForeignKey(blank=True, null=True, to='events.Event'),
+            field=models.ForeignKey(null=True, blank=True, to='events.Event'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -96,7 +84,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='log',
             name='polymorphic_ctype',
-            field=models.ForeignKey(editable=False, related_name='polymorphic_accounts.log_set', null=True, to='contenttypes.ContentType'),
+            field=models.ForeignKey(null=True, editable=False, to='contenttypes.ContentType', related_name='polymorphic_accounts.log_set'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -114,7 +102,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='deckstatus',
             name='location',
-            field=models.ForeignKey(blank=True, null=True, to='locations.Location'),
+            field=models.ForeignKey(null=True, blank=True, to='locations.Location'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -142,7 +130,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cardstatus',
             name='targetDeck',
-            field=models.ForeignKey(blank=True, related_name='_unused_1', null=True, default=None, to='accounts.DeckStatus'),
+            field=models.ForeignKey(null=True, blank=True, default=None, to='accounts.DeckStatus', related_name='_unused_1'),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
@@ -152,13 +140,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='activeevent',
             name='cardStatus',
-            field=models.ForeignKey(to='accounts.CardStatus'),
+            field=models.OneToOneField(to='accounts.CardStatus', related_name='activeEvent'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='activeevent',
             name='event',
             field=models.ForeignKey(to='events.Event'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='activeevent',
+            name='location',
+            field=models.ForeignKey(null=True, to='locations.Location'),
             preserve_default=True,
         ),
         migrations.AddField(

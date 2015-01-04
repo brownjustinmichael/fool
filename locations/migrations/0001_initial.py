@@ -4,24 +4,18 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 
 
-def loadLocations (apps, schema_editor):
-    Location = apps.get_model ("locations", "Location")
-    db_alias = schema_editor.connection.alias
-    
-    Location.objects.create (title = "Home", slug = "home", description = "It's not much, but it's home.", canshuffle = True)
-
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('events', '0001_initial'),
         ('cards', '0001_initial'),
+        ('events', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='GlobalEventTrigger',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('threshold', models.IntegerField(default=0)),
                 ('onlyWhenNotPlayed', models.BooleanField(default=False)),
                 ('event', models.ForeignKey(to='events.Event')),
@@ -34,14 +28,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Location',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('title', models.CharField(max_length=255)),
                 ('slug', models.SlugField(max_length=255, unique=True)),
                 ('description', models.CharField(max_length=255)),
                 ('published', models.BooleanField(default=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('canshuffle', models.BooleanField(default=False)),
-                ('deck', models.OneToOneField(blank=True, null=True, to='cards.Deck')),
+                ('deck', models.OneToOneField(null=True, blank=True, to='cards.Deck')),
             ],
             options={
                 'ordering': ['-created'],
@@ -51,7 +45,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='LocationTrigger',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('threshold', models.IntegerField(default=0)),
                 ('onlyWhenNotPlayed', models.BooleanField(default=False)),
                 ('content', models.TextField(default='')),
@@ -63,5 +57,4 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.RunPython (loadLocations),
     ]
