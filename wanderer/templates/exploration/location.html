@@ -1,62 +1,54 @@
 {% extends 'base.html' %}
- 
+
 {% block title %}{{location.title}}{% endblock %}
- 
+
 {% block content %}
-<article>
-	<header>
-		{% if numcardsatlocation > 0 %}
-		<h2>
-			<a href="draw/">Deck</a>
-		</h2>
-		{% endif %}
-		<!-- <h2>
-			<a href="shuffle">Rest</a>
-		</h2> -->
-		{% for event in userprofile.active_events %}
-		<h2>
-			{{event.cardStatus.card.template.name}} {{event.cardStatus.card.modifier}} : {{event.event.title}}
-		</h2>
-		{% endfor %}
-		{% if userprofile.active_location == location %}
-		<h2>
-			{{userprofile.active_event.event.title}} (Life: {{userprofile.active_event.life}})
-		</h2>
-		{{userprofile.active_event.event.content}}
-		{% elif userprofile.active_location != None %}
-		No active scenario here. Go to {{userprofile.active_location}}.
-		{% else %}
-		{% for link in location.npcLinks %}
-			<a href="/npc/{{link.id}}?from={{request.path}}">{{ link.npc.name }}</a>
-		{% endfor %}
-		{% endif %}
-		<h1> {{location.title}} </h1>
-		<p>
-			Posted on
-			<time datetime="{{location.created|date:"c"}}">
-			{{location.created|date}}
-			</time>
-		</p>
-		{% if location.canshuffle %}
-		<h2><a href="/shuffle?from={{request.path}}">Rest</a></h2>
-		{% endif %}
-	</header>
-	<p class="description">
+<div id="content_sidebar">
+	<h1> {{location.title}} </h1>
+	<p>
+		<p class="description">
 		{{location.description}}
-	</p>
-	{% for log in logs %}
-	<div class="logentry">
-		<h2>
-			{{log.title}}
-		</h2>
-		{{log.content | safe}}
-		<p>
-			Logged on
-			<time datetime="{{log.logged|date:"c"}}">
-			{{location.created|date}}
-			</time>
 		</p>
-	</div>
+	</p>
+	{% if location.canshuffle %}
+	<h2><a href="/shuffle?from={{request.path}}">Rest</a></h2>
+	{% endif %}
+</div>
+<div class="vert_divider"></div>
+<header>
+
+	{% if numcardsatlocation > 0 %}
+	<h2><a href="draw/">Deck</a></h2>
+	{% endif %}
+	<!-- <h2>
+	<a href="shuffle">Rest</a>
+	</h2> -->
+	{% for event in userprofile.active_events %}
+	<h2> {{event.cardStatus.card.template.name}} {{event.cardStatus.card.modifier}} : {{event.event.title}} </h2>
 	{% endfor %}
-</article>
+	{% if userprofile.active_location == location %}
+	<h2> {{userprofile.active_event.event.title}} (Life: {{userprofile.active_event.life}}) </h2>
+	{{userprofile.active_event.event.content}}
+	{% elif userprofile.active_location != None %}
+	No active scenario here. Go to {{userprofile.active_location}}.
+	{% else %}
+	{% for link in location.npcLinks %}
+	<a href="/npc/{{link.id}}?from={{request.path}}">{{ link.npc.name }}</a>
+	{% endfor %}
+	{% endif %}
+
+</header>
+
+{% for log in logs %}
+<div class="logentry">
+	<h2> {{log.title}} </h2>
+	{{log.content | safe}}
+	<p>
+		Logged on
+		<time datetime="{{log.logged|date:"c"}}">
+			{{location.created|date}}
+		</time>
+	</p>
+</div>
+{% endfor %}
 {% endblock %}
