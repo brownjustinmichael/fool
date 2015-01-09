@@ -40,7 +40,7 @@ def draw (request):
     slug = request.GET.get ('from', 'index.html').split ("/") [-2]
     location = get_object_or_404 (Location, slug = slug)
 
-    player.draw ()
+    player.draw (location)
     try:
         location.drawCard (player)
     except RuntimeError:

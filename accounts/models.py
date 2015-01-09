@@ -34,6 +34,9 @@ class CardStatus (models.Model):
         ordering = ['status', 'position']
         verbose_name_plural = "Card statuses"
         
+    def __str__ (self):
+        return "%s in (%s)" % (self.card, self.deck)
+        
     def save (self, *args, **kwargs):
         """
         Saves the object to the database
@@ -44,6 +47,11 @@ class CardStatus (models.Model):
     def draw (self, next_status = CARD_IN_HAND):
         card = self.card.draw (next_status = next_status)
         self.status = next_status
+        lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
+        if lastCard is not None:
+            self.position = lastCard.position + 1
+        else:
+            self.position = 0
         self.save ()
         return self
         
@@ -52,6 +60,9 @@ class CardStatus (models.Model):
         self.targetDeck = self.deck
         self.status = next_status
         self.played = played
+        lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
+        if lastCard is not None:
+            self.position = lastCard.position + 1
         self.save ()
         return value
         
@@ -59,11 +70,21 @@ class CardStatus (models.Model):
         self.card.resolve (self.deck.player, self.targetDeck, next_status = next_status)
         if CardStatus.objects.filter (id = self.id).count () > 0:
             self.status = next_status
+            lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
+            if lastCard is not None:
+                self.position = lastCard.position + 1
+            else:
+                self.position = 0
             self.save ()
         
     def discard (self, next_status = CARD_IN_DISCARD):
         self.card.discard (next_status = next_status)
         self.status = next_status
+        lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
+        if lastCard is not None:
+            self.position = lastCard.position + 1
+        else:
+            self.position = 0
         self.save ()
 
 class DeckStatus (models.Model):
@@ -157,8 +178,8 @@ class DeckStatus (models.Model):
         return: The CardStatus object drawn from the deck
         """
         self.checkInitialize ()
-        if not force and self.player.active_event is not None:
-            raise RuntimeError ("You can't draw from a deck if there's an unresolved event on the stack")
+        # if not force and self.player.active_event is not None:
+            # raise RuntimeError ("You can't draw from a deck if there's an unresolved event on the stack")
         
         cardstatus = self.cardstatus_set.filter (status = CARD_IN_DECK).order_by ('position').first ()
         if cardstatus is not None:
@@ -205,7 +226,6 @@ class DeckStatus (models.Model):
         
         self.initialized = False
         self.delete ()
-        self.save ()
 
 class AbstractPlayer (models.Model):
     """
@@ -260,14 +280,24 @@ class AbstractPlayer (models.Model):
     def maxCardsInDeck (self):
         return getattr (self, FORCE) * 4
         
-    def draw (self):
+    def draw (self, location):
         """
         Draw cards until your hand is full
         """
         if (self.getCards (CARD_IN_HAND).count () >= self.maxCardsInHand ()):
             raise RuntimeError ("You can't exceed the maximum number of cards in your hand")
+        if self.active_location is not None:
+            if location != self.active_location:
+                raise RuntimeError ("You can only draw at the current active location")
         while self.getCards (CARD_IN_HAND).count () < self.maxCardsInHand ():
             self.deck.getStatus (self).drawCard ()
+        if self.active_event is not None:
+            npc = self.active_event.npc
+            card = npc.drawCard (self, next_status = CARD_IN_PLAY)
+            print ("PLAYING NPC CARD", card)
+            self.resolve (card, played = False)
+        else:
+            location.drawCard (self)
         
     def playCard (self, card):
         if not isinstance (card, CardStatus):
@@ -331,7 +361,7 @@ class AbstractPlayer (models.Model):
         event.log ()
         event.save ()
         
-    def resolve (self, location, cardStatus = None):
+    def resolve (self, location, cardStatus = None, played = True):
         """
         Resolve anything unresolved on the stack.
         
@@ -353,7 +383,8 @@ class AbstractPlayer (models.Model):
             
         # Attempt to trigger a new event using any cards that may have been played
         if lastEvent is not None:
-            trigger, failed = lastEvent.resolve (self, location, cardStatus)
+            print ("TRIGGER ATTEMPT with", cardStatus)
+            trigger, failed = lastEvent.resolve (self, cardStatus, played)
             if trigger is not None:
                 log = TriggerLog (trigger = trigger, user = self, location = location, success = not failed)
                 log.save ()
@@ -445,9 +476,15 @@ class ActiveEvent (models.Model):
             return self.event.life + self.event.generateNPCInstance (self.player).life
             
     life = property (getLife)
+    
+    def getNPC (self):
+        if self.event is not None:
+            return self.event.npc
+            
+    npc = property (getNPC)
         
-    def resolve (self, player, location, cardStatus = None):
-        trigger, self.failed = self.event.resolve (player, location, cardStatus)
+    def resolve (self, player, cardStatus = None, played = True):
+        trigger, self.failed = self.event.resolve (player, cardStatus, played)
         if trigger is not None and not self.failed and trigger.resolved:
             self.resolved = True
             self.save ()
