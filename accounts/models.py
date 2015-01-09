@@ -293,9 +293,12 @@ class AbstractPlayer (models.Model):
             self.deck.getStatus (self).drawCard ()
         if self.active_event is not None:
             npc = self.active_event.npc
-            card = npc.drawCard (self, next_status = CARD_IN_PLAY)
-            print ("PLAYING NPC CARD", card)
-            self.resolve (card, played = False)
+            if npc is not None:
+                try:
+                    card = npc.drawCard (self, next_status = CARD_IN_PLAY)
+                    self.resolve (location, card, played = False)
+                except RuntimeError:
+                    pass
         else:
             location.drawCard (self)
         

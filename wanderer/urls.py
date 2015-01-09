@@ -14,4 +14,5 @@ urlpatterns = patterns('',
     url(r'^npc/(?P<slug>[\w\-]+)/$', 'npcs.views.npc'),
     url(r'^exploration/(?P<slug>[\w\-]+)/draw/$', 'locations.views.draw'),
     url(r'^exploration/(?P<slug>[\w\-]+)/$', 'locations.views.location'),
+    url(r'^exploration/', 'locations.views.index', name = "explore"),
 )
