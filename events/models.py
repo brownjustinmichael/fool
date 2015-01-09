@@ -42,31 +42,40 @@ class Event (models.Model):
             
     life = property (getLife)
         
-    def trigger_event (self, player, cardStatus, template, strength, location, npc = None, played = True):
+    def trigger_event (self, player, cardStatus, played = True):
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         # TODO cardStatus could keep track of its play values if it was just played
-        if npc is not None:
-            trigger = self.eventtrigger_set.filter (template = template).order_by ('threshold')
-        else:
-            trigger = self.eventtrigger_set.filter (template = template).order_by ('-threshold')
+        # If there is a card, play it
+        template, strength = player.playCard (cardStatus)
+        npc = self.generateNPCInstance (player)
             
         # Filter out triggers based on whether a user played it
         if played:
+            trigger = self.eventtrigger_set.filter (template = cardStatus.card.template).order_by ('threshold')
+            if npc is not None:
+                player.attack (npc, [(template, strength)])
+                value = self.npc.life + npc.life
+            else:
+                value = -strength
             trigger = trigger.filter (onlyWhenNotPlayed = False)
+        else:
+            print ("Not played")
+            if npc is not None:
+                pass
+                # npc.attack (player, [(template, strength)])
+            trigger = self.eventtrigger_set.filter (template = cardStatus.card.template).order_by ('threshold')
+            value = -strength
             
+        print ("TRIGGERS: ", trigger)
+        
         # If there is a remaining trigger, add the event to the stack
         last = None
         success = False
         for tr in trigger.all ():
             last = tr
-            if npc is not None:
-                if self.npc.life + npc.life <= tr.threshold:
-                    success = True
-                    break
-            else:
-                if strength >= tr.threshold:
-                    success = True
-                    break
+            if value <= tr.threshold:
+                success = True
+                break
         return (last, success)
         
     def generateNPCInstance (self, player):
@@ -77,7 +86,7 @@ class Event (models.Model):
                 npc.save ()
             return npc
     
-    def resolve (self, player, location, cardStatus = None):
+    def resolve (self, player, cardStatus = None, played = True):
         """Resolve an event with or without a card to play. If the event can't resolve with current conditions, return None
         
         Note: this method calls the card.draw () method, which effectively moves the card to the discard pile and puts any special abilities of that card into effect."""
@@ -86,14 +95,9 @@ class Event (models.Model):
             return (None, False)
         
         if cardStatus is not None:
-            # If there is a card, play it
-            stat, value = player.playCard (cardStatus)
-            npc = self.generateNPCInstance (player)
-            if npc is not None:
-                player.attack (npc, [(stat, value)])
                 
             # Try to trigger an event with the card
-            eventtrigger, success = self.trigger_event (player, cardStatus, cardStatus.card.template, value, location, npc, True)
+            eventtrigger, success = self.trigger_event (player, cardStatus, played)
             print ("Any triggers? ", eventtrigger, success)
             if eventtrigger is not None:
                 # cardStatus.resolve ()

@@ -9,6 +9,11 @@ class LocationTriggerInline(admin.TabularInline):
     model = LocationTrigger
     
 class LocationAdmin (admin.ModelAdmin):
+    class Media:
+        js = (
+            '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', # jquery
+            'script.js',       # project static folder
+        )
     inlines = [
         NPCLinkInline,
         LocationTriggerInline,

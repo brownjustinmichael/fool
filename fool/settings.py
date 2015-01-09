@@ -1,5 +1,5 @@
 """
-Django settings for wanderer project.
+Django settings for fool project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
@@ -55,9 +55,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'wanderer.urls'
+ROOT_URLCONF = 'fool.urls'
 
-WSGI_APPLICATION = 'wanderer.wsgi.application'
+WSGI_APPLICATION = 'fool.wsgi.application'
 
 
 # Database
@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'wanderer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'wanderer.db'),
+        'NAME': os.path.join(BASE_DIR, 'fool.db'),
     }
 }
 
@@ -84,7 +84,7 @@ USE_L10N = True
 USE_TZ = True
 
 TEMPLATE_DIRS = (
-    os.path.join (BASE_DIR, 'wanderer/templates/'),
+    os.path.join (BASE_DIR, 'fool/templates/'),
 )
 
 # Static files (CSS, JavaScript, Images)
@@ -104,7 +104,7 @@ STATICFILES_FINDERS = (
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join (BASE_DIR, 'wanderer/static/'),
+    os.path.join (BASE_DIR, 'fool/static/'),
 )
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
