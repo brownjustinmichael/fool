@@ -12,11 +12,14 @@ def card (request, slug):
     # get the Card object
     # TODO This should really fetch a cardStatus (which should be called a cardInstance)
     card = get_object_or_404 (BaseCard, id=slug)
+    print ("CARD HERE", card)
     player = get_object_or_404 (Player, user = request.user)
     # now return the rendered template
     
     locationSlug = request.GET.get ('from', 'index.html')
     location = Location.objects.filter (slug = re.search ("/?(?:exploration/)?([^/]*)", locationSlug).group (1)).first ()
+    
+    print ("STATUS", card.getStatus (player))
     
     player.resolve (location, card.getStatus (player))
     
@@ -28,8 +31,8 @@ def draw (request):
     username = None
     player = get_object_or_404 (Player, user = request.user)
     # TODO do this correctly
-    slug = request.GET.get ('from', 'index.html').split ("/") [-2]
-    location = get_object_or_404 (Location, slug = slug)
+    locationSlug = request.GET.get ('from', 'index.html')
+    location = Location.objects.filter (slug = re.search ("/?(?:exploration/)?([^/]*)", locationSlug).group (1)).first ()
 
     player.draw (location)
     try:
