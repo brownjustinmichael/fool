@@ -11,7 +11,7 @@ urlpatterns = patterns('',
 
     url(r'^exploration/home', 'locations.views.location', {"slug": 'home'}, name = "Home"),
     url(r'^exploration/$', 'locations.views.index', name = "Subway"),
-    url(r'^journal', 'locations.views.index', name = "Journal"),
+    url(r'^journal', 'accounts.views.journal', name = "Journal"),
     url(r'^user_preferences', 'locations.views.index', name = "User_Preferences"),
                        
     url(r'^shuffle/$', 'cards.views.shuffle'),

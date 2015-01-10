@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Exploration {% endblock %}
+ 
+{% block content %}
+	<h1> Exploration </h1>
+	{% for location in locations %}
+	<div class="location">
+		<h2>
+			<a href="{{location.get_absolute_url}}">
+				{{location.title}}
+			</a>
+		</h2>
+		<p>{{location.description}}</p>
+	</div>
+	{% endfor %}
+{% endblock %}
