@@ -7,6 +7,10 @@ from npcs.models import NPC, NPCInstance
 #     template = models.ForeignKey (CardTemplate)
 #     effect = models.ForeignKey (Effect)
 
+RESOLVE = "resolve"
+SWITCH = "switch"
+RESULTS = ((RESOLVE, "Resolve"), (SWITCH, "Switch"))
+
 class Event (models.Model):
     """
     This class is designed to contain an event and handle its resolution by choosing the appropriate contained result object 
@@ -136,8 +140,19 @@ class EventTrigger (models.Model):
     content = models.TextField (default = "", blank = True)
     failed_content = models.TextField (default = "", blank = True)
     
+    # 
+    result = models.CharField (max_length = 8, choices = RESULTS, blank = True, null = True, default = RESOLVE)
+    
+    def getResolved (self):
+        return self.result == RESOLVE
+    
     # If this trigger resolves the parent event, this boolean is True
-    resolved = models.BooleanField (default = True)
+    resolved = property (getResolved)
+    
+    def getSwitch (self):
+        return self.result == SWITCH
+        
+    switch = property (getSwitch)
     
     def __str__ (self):
         return "%s (%s %d) -> %s" % (str (self.originalEvent), str (self.template), self.threshold, str (self.event))

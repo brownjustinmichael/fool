@@ -376,21 +376,20 @@ class AbstractPlayer (models.Model):
         
         returns: The topmost ActiveEvent object on the stack
         """
+        print ("We're resolving...")
         
         # Check for unresolved events on the stack
         lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
         while lastEvent is not None and lastEvent.resolved:
-            if lastEvent.failed:
-                lastEvent.log ()
+            lastEvent.log ()
             lastEvent.delete ()
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
             
         # Attempt to trigger a new event using any cards that may have been played
         if lastEvent is not None:
-            print ("TRIGGER ATTEMPT with", cardStatus)
             trigger, failed = lastEvent.resolve (self, cardStatus, played)
             if trigger is not None:
-                log = TriggerLog (trigger = trigger, user = self, location = location, success = not failed)
+                log = TriggerLog (trigger = trigger, user = self, location = location, success = not failed, card = cardStatus.card)
                 log.save ()
                 if not failed:
                     self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
@@ -400,8 +399,7 @@ class AbstractPlayer (models.Model):
             
         # Check for unresolved events on the stack
         while lastEvent is not None and lastEvent.resolved:
-            if lastEvent.failed:
-                lastEvent.log ()
+            lastEvent.log ()
             lastEvent.delete ()
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
         
@@ -424,6 +422,7 @@ class Log (PolymorphicModel):
     event = models.ForeignKey (Event, null =  True, blank = True)
     location = models.ForeignKey ("locations.Location")
     logged = models.DateTimeField (auto_now_add=True)
+    card = models.ForeignKey (BaseCard, null = True, blank = True, default = None)
     
     user = models.ForeignKey (Player)
     
@@ -462,6 +461,7 @@ class ActiveEvent (models.Model):
     cardStatus = models.OneToOneField (CardStatus, related_name = "activeEvent")
     resolved = models.BooleanField (default = False)
     failed = models.BooleanField (default = False)
+    logged = models.BooleanField (default = False)
     location = models.ForeignKey (Location, null = True)
     
     class Meta:
@@ -491,11 +491,14 @@ class ActiveEvent (models.Model):
         
     def resolve (self, player, cardStatus = None, played = True):
         trigger, self.failed = self.event.resolve (player, cardStatus, played)
-        if trigger is not None and not self.failed and trigger.resolved:
+        if (trigger is not None and not self.failed and trigger.resolved) or self.event.auto:
             self.resolved = True
             self.save ()
         return trigger, self.failed
             
     def log (self):
-        log = Log (event = self.event, user = self.player, location = self.location)
-        log.save ()
+        if not self.logged:
+            log = Log (event = self.event, user = self.player, location = self.location)
+            log.save ()
+            self.logged = True
+            self.save ()
