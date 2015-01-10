@@ -54,7 +54,8 @@ class NPCInstance (models.Model):
         return DEFENSE_BONUS [scores [0] [0]], getattr (self.npc, DEFENSE_BONUS [scores [0] [0]])
         
     def drawCard (self, **kwargs):
-        return self.npc.deck.getStatus (self.player).drawCard (**kwargs)
+        if self.npc is not None and self.npc.deck is not None:
+            return self.npc.deck.getStatus (self.player).drawCard (**kwargs)
         
     def playCard (self, card = None):
         if card is None:

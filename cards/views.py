@@ -15,19 +15,9 @@ def card (request, slug):
     print ("CARD HERE", card)
     player = get_object_or_404 (Player, user = request.user)
     # now return the rendered template
-    deck = get_object_or_404 (Deck, player = player)
     
-    location = request.user.player.active_location
-    
-    event = player.resolve (location)
-    
-    if event is None:
-        slug = request.GET.get ('from', 'index.html')
-        location = Location.objects.filter (slug = slug [13:-1]).first ()
-        print ("The location is", slug, location)
-        if location is not None:
-            location.trigger_event (player, card.getStatus (player))
-        return redirect (request.GET.get ('from', 'index.html'))
+    locationSlug = request.GET.get ('from', 'index.html')
+    location = Location.objects.filter (slug = re.search ("/?(?:exploration/)?([^/]*)", locationSlug).group (1)).first ()
     
     print ("STATUS", card.getStatus (player))
     
