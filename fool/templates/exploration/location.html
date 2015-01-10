@@ -3,6 +3,7 @@
 {% block title %}{{location.title}}{% endblock %}
 
 {% block content %}
+<div class="content">
 <div id="content_sidebar">
 	<h1> {{location.title}} </h1>
 	<p>
@@ -23,12 +24,9 @@
 	<!-- <h2>
 	<a href="shuffle">Rest</a>
 	</h2> -->
-	{% for event in userprofile.active_events %}
-	<h2> {{event.cardStatus.card.template.name}} {{event.cardStatus.card.modifier}} : {{event.event.title}} </h2>
-	{% endfor %}
 	{% if userprofile.active_location == location %}
 	<h2> {{userprofile.active_event.event.title}} (Life: {{userprofile.active_event.life}}) </h2>
-	{{userprofile.active_event.event.content}}
+	<!--{{userprofile.active_event.event.content}}-->
 	{% elif userprofile.active_location != None %}
 	No active scenario here. Go to {{userprofile.active_location}}.
 	{% else %}
@@ -36,19 +34,23 @@
 	<a href="/npc/{{link.id}}?from={{request.path}}">{{ link.npc.name }}</a>
 	{% endfor %}
 	{% endif %}
+	
+	{% for event in userprofile.active_events %}
+	<h2> {{event.cardStatus.card.template.name}} {{event.cardStatus.card.modifier}} : {{event.event.title}} </h2>
+	{% endfor %}
+	
 
 </header>
 
+
+<div class="logs scroll">
 {% for log in logs %}
 <div class="logentry">
 	<h2> {{log.title}} </h2>
 	{{log.content | safe}}
-	<p>
-		Logged on
-		<time datetime="{{log.logged|date:"c"}}">
-			{{location.created|date}}
-		</time>
-	</p>
 </div>
 {% endfor %}
+</div>
+
+</div>
 {% endblock %}

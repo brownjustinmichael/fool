@@ -492,7 +492,7 @@ class ActiveEvent (models.Model):
         
     def resolve (self, player, cardStatus = None, played = True):
         trigger, self.failed = self.event.resolve (player, cardStatus, played)
-        if trigger is not None and not self.failed and trigger.resolved:
+        if (trigger is not None and not self.failed and trigger.resolved) or self.event.auto:
             self.resolved = True
             self.save ()
         return trigger, self.failed

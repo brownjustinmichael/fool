@@ -30,9 +30,18 @@ body{
 	max-width: 840px;
 	width: 96%;
 	height:80%;
-	padding: 2%;
+	padding:1.5%;
 	margin: 30px  auto;
-	overflow:scroll;
+}
+
+.scroll{
+	overflow-x:hidden;
+	overflow-y:scroll;
+}
+
+.logs{
+	padding:10px;
+	height:100%;
 }
 
 #end_page_spacing{
