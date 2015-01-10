@@ -285,6 +285,7 @@ class AbstractPlayer (models.Model):
         Draw cards until your hand is full
         """
         if (self.getCards (CARD_IN_HAND).count () >= self.maxCardsInHand ()):
+            return
             raise RuntimeError ("You can't exceed the maximum number of cards in your hand")
         if self.active_location is not None:
             if location != self.active_location:
@@ -394,6 +395,8 @@ class AbstractPlayer (models.Model):
                 if not failed:
                     self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
+        elif cardStatus is not None:
+            location.trigger_event (self, cardStatus)
             
         # Check for unresolved events on the stack
         while lastEvent is not None and lastEvent.resolved:
