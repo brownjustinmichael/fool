@@ -424,9 +424,10 @@ class Log (PolymorphicModel):
     
     user = models.ForeignKey (Player)
     
-    @property
-    def title ():
+    def getTitle (self):
         return self.event.title
+
+	title = property (getTitle)
     
     def getContent (self):
         return self.event.content

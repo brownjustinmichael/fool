@@ -32,6 +32,7 @@ body{
 	height:80%;
 	padding: 2%;
 	margin: 30px  auto;
+	overflow:scroll;
 }
 
 #end_page_spacing{
@@ -70,6 +71,25 @@ a{
 
 /*CONTENT CSS*/
 
+.page_title{
+	text-align:center;
+	border-bottom:1px solid black;
+	text-transform:uppercase;
+}
+
+.log_entry{
+	font-size:90%;
+	margin-left:5px;
+}
+
+.log_entry h2{
+	margin-bottom:-2px;
+}
+
+.tabbed{
+	margin-left:20px;
+}
+
 #content_sidebar{
 	display:inline-block;
 	width:20%;
@@ -80,7 +100,13 @@ a{
 	height:90%;
 	float:left;
 	border:1px solid black;
-	margin:0px 20px 0px 10px;
+	margin-left:0px 20px 0px 10px;
+}
+
+.horiz_divider{
+	width:90%;
+	margin:auto;
+	border-bottom:1px solid black;	
 }
 
 /*CARD CSS*/
