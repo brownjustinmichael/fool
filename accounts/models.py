@@ -104,7 +104,7 @@ class DeckStatus (models.Model):
         if not self.initialized:
             self.initialize ()
         
-    def initialize (self, default = CARD_IN_DECK):
+    def initialize (self, default = None):
         for cardstatus in self.cardstatus_set.all ():
             cardstatus.delete ()
         
@@ -129,6 +129,9 @@ class DeckStatus (models.Model):
             self.location = self.deck.location
         except ObjectDoesNotExist:
             pass
+        super (DeckStatus, self).save (*args, **kwargs)
+        if not self.initialized:
+            self.initialize (**kwargs)
         return super (DeckStatus, self).save (*args, **kwargs)
         
     def addNewCard (self, card, status = CARD_IN_HAND):
@@ -158,12 +161,11 @@ class DeckStatus (models.Model):
         self.checkInitialize ()
         return self.cardstatus_set.filter (status = status).count ()
     
-    def getCards (self, **kwargs):
+    def getCards (self, status = CARD_IN_HAND, **kwargs):
         """
         Return a list of the cards with current status
         """
         self.checkInitialize ()
-        status = kwargs.pop ('status', CARD_IN_HAND)
         return self.cardstatus_set.filter (status = status, **kwargs)
         
     def drawCard (self, next_status = CARD_IN_HAND, force = False):
@@ -290,7 +292,7 @@ class AbstractPlayer (models.Model):
         if self.active_location is not None:
             if location != self.active_location:
                 raise RuntimeError ("You can only draw at the current active location")
-        while self.getCards (CARD_IN_HAND).count () < self.maxCardsInHand ():
+        while self.getCards (CARD_IN_HAND, deck = self.deck).count () < self.maxCardsInHand ():
             self.deck.getStatus (self).drawCard ()
         if self.active_event is not None:
             npc = self.active_event.npc
@@ -317,12 +319,19 @@ class AbstractPlayer (models.Model):
         print ("Discarding", number, "cards")
         self.deck.getStatus (self).discard (number)
         
-    def reshuffleAll (self):
+    def sleep (self):
+        """Reset all player temporaries, including reshuffling all decks and resetting all NPCs"""
+        # Reshuffle all decks associated with the player
         for deckStatus in self.deckstatus_set.all ():
             deckStatus.reshuffle ()
+        # Delete all npc instances; they'll be regenerated when the player interacts with them again
+        for npcInstance in self.npcinstance_set.all ():
+            npcInstance.delete ()
         
-    def getCards (self, status = CARD_IN_PLAY):
-        return CardStatus.objects.filter (deck__player = self).filter (status = status)
+    def getCards (self, status = CARD_IN_PLAY, deck = None):
+        if deck is None:
+            return CardStatus.objects.filter (deck__player = self).filter (status = status)
+        return CardStatus.objects.filter (deck__player = self).filter (deck__deck = deck).filter (status = status)
         
     def addDeckStatus (self, deck):
         deckstatus = DeckStatus (deck = deck, player = self)
@@ -376,8 +385,6 @@ class AbstractPlayer (models.Model):
         
         returns: The topmost ActiveEvent object on the stack
         """
-        print ("We're resolving...")
-        
         # Check for unresolved events on the stack
         lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
         while lastEvent is not None and lastEvent.resolved:
@@ -386,12 +393,14 @@ class AbstractPlayer (models.Model):
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
             
         # Attempt to trigger a new event using any cards that may have been played
+        trigger = None
+        failed = True
         if lastEvent is not None:
             trigger, failed = lastEvent.resolve (self, cardStatus, played)
             if trigger is not None:
                 log = TriggerLog (trigger = trigger, user = self, location = location, success = not failed, card = cardStatus.card)
                 log.save ()
-                if not failed:
+                if trigger.event is not None and not failed and not trigger.switch:
                     self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
         elif cardStatus is not None:
@@ -402,6 +411,10 @@ class AbstractPlayer (models.Model):
             lastEvent.log ()
             lastEvent.delete ()
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
+            
+        # If the event is a switch event, resolve what you can, then add the next event
+        if trigger is not None and trigger.switch and not failed:
+            self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
         
         # Resolve any free cards in play
         for card in self.getCards (CARD_IN_PLAY):
@@ -464,17 +477,32 @@ class ActiveEvent (models.Model):
     logged = models.BooleanField (default = False)
     location = models.ForeignKey (Location, null = True)
     
+    def getPrevious (self):
+        if self.stackOrder <= 0:
+            return None
+        return self.player.active_events [self.stackOrder - 1]
+    
     class Meta:
         unique_together = ("player", "event", "stackOrder")
         
     def __init__(self, *args, **kwargs):
         super(ActiveEvent, self).__init__(*args, **kwargs)
+        
+    def delete (self):
+        if self.event.deck is not None:
+            deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
+            deckStatus.delete ()
+        super (ActiveEvent, self).delete ()
             
     def getCards (self, player, status):
         if self.event.deck is not None:
             deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
             deckStatus.initialize (CARD_IN_HAND)
-            return deckStatus.getCards (CARD_IN_HAND)
+            previous = self.getPrevious ()
+            if previous is not None:
+                return deckStatus.getCards (status) + previous.getCards (player, status)
+            else:
+                return deckStatus.getCards (status)
         return []
                 
     def getLife (self):
@@ -488,9 +516,13 @@ class ActiveEvent (models.Model):
             return self.event.npc
             
     npc = property (getNPC)
-        
+    
     def resolve (self, player, cardStatus = None, played = True):
         trigger, self.failed = self.event.resolve (player, cardStatus, played)
+        if trigger is None and not self.event.blocking:
+            previous = self.getPrevious ()
+            if previous is not None:
+                trigger, self.failed = previous.resolve (player, cardStatus, played)
         if (trigger is not None and not self.failed and trigger.resolved) or self.event.auto:
             self.resolved = True
             self.save ()

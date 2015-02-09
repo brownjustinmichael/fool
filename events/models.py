@@ -33,6 +33,8 @@ class Event (models.Model):
     auto = models.BooleanField (default = False)
     
     deck = models.ForeignKey (Deck, null = True, blank = True)
+    
+    blocking = models.BooleanField (default = False)
 
     class Meta:
         ordering = ['-created']
@@ -50,14 +52,14 @@ class Event (models.Model):
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         # TODO cardStatus could keep track of its play values if it was just played
         # If there is a card, play it
-        template, strength = player.playCard (cardStatus)
+        scores = player.playCard (cardStatus)
         npc = self.generateNPCInstance (player)
             
         # Filter out triggers based on whether a user played it
         if played:
             trigger = self.eventtrigger_set.filter (template = cardStatus.card.template).order_by ('threshold')
             if npc is not None:
-                player.attack (npc, [(template, strength)])
+                player.attack (npc, scores)
                 value = self.npc.life + npc.life
             else:
                 value = -strength
@@ -131,7 +133,7 @@ class EventTrigger (models.Model):
     threshold = models.IntegerField (default = 0)
     
     # The event triggered by this EventTrigger, if this is None, the EventTrigger happens, but returns to the previous event
-    event = models.ForeignKey (Event, null = True, related_name = "_unused_2")
+    event = models.ForeignKey (Event, null = True, blank = True, related_name = "_unused_2")
     
     # Particular cards, e.g. item cards, have different effects when found than when played. This boolean is true for an event triggered ONLY when the card is put into play directly from a non-player deck
     onlyWhenNotPlayed = models.BooleanField (default = False)

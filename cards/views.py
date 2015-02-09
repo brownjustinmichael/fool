@@ -46,6 +46,6 @@ def shuffle (request):
     username = None
     if request.user.is_authenticated():
         username = request.user.username
-    request.user.player.reshuffleAll ()
+    request.user.player.sleep ()
     return redirect (request.GET.get ('from', 'index.html'))
 

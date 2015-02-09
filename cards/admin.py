@@ -105,6 +105,7 @@ class CardTemplateParentAdmin(PolymorphicParentModelAdmin):
     """ The parent model admin """
     base_model = CardTemplate
     child_models = (
+        (CardTemplate, CardTemplateChildAdmin),
         (StatTemplate, StatTemplateAdmin),
         (ItemTemplate, ItemTemplateAdmin),
         (NPCTemplate, NPCTemplateAdmin),

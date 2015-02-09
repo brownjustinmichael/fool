@@ -1,7 +1,7 @@
 import collections
 
 from django.db import models
-from cards.models import DEFENSE_BONUS, PLAYER_STATS
+from cards.models import DEFENSE_BONUS, PLAYER_STATS, NPCTemplate
 
 playerStats = collections.OrderedDict ()
 for stat in PLAYER_STATS:
@@ -37,6 +37,16 @@ class AbstractNPC (models.Model):
         
 playerStats.update ({"__module__": __name__})
 NPC = type ('NPC', (AbstractNPC,), playerStats)
+
+def createNPCTemplate (instance, created, raw, **kwargs):
+    """
+    This function should be run after each NPC instance is saved, and it will create an NPCTemplate associated with the NPC if one does not already exist.
+    """
+    if instance.npctemplate_set.count () == 0:
+        template = NPCTemplate (npc = instance, name = str (instance))
+        template.save ()
+
+models.signals.post_save.connect (createNPCTemplate, sender = NPC, dispatch_uid = 'createNPCTemplate')
 
 class NPCInstance (models.Model):
     player = models.ForeignKey ("accounts.Player")
