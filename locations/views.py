@@ -43,7 +43,11 @@ def location (request, slug):
     
     in_play = player.getCards (CARD_IN_PLAY)
         
-    return render (request, 'exploration/location.html', {'location': location, 'location_deck': location_deck, 'numcardsatlocation': location_deck.getNumCards (player) if location_deck is not None else None, 'in_play': [card.card for card in in_play], 'hand': [card.card for card in player.getCards (CARD_IN_HAND).all ()] + [card.card for card in event.getCards (player, CARD_IN_HAND)], 'request': request, 'userprofile': player, 'numcardsindeck': player.deck.getNumCards (player), 'logs': player.log_set.filter (location = location).all ()})
+    in_hand = [card.card for card in player.getCards (CARD_IN_HAND).all ()]
+    if event is not None:
+        in_hand += [card.card for card in event.getCards (player, CARD_IN_HAND)]
+        
+    return render (request, 'exploration/location.html', {'location': location, 'location_deck': location_deck, 'numcardsatlocation': location_deck.getNumCards (player) if location_deck is not None else None, 'in_play': [card.card for card in in_play], 'hand': in_hand, 'request': request, 'userprofile': player, 'numcardsindeck': player.deck.getNumCards (player), 'logs': player.log_set.filter (location = location).all ()})
 
 @login_required (login_url='/accounts/login/')
 def draw (request, slug):

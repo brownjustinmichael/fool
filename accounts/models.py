@@ -45,6 +45,7 @@ class CardStatus (models.Model):
         return super (CardStatus, self).save (*args, **kwargs)
         
     def draw (self, next_status = CARD_IN_HAND):
+        assert (next_status is not None)
         card = self.card.draw (next_status = next_status)
         self.status = next_status
         lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
@@ -129,9 +130,6 @@ class DeckStatus (models.Model):
             self.location = self.deck.location
         except ObjectDoesNotExist:
             pass
-        super (DeckStatus, self).save (*args, **kwargs)
-        if not self.initialized:
-            self.initialize (**kwargs)
         return super (DeckStatus, self).save (*args, **kwargs)
         
     def addNewCard (self, card, status = CARD_IN_HAND):
@@ -286,13 +284,15 @@ class AbstractPlayer (models.Model):
         """
         Draw cards until your hand is full
         """
+        print ("SHALL WE DRAW?")
         if (self.getCards (CARD_IN_HAND).count () >= self.maxCardsInHand ()):
             return
             raise RuntimeError ("You can't exceed the maximum number of cards in your hand")
         if self.active_location is not None:
             if location != self.active_location:
                 raise RuntimeError ("You can only draw at the current active location")
-        while self.getCards (CARD_IN_HAND, deck = self.deck).count () < self.maxCardsInHand ():
+        print (self.getCards (CARD_IN_HAND).count ())
+        while self.getCards (CARD_IN_HAND).count () < self.maxCardsInHand ():
             self.deck.getStatus (self).drawCard ()
         if self.active_event is not None:
             npc = self.active_event.npc
@@ -303,16 +303,17 @@ class AbstractPlayer (models.Model):
                 except RuntimeError:
                     pass
         else:
-            location.drawCard (self)
+            try:
+                location.drawCard (self)
+            except ValueError:
+                pass
         
     def playCard (self, card):
         if not isinstance (card, CardStatus):
             cardstatus = card.getStatus (self)
         else:
             cardstatus = card
-        if cardstatus.card.template.stat is not None:
-            return cardstatus.play () + getattr (self, cardstatus.card.template.stat)
-        return cardstatus.play ()
+        return tuple (score + getattr (self, score.stat) for score in cardstatus.play ())
         
     def discard (self, number):
         # TODO Implement this
@@ -328,10 +329,8 @@ class AbstractPlayer (models.Model):
         for npcInstance in self.npcinstance_set.all ():
             npcInstance.delete ()
         
-    def getCards (self, status = CARD_IN_PLAY, deck = None):
-        if deck is None:
-            return CardStatus.objects.filter (deck__player = self).filter (status = status)
-        return CardStatus.objects.filter (deck__player = self).filter (deck__deck = deck).filter (status = status)
+    def getCards (self, status = CARD_IN_PLAY):
+        return CardStatus.objects.filter (deck__player = self).filter (deck__deck = self.deck).filter (status = status)
         
     def addDeckStatus (self, deck):
         deckstatus = DeckStatus (deck = deck, player = self)
@@ -339,11 +338,13 @@ class AbstractPlayer (models.Model):
         return deckstatus
         
     def attack (self, npc, scores):
+        if scores == tuple ():
+            return
         defenseStat, defenseValue = npc.defend (scores)
         if defenseValue < 0:
             print ("Immune")
             return
-        if scores [0] [0] == RESIST:
+        if scores [0].stat == RESIST:
             print ("You can't attack with resist")
             return
         print (defenseStat)
@@ -495,15 +496,17 @@ class ActiveEvent (models.Model):
         super (ActiveEvent, self).delete ()
             
     def getCards (self, player, status):
+        cards = []
         if self.event.deck is not None:
             deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
             deckStatus.initialize (CARD_IN_HAND)
-            previous = self.getPrevious ()
-            if previous is not None:
-                return deckStatus.getCards (status) + previous.getCards (player, status)
-            else:
-                return deckStatus.getCards (status)
-        return []
+            cards = list (deckStatus.getCards (status).all ())
+
+        previous = self.getPrevious ()
+        if not self.event.blocking and previous is not None:
+            return cards + previous.getCards (player, status)
+        else:
+            return cards
                 
     def getLife (self):
         if self.event.life is not None:

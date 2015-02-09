@@ -4,6 +4,8 @@ from django.core.urlresolvers import reverse
 from cards.models import Deck, CardTemplate, NPCCard
 from events.models import Event
 
+# TODO Since you can complete tasks outside of the active location, logs can be stored outside the location they happen
+
 class Location (models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, max_length=255)
@@ -23,7 +25,11 @@ class Location (models.Model):
         return reverse('locations.views.location', args=[self.slug])
         
     def trigger_event (self, player, cardStatus, played = True):
-        stat, strength = cardStatus.play (played = played)
+        scores = cardStatus.play (played = played)
+        if len (scores) > 0:
+            stat, strength = scores [0]
+        else:
+            strength = 0
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         trigger = self.locationtrigger_set.filter (template = cardStatus.card.template).filter (threshold__lte = strength).order_by ('-threshold')
                 

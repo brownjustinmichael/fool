@@ -210,7 +210,7 @@ class BaseCard (PolymorphicModel):
         """
         If playing the card would have a strange effect or unique bonuses, that effect should go here in a subclass
         """
-        return Score (self.template.stat, self.modifier)
+        return tuple ()
         
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
         for effectlink in self.getTemplate ().effectlink_set.all ():
@@ -236,6 +236,12 @@ class PlayerCard (BaseCard):
         
     def getTemplate (self):
         return self.template
+        
+    def play (self, next_status = CARD_IN_PLAY):
+        """
+        If playing the card would have a strange effect or unique bonuses, that effect should go here in a subclass
+        """
+        return (Score (self.template.stat, self.modifier),)
     
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
         # TODO Player Cards shouldn't gain experience when played outside of context

@@ -32,10 +32,6 @@ def draw (request):
     location = get_object_or_404 (Location, slug = slug)
 
     player.draw (location)
-    try:
-        location.drawCard (player)
-    except RuntimeError:
-        pass
     # card.status = CARD_IN_HAND
     # card.save ()
     return redirect (request.GET.get ('from', 'index.html'))

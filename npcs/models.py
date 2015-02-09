@@ -1,7 +1,7 @@
 import collections
 
 from django.db import models
-from cards.models import DEFENSE_BONUS, PLAYER_STATS, NPCTemplate
+from cards.models import DEFENSE_BONUS, PLAYER_STATS, NPCTemplate, Score
 
 playerStats = collections.OrderedDict ()
 for stat in PLAYER_STATS:
@@ -61,7 +61,7 @@ class NPCInstance (models.Model):
         self.save ()
         
     def defend (self, scores):
-        return DEFENSE_BONUS [scores [0] [0]], getattr (self.npc, DEFENSE_BONUS [scores [0] [0]])
+        return Score (DEFENSE_BONUS [scores [0].stat], getattr (self.npc, DEFENSE_BONUS [scores [0].stat]))
         
     def drawCard (self, **kwargs):
         if self.npc is not None and self.npc.deck is not None:
