@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from polymorphic import PolymorphicModel
 
 import abc
+import re
 
 import collections
 
@@ -244,11 +245,10 @@ class AbstractPlayer (models.Model):
     def __str__ (self):
         return u"%s's Profile" % self.user.username
         
-    def getActiveEvent (self):
+    @property
+    def active_event (self):
         return self.activeevent_set.order_by ("stackOrder").last ()
         
-    active_event = property (getActiveEvent)
-    
     def getActiveEvents (self):
         return self.activeevent_set.order_by ("stackOrder").all ()
         
@@ -440,14 +440,15 @@ class Log (PolymorphicModel):
     
     user = models.ForeignKey (Player)
     
+    # TODO these should use the flags associated with the log, not with the player directly
+    
     @property
-    def title ():
+    def title (self):
         return self.event.title
     
-    def getContent (self):
-        return self.event.content
-
-    content = property (getContent)
+    @property
+    def content (self):
+        return Flag.parse (self.user, self.event.content)
 
     class Meta:
         #Specify the order that the logging messages should appear "logged" for forward and "-logged" for reverse
@@ -458,16 +459,15 @@ class TriggerLog (Log):
     success = models.BooleanField (default = True)
     
     @property
-    def title ():
+    def title (self):
         return self.trigger.title
     
-    def getContent (self):
+    @property
+    def content (self):
         if self.success:
             return self.trigger.content
         return self.trigger.failed_content
-    
-    content = property (getContent)
-    
+
 class ActiveEvent (models.Model):
     player = models.ForeignKey (Player)
     event = models.ForeignKey (Event)
@@ -537,3 +537,67 @@ class ActiveEvent (models.Model):
             log.save ()
             self.logged = True
             self.save ()
+    
+    @property
+    def title (self):
+        return Flag.parse (self.player, self.event.title)
+    
+    @property
+    def content (self):
+        return Flag.parse (self.player, self.event.content)
+
+class Flag (models.Model):
+    """A database entry that pertains to flags for the players"""
+    
+    name = models.CharField (max_length = 60, unique = True)
+    
+    # TODO Flags should also be associable with Logs to allow a Log to record whatever flags it needs to work internally
+        
+    @classmethod
+    def get (cls, name):
+        tag = cls.objects.filter (name = name).first ()
+        if tag is None:
+            return Flag (name = name)
+        return tag
+        
+    def getPlayerFlag (self, player):
+        try:
+            return self.playerflag_set.filter (player = player).first ()
+        except Exception as e:
+            print (type (e), e)
+            flag = PlayerFlag (player = player, flag = self)
+            flag.save ()
+            return flag
+            
+    def state (self, player):
+        return self.getPlayerFlag (player = player).state
+        
+    def set (self, player, value):
+        self.getPlayerFlag (player = player).state = value
+        
+    @classmethod
+    def parse (cls, player, content):
+        pattern = re.compile (r"(\{\{(.*?)\?(.*?):(.*?)\}\})")
+        for conditional, tag, true, false in pattern.findall (content):
+            if cls.get (tag).state (player = player) >= 1:
+                content = content.replace (conditional, true)
+            else:
+                content = content.replace (conditional, false)
+        pattern = re.compile (r"(\{\{(.*?)\?(.*?)\}\})")
+        for conditional, tag, args in pattern.findall (content):
+            content = content.replace (conditional, args.split (",") [cls.get (tag).state (player = player)])
+        return content
+        
+    def __str__ (self):
+        return self.name
+        
+class PlayerFlag (models.Model):
+    """A linking table that links flags to players"""
+    
+    player = models.ForeignKey (Player)
+    flag = models.ForeignKey (Flag)
+    state = models.IntegerField (default = 0)
+    
+    class Meta:
+        unique_together = (('player', 'flag'))
+        

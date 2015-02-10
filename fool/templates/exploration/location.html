@@ -24,11 +24,11 @@
 	<a href="shuffle">Rest</a>
 	</h2> -->
 	{% for event in userprofile.active_events %}
-	<h2> {{event.cardStatus.card.template.name}} {{event.cardStatus.card.modifier}} : {{event.event.title}} </h2>
+	<h2> {{event.cardStatus.card.template.name}} {{event.cardStatus.card.modifier}} : {{event.title}} </h2>
 	{% endfor %}
 	{% if userprofile.active_location == location %}
-	<h2> {{userprofile.active_event.event.title}} (Life: {{userprofile.active_event.life}}) </h2>
-	{{userprofile.active_event.event.content}}
+	<h2> {{userprofile.active_event.title}} (Life: {{userprofile.active_event.life}}) </h2>
+	{{userprofile.active_event.content}}
 	{% elif userprofile.active_location != None %}
 	No active scenario here. Go to {{userprofile.active_location}}.
 	{% else %}

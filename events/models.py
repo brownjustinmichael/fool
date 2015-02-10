@@ -156,5 +156,9 @@ class EventTrigger (models.Model):
         
     switch = property (getSwitch)
     
+    @property
+    def title (self):
+        return self.originalEvent.title
+    
     def __str__ (self):
         return "%s (%s %d) -> %s" % (str (self.originalEvent), str (self.template), self.threshold, str (self.event))
