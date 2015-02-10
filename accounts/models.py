@@ -448,15 +448,21 @@ class Log (PolymorphicModel):
     
     @property
     def content (self):
-        return Flag.parse (self.user, self.event.content)
+        return Flag.parseLog (self, self.event.content)
 
     class Meta:
         #Specify the order that the logging messages should appear "logged" for forward and "-logged" for reverse
         ordering = ['logged']
         
+    def __repr__ (self):
+        return "<Log Object %d>" % self.id
+    
 class TriggerLog (Log):
     trigger = models.ForeignKey (EventTrigger)
     success = models.BooleanField (default = True)
+    
+    def __repr__ (self):
+        return "<TriggerLog Object %d>" % self.id
     
     @property
     def title (self):
@@ -532,9 +538,12 @@ class ActiveEvent (models.Model):
         return trigger, self.failed
             
     def log (self):
+        # TODO Make sure this executes before any flags are updated
         if not self.logged:
             log = Log (event = self.event, user = self.player, location = self.location)
             log.save ()
+            flags = [LogFlag.fromPlayerFlag (Flag.get (tag).getPlayerFlag (player = self.player), log) for tag in self.event.contentFlags]
+            [flag.save () for flag in flags]
             self.logged = True
             self.save ()
     
@@ -544,14 +553,13 @@ class ActiveEvent (models.Model):
     
     @property
     def content (self):
+        print ("Parsing", self.event.content)
         return Flag.parse (self.player, self.event.content)
 
 class Flag (models.Model):
     """A database entry that pertains to flags for the players"""
     
     name = models.CharField (max_length = 60, unique = True)
-    
-    # TODO Flags should also be associable with Logs to allow a Log to record whatever flags it needs to work internally
         
     @classmethod
     def get (cls, name):
@@ -561,16 +569,27 @@ class Flag (models.Model):
         return tag
         
     def getPlayerFlag (self, player):
-        try:
-            return self.playerflag_set.filter (player = player).first ()
-        except Exception as e:
-            print (type (e), e)
+        flag = PlayerFlag.objects.filter (flag = self).filter (player = player).first ()
+        if flag is None:
             flag = PlayerFlag (player = player, flag = self)
             flag.save ()
-            return flag
+        return flag
+            
+    def getLogFlag (self, log):
+        print ("Getting log flag", self.name)
+        print (LogFlag.objects.all ())
+        flag = LogFlag.objects.filter (flag = self).filter (log = log).first ()
+        if flag is None:
+            print ("Couldn't find flag", self.name)
+            flag = LogFlag (log = log, flag = self)
+            flag.save ()
+        return flag
             
     def state (self, player):
         return self.getPlayerFlag (player = player).state
+        
+    def stateLog (self, log):
+        return self.getLogFlag (log = log).state
         
     def set (self, player, value):
         self.getPlayerFlag (player = player).state = value
@@ -588,6 +607,22 @@ class Flag (models.Model):
             content = content.replace (conditional, args.split (",") [cls.get (tag).state (player = player)])
         return content
         
+    @classmethod
+    def parseLog (cls, log, content):
+        print ("Parsing Log")
+        pattern = re.compile (r"(\{\{(.*?)\?(.*?):(.*?)\}\})")
+        for conditional, tag, true, false in pattern.findall (content):
+            if cls.get (tag).stateLog (log = log) >= 1:
+                print ("Found true", tag)
+                content = content.replace (conditional, true)
+            else:
+                print ("Found false", tag)
+                content = content.replace (conditional, false)
+        pattern = re.compile (r"(\{\{(.*?)\?(.*?)\}\})")
+        for conditional, tag, args in pattern.findall (content):
+            content = content.replace (conditional, args.split (",") [cls.get (tag).stateLog (log = log)])
+        return content
+        
     def __str__ (self):
         return self.name
         
@@ -601,3 +636,23 @@ class PlayerFlag (models.Model):
     class Meta:
         unique_together = (('player', 'flag'))
         
+    def __repr__ (self):
+        return "<PlayerFlag %s for %s = %d>" % (str (self.flag), str (self.player), self.state)
+        
+class LogFlag (models.Model):
+    """A linking table that links flags to players"""
+    
+    log = models.ForeignKey (Log)
+    flag = models.ForeignKey (Flag)
+    state = models.IntegerField (default = 0)
+    
+    class Meta:
+        unique_together = (('log', 'flag'))
+        
+    @classmethod
+    def fromPlayerFlag (cls, playerFlag, log):
+        return cls (log = log, flag = playerFlag.flag, state = playerFlag.state)
+        
+    def __repr__ (self):
+        return "<LogFlag %s for %s = %d>" % (str (self.flag), str (self.log), self.state)
+    

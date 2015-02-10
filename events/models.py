@@ -1,4 +1,5 @@
 from django.db import models
+import re
 
 from cards.models import CardTemplate, Deck
 from npcs.models import NPC, NPCInstance
@@ -42,11 +43,14 @@ class Event (models.Model):
     def __str__(self):
         return u'%s' % self.title
         
-    def getLife (self):
+    @property
+    def life (self):
         if self.npc is not None:
             return self.npc.life
-            
-    life = property (getLife)
+    
+    @property
+    def contentFlags (self):
+        return list (set ([tag for tag in re.findall (r"\{\{(.*?)\?", self.title + self.content)]))
         
     def trigger_event (self, player, cardStatus, played = True):
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria

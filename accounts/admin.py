@@ -1,5 +1,5 @@
 from django.contrib import admin
-from accounts.models import Player, CardStatus, DeckStatus, Log, TriggerLog, ActiveEvent, PlayerFlag, Flag
+from accounts.models import Player, CardStatus, DeckStatus, Log, TriggerLog, ActiveEvent, PlayerFlag, Flag, LogFlag
 from django.core.urlresolvers import reverse
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 
@@ -50,9 +50,13 @@ admin.site.register (Flag)
 # admin.site.register (Log)
 
 
+class LogFlagInline (admin.TabularInline):
+    model = LogFlag
+
 class LogChildAdmin(PolymorphicChildModelAdmin):
     """ Base admin class for all child models """
     base_model = Log
+    inlines = [LogFlagInline]
 
     # By using these `base_...` attributes instead of the regular ModelAdmin `form` and `fieldsets`,
     # the additional fields of the child models are automatically added to the admin form.
@@ -63,7 +67,7 @@ class LogChildAdmin(PolymorphicChildModelAdmin):
 
 class TriggerLogAdmin(LogChildAdmin):
     # define custom features here
-    pass
+    inlines = [LogFlagInline]
     
 class LogParentAdmin(PolymorphicParentModelAdmin):
     """ The parent model admin """
