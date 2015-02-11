@@ -27,17 +27,13 @@ def location (request, slug):
     
     active_location = player.active_location
     
-    print ("THE ACTIVE LOCATION IS ", active_location)
-    
     if location == active_location:
         player.resolve (location)
         
     in_play = player.getCards (CARD_IN_PLAY)
-    print ("THE CARDS IN PLAY ARE", in_play)
         
     event = player.resolve (location)
     if (event is None):
-        print ("THE EVENT IS NONE, RESOLVE ALL CARDS")
         for card in in_play:
             card.resolve ()
     
