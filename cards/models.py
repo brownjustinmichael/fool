@@ -184,17 +184,22 @@ class BaseCard (PolymorphicModel):
     This is a playable instance of the cardtemplate class. It should contain methods for card use, upgrades, socketing, etc.
     """
     modifier = models.IntegerField ()
+    name = models.CharField (max_length = 60, default = "", blank = True)
     description = models.TextField (blank = True, null = True)
     deck = models.ForeignKey (Deck, null = True, blank = True)
     
     def __str__ (self):
-        return u"%s %d" % (self.getTemplate (), self.modifier)
+        return u"%s %d" % (self.name, self.modifier)
+        
+    def save (self, *args, **kwargs):
+        self.name = str (self.template)
+        super (BaseCard, self).save (*args, **kwargs)
         
     def isActive (self):
         return True
         
-    @abc.abstractmethod
-    def getTemplate (self):
+    @abc.abstractproperty
+    def template (self):
         pass
         
     def getStatus (self, player):
@@ -213,7 +218,7 @@ class BaseCard (PolymorphicModel):
         return tuple ()
         
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
-        for effectlink in self.getTemplate ().effectlink_set.all ():
+        for effectlink in self.template.effectlink_set.all ():
             effectlink.effect.affect (self.modifier, player, targetDeck)
         return self
         
@@ -224,18 +229,12 @@ class BaseCard (PolymorphicModel):
 class Card (BaseCard):
     template = models.ForeignKey (CardTemplate)
     
-    def getTemplate (self):
-        return self.template
-    
 class PlayerCard (BaseCard):
     template = models.ForeignKey (StatTemplate)
     experience = models.IntegerField (default = 0)
     
     def __str__ (self):
         return u"%s %d w/ EXP %d" % (self.template, self.modifier, self.experience)
-        
-    def getTemplate (self):
-        return self.template
         
     def play (self, next_status = CARD_IN_PLAY):
         """
@@ -255,9 +254,6 @@ class ItemCard (BaseCard):
     def __str__ (self):
         return u"%s %d" % (self.template, self.modifier)
         
-    def getTemplate (self):
-        return self.template
-        
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
         if self.getStatus (player).played:
             result = super (ItemCard, self).resolve (player, targetDeck, next_status)
@@ -271,9 +267,6 @@ class NPCCard (BaseCard):
     
     def __str__ (self):
         return u"%s %d" % (self.template, self.modifier)
-        
-    def getTemplate (self):
-        return self.template
     
 
 class Effect (PolymorphicModel):
