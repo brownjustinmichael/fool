@@ -9,6 +9,7 @@ class Location (models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, max_length=255)
     description = models.CharField(max_length=255)
+    content = models.TextField(default = "", blank = True)
     published = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     canshuffle = models.BooleanField (default = False)
@@ -46,6 +47,7 @@ class Location (models.Model):
         """
         Draw a card from the location deck. Check whether this card triggers any events.
         """
+        print (self.deck)
         if self.deck is not None:
             if player.activeevent_set.count () > 0:
                 raise RuntimeError ("You can't draw from the location deck if there are still active events.")

@@ -47,6 +47,7 @@ def location (request, slug):
 
 @login_required (login_url='/accounts/login/')
 def draw (request, slug):
+    print ("Draw")
     # get the Location object
     player = get_object_or_404 (Player, user = request.user)
         

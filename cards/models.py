@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from polymorphic import PolymorphicModel
 import abc
+import copy
 
 import random
 
@@ -76,11 +77,10 @@ class CardTemplate (PolymorphicModel):
     def _getStat (self):
         pass
         
-    def getStat (self):
+    @property
+    def stat (self):
         return self._getStat ()
-        
-    stat = property (getStat)
-        
+
 class StatTemplate (CardTemplate):
     """
     This class is designed to contain the more complex workings of the card class, which will include leveling mechanisms, socketing capacity, and subclasses for strange cards like Tarot and Item
@@ -185,7 +185,7 @@ class BaseCard (PolymorphicModel):
     deck = models.ForeignKey (Deck, null = True, blank = True)
     
     def __str__ (self):
-        return u"%s %d" % (self.name, self.modifier)
+        return u"%s: %s %d" % (str (self.deck), self.name, self.modifier)
         
     def save (self, *args, **kwargs):
         self.name = str (self.template)
@@ -214,6 +214,7 @@ class BaseCard (PolymorphicModel):
         return tuple ()
         
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
+        print ("Resolving SUPER")
         for effectlink in self.template.effectlink_set.all ():
             effectlink.effect.affect (self.modifier, player, targetDeck)
         return self
@@ -251,7 +252,9 @@ class ItemCard (BaseCard):
         return u"%s %d" % (self.template, self.modifier)
         
     def resolve (self, player, targetDeck = None, next_status = CARD_IN_DISCARD):
+        print ("Resolving")
         if self.getStatus (player).played:
+            print ("Was played")
             result = super (ItemCard, self).resolve (player, targetDeck, next_status)
             self.delete ()
 
@@ -284,8 +287,7 @@ class HealEffect (Effect):
             targetDeck = targetDeck.getStatus (player)
         if targetDeck is not None:
             for cardstatus in targetDeck.getCards (status = CARD_IN_DISCARD).order_by ('-position') [:min (multiplier, targetDeck.getNumCards (CARD_IN_DISCARD))]:
-                cardstatus.status = CARD_IN_DECK
-                cardstatus.save ()
+                cardstatus.recover ()
         # status.reshuffle (status = CARD_IN_DECK)
         
 class StatChangeEffect (Effect):
@@ -309,6 +311,25 @@ class FlagEffect (Effect):
         flag = self.flag.getPlayerFlag (player)
         flag.state = self.value
         flag.save ()
+        
+class AddCardEffect (Effect):
+    card = models.ForeignKey (BaseCard)
+    
+    def __str__ (self):
+        return "Effect: Add %s" % str (self.card)
+    
+    def affect (self, multiplier, player, targetDeck):
+        print (type (self.card))
+        print (dir (self.card))
+        print (self.card.polymorphic_ctype)
+        print (self.card.itemcard)
+        self.card.pk = None
+        self.card.id = None
+        self.card.deck = targetDeck
+        self.card.save ()
+        status = self.card.deck.getStatus (player)
+        status = status.addCardStatus (self.card, CARD_IN_HAND)
+        status.save ()
         
 class EffectLink (models.Model):
     template = models.ForeignKey (CardTemplate)

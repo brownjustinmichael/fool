@@ -43,6 +43,8 @@ class CardStatus (models.Model):
         Saves the object to the database
         """
         # self.deck = self.card.deck
+        if self.position == None:
+            self.position = self.deck.getCards (status = self.status).order_by ("position").last ().position + 1
         return super (CardStatus, self).save (*args, **kwargs)
         
     def draw (self, next_status = CARD_IN_HAND):
@@ -88,6 +90,15 @@ class CardStatus (models.Model):
         else:
             self.position = 0
         self.save ()
+        
+    def recover (self, next_status = CARD_IN_DECK):
+        self.status = next_status
+        lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
+        if lastCard is not None:
+            self.position = lastCard.position + 1
+        else:
+            self.position = 0
+        self.save ()
 
 class DeckStatus (models.Model):
     player = models.ForeignKey ('Player')
@@ -106,7 +117,7 @@ class DeckStatus (models.Model):
         if not self.initialized:
             self.initialize ()
         
-    def initialize (self, default = None):
+    def initialize (self, default = CARD_IN_DECK):
         for cardstatus in self.cardstatus_set.all ():
             cardstatus.delete ()
         
@@ -249,11 +260,9 @@ class AbstractPlayer (models.Model):
     def active_event (self):
         return self.activeevent_set.order_by ("stackOrder").last ()
         
-    def getActiveEvents (self):
+    @property
+    def activeEvents (self):
         return self.activeevent_set.order_by ("stackOrder").all ()
-        
-    active_events = property (getActiveEvents)
-    
     
     def getActiveLocation (self):
         active = self.active_event
@@ -329,8 +338,11 @@ class AbstractPlayer (models.Model):
         for npcInstance in self.npcinstance_set.all ():
             npcInstance.delete ()
         
-    def getCards (self, status = CARD_IN_PLAY):
-        return CardStatus.objects.filter (deck__player = self).filter (deck__deck = self.deck).filter (status = status)
+    def getCards (self, status = CARD_IN_PLAY, allDecks = False):
+        query = CardStatus.objects.filter (deck__player = self).filter (status = status)
+        if not allDecks:
+            query = query.filter (deck__deck = self.deck)
+        return query.all ()
         
     def addDeckStatus (self, deck):
         deckstatus = DeckStatus (deck = deck, player = self)
@@ -418,7 +430,7 @@ class AbstractPlayer (models.Model):
             self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
         
         # Resolve any free cards in play
-        for card in self.getCards (CARD_IN_PLAY):
+        for card in self.getCards (CARD_IN_PLAY, True):
             try:
                 if card.activeEvent is None:
                     card.resolve ()

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cards.models import CardTemplate, StatTemplate, ItemTemplate, BaseCard, Card, PlayerCard, ItemCard, Deck, Effect, HealEffect, StatChangeEffect, FlagEffect, EffectLink, NPCCard, NPCTemplate
+from cards.models import CardTemplate, StatTemplate, ItemTemplate, BaseCard, Card, PlayerCard, ItemCard, Deck, Effect, HealEffect, StatChangeEffect, FlagEffect, EffectLink, NPCCard, NPCTemplate, AddCardEffect
 
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 
@@ -62,8 +62,6 @@ class BaseCardParentAdmin(PolymorphicParentModelAdmin):
     """ The parent model admin """
     base_model = BaseCard
     child_models = (
-        # (BaseCard, BaseCardChildAdmin),
-        (Card, CardAdmin),
         (PlayerCard, PlayerCardAdmin),
         (ItemCard, ItemCardAdmin),
         (NPCCard, NPCCardAdmin),
@@ -133,6 +131,10 @@ class StatChangeEffectAdmin(EffectChildAdmin):
 class FlagEffectAdmin(EffectChildAdmin):
     # define custom features here
     pass
+    
+class AddCardEffectAdmin(EffectChildAdmin):
+    # define custom features here
+    pass
 
 class EffectParentAdmin(PolymorphicParentModelAdmin):
     """ The parent model admin """
@@ -141,6 +143,7 @@ class EffectParentAdmin(PolymorphicParentModelAdmin):
         (HealEffect, HealEffectAdmin),
         (StatChangeEffect, StatChangeEffectAdmin),
         (FlagEffect, FlagEffectAdmin),
+        (AddCardEffect, AddCardEffectAdmin),
     )
     
 admin.site.register (Effect, EffectParentAdmin)

@@ -16,6 +16,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, serialize=False, primary_key=True)),
                 ('modifier', models.IntegerField()),
                 ('description', models.TextField(null=True, blank=True)),
+                ('name', models.CharField(max_length = 60, default = "", blank = True)),
             ],
             options={
                 'abstract': False,
