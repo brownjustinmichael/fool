@@ -543,8 +543,10 @@ class ActiveEvent (models.Model):
         return trigger, self.failed
             
     def log (self):
-        # TODO Make sure this executes before any flags are updated
         if not self.logged:
+            for eventeffect in self.event.eventeffect_set.all ():
+                eventeffect.effect.affect (self.cardStatus.card.modifier, self.player, self.player.deck)
+            
             log = Log (event = self.event, user = self.player, location = self.location)
             log.save ()
             flags = list (set ([LogFlag.fromPlayerFlag (flag.getPlayerFlag (self.player), log) for tag in self.event.contentFlags for flag in CompositeFlag.fromString (tag).getFlags ()]))
@@ -566,7 +568,7 @@ class Flag (models.Model):
     name = models.CharField (max_length = 60, unique = True)
     
     def save (self, *args, **kwargs):
-        if re.search ("(^[^a-zA-Z]|[^a-zA-Z0-9])", self.name) is not None:
+        if re.search ("(^[^a-zA-Z_]|[^a-zA-Z0-9_])", self.name) is not None:
             raise ValueError ("Flags must be valid python variables (a-zA-Z0-9 and can't begin with a number)")
         super (Flag, self).save (*args, **kwargs)
         
@@ -684,6 +686,8 @@ class CompositeFlag (object):
         parse = ast.parse (string)
         if len (parse.body) > 1:
             raise RuntimeError ("Too complex")
+        if len (parse.body) == 0:
+            return cls (True)
         return cls.fromNode (parse.body [0].value)
                               
     @classmethod

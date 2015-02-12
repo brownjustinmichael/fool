@@ -1,14 +1,16 @@
 from django.contrib import admin
-from events.models import Event, EventTrigger
-
+from events.models import Event, EventTrigger, EventEffect
 
 class EventTriggerInline(admin.TabularInline):
     model = EventTrigger
     fk_name = "originalEvent"
 
+class EffectInline(admin.TabularInline):
+    model = EventEffect
+
 class EventAdmin (admin.ModelAdmin):
     inlines = [
-        EventTriggerInline,
+        EffectInline, EventTriggerInline,
     ]
  
 admin.site.register (Event, EventAdmin)

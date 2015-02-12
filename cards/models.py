@@ -91,8 +91,6 @@ class StatTemplate (CardTemplate):
         return PlayerCard (template = self, **kwargs)
         
     def _getStat (self):
-        print ("CALLING XSTAT STAT")
-        print (self.statistic)
         return self.statistic
     
 class ItemTemplate (CardTemplate):
@@ -105,8 +103,6 @@ class ItemTemplate (CardTemplate):
         return ItemCard (template = self, **kwargs)
         
     def _getStat (self):
-        print ("CALLING XSTAT ITEM")
-        
         return self.statistic
         
 class NPCTemplate (CardTemplate):
@@ -292,7 +288,7 @@ class HealEffect (Effect):
                 cardstatus.save ()
         # status.reshuffle (status = CARD_IN_DECK)
         
-class StatusChangeEffect (Effect):
+class StatChangeEffect (Effect):
     stat = models.CharField (max_length = 8, choices = PLAYER_STATS)
     strength = models.IntegerField (default = 0)
     
@@ -301,6 +297,18 @@ class StatusChangeEffect (Effect):
     
     def affect (self, multiplier, player, targetDeck):
         player.changeStat (self.stat, self.strength)
+        
+class FlagEffect (Effect):
+    flag = models.ForeignKey ("accounts.Flag")
+    value = models.IntegerField (default = 0)
+    
+    def __str__ (self):
+        return "Effect: %s -> %d" % (self.flag, self.value)
+        
+    def affect (self, multiplier, player, targetDeck):
+        flag = self.flag.getPlayerFlag (player)
+        flag.state = self.value
+        flag.save ()
         
 class EffectLink (models.Model):
     template = models.ForeignKey (CardTemplate)
