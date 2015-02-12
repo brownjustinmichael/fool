@@ -2,7 +2,6 @@ from django.db import models
 from django.core.urlresolvers import reverse
 
 from cards.models import Deck, CardTemplate, NPCCard
-from events.models import Event
 
 # TODO Since you can complete tasks outside of the active location, logs can be stored outside the location they happen
 
@@ -69,7 +68,7 @@ class Location (models.Model):
 
 class GlobalEventTrigger (models.Model):
     template = models.ForeignKey (CardTemplate)
-    event = models.ForeignKey (Event)
+    event = models.ForeignKey ("events.Event")
     threshold = models.IntegerField (default = 0)
     onlyWhenNotPlayed = models.BooleanField (default = False)
 
@@ -77,7 +76,7 @@ class LocationTrigger (models.Model):
     """docstring for EventTrigger """
     location = models.ForeignKey (Location)
     template = models.ForeignKey (CardTemplate)
-    event = models.ForeignKey (Event)
+    event = models.ForeignKey ("events.Event")
     threshold = models.IntegerField (default = 0)
     onlyWhenNotPlayed = models.BooleanField (default = False)
     content = models.TextField (default = "")

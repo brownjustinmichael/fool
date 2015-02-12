@@ -3,6 +3,7 @@ import re
 
 from cards.models import CardTemplate, Deck
 from npcs.models import NPC, NPCInstance
+from accounts.models import CompositeFlag
 
 # class EffectEventLink (models.Model):
 #     template = models.ForeignKey (CardTemplate)
@@ -82,9 +83,10 @@ class Event (models.Model):
         last = None
         success = False
         for tr in trigger.all ():
-            last = tr
-            if value <= tr.threshold:
-                success = True
+            if tr.checkTrigger (player, value):
+                last = tr
+                success = value <= tr.threshold 
+            if success:
                 break
         return (last, success)
         
@@ -136,6 +138,8 @@ class EventTrigger (models.Model):
     # The threshold that this card must beat in order to activate successfully. This is either the quantity that the card score must beat or the maximum remaining life of the associated NPC to be successful
     threshold = models.IntegerField (default = 0)
     
+    conditions = models.CharField (max_length = 256, default = "", blank = True)
+    
     # The event triggered by this EventTrigger, if this is None, the EventTrigger happens, but returns to the previous event
     event = models.ForeignKey (Event, null = True, blank = True, related_name = "_unused_2")
     
@@ -159,6 +163,9 @@ class EventTrigger (models.Model):
         return self.result == SWITCH
         
     switch = property (getSwitch)
+    
+    def checkTrigger (self, player, value):
+        return CompositeFlag.fromString (self.conditions).state (player)
     
     @property
     def title (self):

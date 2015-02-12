@@ -12,7 +12,6 @@ import collections
 
 from polymorphic import PolymorphicModel
 
-from events.models import Event, EventTrigger
 from locations.models import Location
 from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, CARD_IN_DECK, CARD_IN_DISCARD, CARD_IN_HAND, CARD_IN_PLAY, Deck, Card, BaseCard, PLAYER_STATS, EXTRA_STATS, DEFENSE_BONUS, OFFENSE_BONUS, RESIST, FORCE
 
@@ -434,7 +433,7 @@ stats.update ({"__module__": __name__})
 Player = type ('Player', (AbstractPlayer,), stats)
 
 class Log (PolymorphicModel):
-    event = models.ForeignKey (Event, null =  True, blank = True)
+    event = models.ForeignKey ("events.Event", null =  True, blank = True)
     location = models.ForeignKey ("locations.Location")
     logged = models.DateTimeField (auto_now_add=True)
     card = models.ForeignKey (BaseCard, null = True, blank = True, default = None)
@@ -464,7 +463,7 @@ class Log (PolymorphicModel):
         return "<Log Object %d>" % self.id
     
 class TriggerLog (Log):
-    trigger = models.ForeignKey (EventTrigger)
+    trigger = models.ForeignKey ("events.EventTrigger")
     success = models.BooleanField (default = True)
     
     def __repr__ (self):
@@ -482,7 +481,7 @@ class TriggerLog (Log):
 
 class ActiveEvent (models.Model):
     player = models.ForeignKey (Player)
-    event = models.ForeignKey (Event)
+    event = models.ForeignKey ("events.Event")
     stackOrder = models.IntegerField ()
     cardStatus = models.OneToOneField (CardStatus, related_name = "activeEvent")
     resolved = models.BooleanField (default = False)
@@ -548,7 +547,7 @@ class ActiveEvent (models.Model):
         if not self.logged:
             log = Log (event = self.event, user = self.player, location = self.location)
             log.save ()
-            flags = [LogFlag.fromPlayerFlag (Flag.get (tag).getPlayerFlag (player = self.player), log) for tag in self.event.contentFlags]
+            flags = list (set ([LogFlag.fromPlayerFlag (flag.getPlayerFlag (self.player), log) for tag in self.event.contentFlags for flag in CompositeFlag.fromString (tag).getFlags ()]))
             [flag.save () for flag in flags]
             self.logged = True
             self.save ()
@@ -577,6 +576,9 @@ class Flag (models.Model):
         if tag is None:
             raise ValueError ("No such flag", name)
         return tag
+        
+    def getFlags (self):
+        return [self]
         
     def getPlayerFlag (self, player):
         flag = PlayerFlag.objects.filter (flag = self).filter (player = player).first ()
@@ -619,10 +621,22 @@ class Flag (models.Model):
     def __str__ (self):
         return self.name
         
+    def __eq__ (self, other):
+        return type (self) == type (other) and self.name == other.name
+        
 class CompositeFlag (object):
     def __init__ (self, *flags, operator = "and"):
         self.flags = flags
         self.operator = operator
+        
+    def getFlags (self):
+        flags = []
+        for flag in self.flags:
+            if isinstance (flag, Flag):
+                flags.append (flag)
+            if isinstance (flag, CompositeFlag):
+                flags += flag.getFlags ()
+        return list (set (flags))
         
     def state (self, player, log = None):
         values = []
@@ -742,6 +756,9 @@ class PlayerFlag (models.Model):
     def __repr__ (self):
         return "<PlayerFlag %s for %s = %d>" % (str (self.flag), str (self.player), self.state)
         
+    def __eq__ (self, other):
+        return type (self) == type (other) and self.player == other.player and self.flag == other.flag and self.state == other.state
+        
 class LogFlag (models.Model):
     """A linking table that links flags to players"""
     
@@ -758,4 +775,10 @@ class LogFlag (models.Model):
         
     def __repr__ (self):
         return "<LogFlag %s for %s = %d>" % (str (self.flag), str (self.log), self.state)
+        
+    def __eq__ (self, other):
+        return type (self) == type (other) and self.log == other.log and self.flag == other.flag and self.state == other.state
+        
+    def __hash__ (self):
+        return hash (self.log) + hash (self.flag)
     
