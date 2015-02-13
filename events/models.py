@@ -67,28 +67,28 @@ class Event (models.Model):
                 player.attack (npc, scores)
                 value = self.npc.life + npc.life
             else:
-                value = -strength
+                if len (scores) > 0:
+                    value = -scores [0].value
+                else:
+                    value = 0
             trigger = trigger.filter (onlyWhenNotPlayed = False)
         else:
-            print ("Not played")
             if npc is not None:
                 pass
                 # npc.attack (player, [(template, strength)])
             trigger = self.eventtrigger_set.filter (template = cardStatus.card.template).order_by ('threshold')
-            value = -strength
+            if len (scores) > 0:
+                value = -scores [0].value
+            else:
+                value = 0
             
-        print ("TRIGGERS: ", trigger)
-        
         # If there is a remaining trigger, add the event to the stack
         last = None
-        success = False
         for tr in trigger.all ():
             if tr.checkTrigger (player, value):
                 last = tr
-                success = value <= tr.threshold 
-            if success:
                 break
-        return (last, success)
+        return last
         
     def generateNPCInstance (self, player):
         if self.npc is not None:
@@ -104,24 +104,22 @@ class Event (models.Model):
         Note: this method calls the card.draw () method, which effectively moves the card to the discard pile and puts any special abilities of that card into effect."""
         
         if cardStatus is None and not self.auto:
-            return (None, False)
+            return None
         
         if cardStatus is not None:
                 
             # Try to trigger an event with the card
-            eventtrigger, success = self.trigger_event (player, cardStatus, played)
-            print ("Any triggers? ", eventtrigger, success)
+            eventtrigger = self.trigger_event (player, cardStatus, played)
             if eventtrigger is not None:
-                # cardStatus.resolve ()
-                return (eventtrigger, not success)
+                return eventtrigger
                 
             print ("Resolving...")
             cardStatus.resolve ()
                 
         # If nothing else works, use the generic result
         if self.generic_result is not None:
-            return (self.generic_result, True)
-        return (None, True)
+            return self.generic_result
+        return None
         
 class EventTrigger (models.Model):
     """
@@ -138,6 +136,8 @@ class EventTrigger (models.Model):
     # The threshold that this card must beat in order to activate successfully. This is either the quantity that the card score must beat or the maximum remaining life of the associated NPC to be successful
     threshold = models.IntegerField (default = 0)
     
+    helper = models.CharField (max_length = 256, default = "", blank = True)
+    
     conditions = models.CharField (max_length = 256, default = "", blank = True)
     
     # The event triggered by this EventTrigger, if this is None, the EventTrigger happens, but returns to the previous event
@@ -148,8 +148,7 @@ class EventTrigger (models.Model):
     
     # The content of an EventTrigger is the text displayed as the 'result' text in the log
     content = models.TextField (default = "", blank = True)
-    failed_content = models.TextField (default = "", blank = True)
-    
+
     # 
     result = models.CharField (max_length = 8, choices = RESULTS, blank = True, null = True, default = RESOLVE)
     
@@ -165,7 +164,7 @@ class EventTrigger (models.Model):
     switch = property (getSwitch)
     
     def checkTrigger (self, player, value):
-        return CompositeFlag.fromString (self.conditions).state (player)
+        return CompositeFlag.fromString (self.conditions).state (player) and value <= self.threshold
     
     @property
     def title (self):

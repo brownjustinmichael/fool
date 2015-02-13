@@ -7,11 +7,11 @@
 	<h1> {{location.title}} </h1>
 	<p>
 		<p class="description">
-		{{location.content}}
+		{{location_content}}
 		</p>
 	</p>
 	{% if location.canshuffle %}
-	<h2><a href="/shuffle?from={{request.path}}">Rest</a></h2>
+	<h2><a href="/shuffle?from={{request.path}}">Sleep</a></h2>
 	{% endif %}
 </div>
 <div class="vert_divider"></div>

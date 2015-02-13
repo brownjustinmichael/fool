@@ -62,6 +62,8 @@ class BaseCardParentAdmin(PolymorphicParentModelAdmin):
     """ The parent model admin """
     base_model = BaseCard
     child_models = (
+        # (BaseCard, BaseCardChildAdmin),
+        (Card, CardAdmin),
         (PlayerCard, PlayerCardAdmin),
         (ItemCard, ItemCardAdmin),
         (NPCCard, NPCCardAdmin),

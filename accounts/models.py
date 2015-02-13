@@ -12,7 +12,6 @@ import collections
 
 from polymorphic import PolymorphicModel
 
-from locations.models import Location
 from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, CARD_IN_DECK, CARD_IN_DISCARD, CARD_IN_HAND, CARD_IN_PLAY, Deck, Card, BaseCard, PLAYER_STATS, EXTRA_STATS, DEFENSE_BONUS, OFFENSE_BONUS, RESIST, FORCE
 
 stats = collections.OrderedDict ()
@@ -37,6 +36,10 @@ class CardStatus (models.Model):
         
     def __str__ (self):
         return "%s in (%s)" % (self.card, self.deck)
+        
+    @property
+    def player (self):
+        return self.deck.player
         
     def save (self, *args, **kwargs):
         """
@@ -99,6 +102,10 @@ class CardStatus (models.Model):
         else:
             self.position = 0
         self.save ()
+        
+    @property
+    def helper (self):
+        return self.player.active_event.getHelper (self.card.template)
 
 class DeckStatus (models.Model):
     player = models.ForeignKey ('Player')
@@ -261,7 +268,7 @@ class AbstractPlayer (models.Model):
         return self.activeevent_set.order_by ("stackOrder").last ()
         
     @property
-    def activeEvents (self):
+    def active_events (self):
         return self.activeevent_set.order_by ("stackOrder").all ()
     
     def getActiveLocation (self):
@@ -409,11 +416,11 @@ class AbstractPlayer (models.Model):
         trigger = None
         failed = True
         if lastEvent is not None:
-            trigger, failed = lastEvent.resolve (self, cardStatus, played)
+            trigger = lastEvent.resolve (self, cardStatus, played)
             if trigger is not None:
-                log = TriggerLog (trigger = trigger, user = self, location = location, success = not failed, card = cardStatus.card)
+                log = TriggerLog (trigger = trigger, user = self, location = location, card = cardStatus.card)
                 log.save ()
-                if trigger.event is not None and not failed and not trigger.switch:
+                if trigger.event is not None and not trigger.switch:
                     self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
         elif cardStatus is not None:
@@ -476,7 +483,6 @@ class Log (PolymorphicModel):
     
 class TriggerLog (Log):
     trigger = models.ForeignKey ("events.EventTrigger")
-    success = models.BooleanField (default = True)
     
     def __repr__ (self):
         return "<TriggerLog Object %d>" % self.id
@@ -487,9 +493,7 @@ class TriggerLog (Log):
     
     @property
     def content (self):
-        if self.success:
-            return Flag.parse (self.trigger.content, self.player, self)
-        return Flag.parse (self.trigger.failed_content, self.player, self)
+        return Flag.parse (self.trigger.content, self.player, self)
 
 class ActiveEvent (models.Model):
     player = models.ForeignKey (Player)
@@ -497,9 +501,8 @@ class ActiveEvent (models.Model):
     stackOrder = models.IntegerField ()
     cardStatus = models.OneToOneField (CardStatus, related_name = "activeEvent")
     resolved = models.BooleanField (default = False)
-    failed = models.BooleanField (default = False)
     logged = models.BooleanField (default = False)
-    location = models.ForeignKey (Location, null = True)
+    location = models.ForeignKey ("locations.Location", null = True)
     
     def getPrevious (self):
         if self.stackOrder <= 0:
@@ -544,15 +547,15 @@ class ActiveEvent (models.Model):
     npc = property (getNPC)
     
     def resolve (self, player, cardStatus = None, played = True):
-        trigger, self.failed = self.event.resolve (player, cardStatus, played)
+        trigger = self.event.resolve (player, cardStatus, played)
         if trigger is None and not self.event.blocking:
             previous = self.getPrevious ()
             if previous is not None:
-                trigger, self.failed = previous.resolve (player, cardStatus, played)
-        if (trigger is not None and not self.failed and trigger.resolved) or self.event.auto:
+                trigger = previous.resolve (player, cardStatus, played)
+        if (trigger is not None and trigger.resolved) or self.event.auto:
             self.resolved = True
             self.save ()
-        return trigger, self.failed
+        return trigger
             
     def log (self):
         if not self.logged:
@@ -573,6 +576,17 @@ class ActiveEvent (models.Model):
     @property
     def content (self):
         return Flag.parse (self.event.content, self.player)
+        
+    def getHelper (self, template):
+        trigger = self.event.eventtrigger_set.filter (template = template).order_by ("threshold").first ()
+        if trigger is None:
+            previous = self.getPrevious ()
+            if previous is None:
+                return ""
+            else:
+                return previous.getHelper (template)
+        return trigger.helper
+            
         
 class Flag (models.Model):
     """A database entry that pertains to flags for the players"""
@@ -621,15 +635,23 @@ class Flag (models.Model):
         
     @classmethod
     def parse (cls, content, player, log = None):
-        pattern = re.compile (r"(\{\{(.*?)\?(.*?):(.*?)\}\})")
-        for conditional, tag, true, false in pattern.findall (content):
-            if CompositeFlag.fromString (tag).state (player = player, log = log) >= 1:
-                content = content.replace (conditional, true)
-            else:
-                content = content.replace (conditional, false)
-        pattern = re.compile (r"(\{\{(.*?)\?(.*?)\}\})")
-        for conditional, tag, args in pattern.findall (content):
-            content = content.replace (conditional, args.split (",") [CompositeFlag.fromString (tag).state (player = player, log = log)])
+        oldContent = None
+        while "{" in content and content != oldContent:
+            oldContent = content
+            stack = []
+            for i in range (len (content)):
+                char = content [i]
+                if char == "{":
+                    stack.append (i)
+                elif char == "}":
+                    innerContent = content [stack [-1] + 1: i]
+                    condition = innerContent.split ("?") [0]
+                    success, failure = innerContent.split ("?") [1].split (":")
+                    if CompositeFlag.fromString (condition).state (player = player, log = log):
+                        content = content.replace (content [stack [-1]: i + 1], success)
+                    else:
+                        content = content.replace (content [stack [-1]: i + 1], failure)
+                    break
         return content
         
     def __str__ (self):
