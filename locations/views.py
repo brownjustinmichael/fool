@@ -42,9 +42,6 @@ def location (request, slug):
     in_hand = [card for card in player.getCards (CARD_IN_HAND).all ()]
     if event is not None:
         in_hand += [card for card in event.getCards (player, CARD_IN_HAND)]
-
-    for card in in_hand:
-        print (card.helper)
         
     return render (request, 'exploration/location.html', {'location': location, 'location_content': Flag.parse (location.content, player), 'location_deck': location_deck, 'numcardsatlocation': location_deck.getNumCards (player) if location_deck is not None else None, 'in_play': [card.card for card in in_play], 'hand': in_hand, 'request': request, 'userprofile': player, 'numcardsindeck': player.deck.getNumCards (player), 'logs': player.log_set.filter (location = location).all ()})
 

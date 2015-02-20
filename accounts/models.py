@@ -104,6 +104,10 @@ class CardStatus (models.Model):
         self.save ()
         
     @property
+    def triggers (self):
+        return self.player.active_event.triggers (self.card.template)
+        
+    @property
     def helper (self):
         return self.player.active_event.getHelper (self.card.template)
 
@@ -325,6 +329,7 @@ class AbstractPlayer (models.Model):
                 pass
         
     def playCard (self, card):
+        print ("Playing")
         if not isinstance (card, CardStatus):
             cardstatus = card.getStatus (self)
         else:
@@ -505,9 +510,20 @@ class ActiveEvent (models.Model):
     location = models.ForeignKey ("locations.Location", null = True)
     
     def getPrevious (self):
-        if self.stackOrder <= 0:
+        if self.stackOrder <= 0 or self.event.blocking:
             return None
         return self.player.active_events [self.stackOrder - 1]
+        
+    def triggers (self, template, local = True):
+        triggers = self.event.eventtrigger_set.filter (template = template).order_by ("threshold")
+        if not local:
+            triggers = triggers.filter (localOnly = False)
+        triggers = list (triggers)
+        previous = self.getPrevious ()
+        if previous is None:
+            return triggers
+        else:
+            return triggers + previous.triggers (template, False)
     
     class Meta:
         unique_together = ("player", "event", "stackOrder")
@@ -523,22 +539,28 @@ class ActiveEvent (models.Model):
             
     def getCards (self, player, status):
         cards = []
+        print ("GETTING CARDS")
         if self.event.deck is not None:
             deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
             deckStatus.initialize (CARD_IN_HAND)
             cards = list (deckStatus.getCards (status).all ())
-
+            endcards = []
+            for card in cards:
+                print (card, card.triggers)
+                if len (card.triggers) > 0:
+                    endcards.append (card)
+            cards = endcards
+            
         previous = self.getPrevious ()
         if not self.event.blocking and previous is not None:
             return cards + previous.getCards (player, status)
         else:
             return cards
                 
-    def getLife (self):
-        if self.event.life is not None:
-            return self.event.life + self.event.generateNPCInstance (self.player).life
-            
-    life = property (getLife)
+    @property
+    def life (self):
+        if self.event.npc is not None:
+            return self.event.generateNPCInstance (self.player).life
     
     def getNPC (self):
         if self.event is not None:

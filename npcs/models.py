@@ -1,7 +1,7 @@
 import collections
 
 from django.db import models
-from cards.models import DEFENSE_BONUS, PLAYER_STATS, NPCTemplate, Score
+from cards.models import DEFENSE_BONUS, PLAYER_STATS, NPCTemplate, Score, CARD_IN_DECK
 
 playerStats = collections.OrderedDict ()
 for stat in PLAYER_STATS:
@@ -14,8 +14,6 @@ class AbstractNPC (models.Model):
     slug = models.SlugField (unique=True, max_length=255, null = True, blank = True)
     genericEvent = models.ForeignKey ("events.Event", blank = True, null = True, related_name = "_unused_4")
     deck = models.ForeignKey ("cards.deck", blank = True, null = True)
-    
-    life = models.IntegerField ()
     
     class Meta:
         abstract = True
@@ -53,12 +51,21 @@ class NPCInstance (models.Model):
     npc = models.ForeignKey (NPC)
     
     # TODO Treat life as modifier, and add modifiers for other stats
-    life = models.IntegerField (default = 0)
+    @property
+    def life (self):
+        if self.deckStatus is None:
+            return 0
+        return self.deckStatus.getNumCards (CARD_IN_DECK)
     
+    @property
+    def deckStatus (self):
+        if self.npc.deck is None:
+            return None
+        return self.npc.deck.getStatus (player = self.player)
+
     def discard (self, number):
         # TODO This should eventually deal with decks
-        self.life -= number
-        self.save ()
+        self.deckStatus.discard (number)
         
     def defend (self, scores):
         return Score (DEFENSE_BONUS [scores [0].stat], getattr (self.npc, DEFENSE_BONUS [scores [0].stat]))

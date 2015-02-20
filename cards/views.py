@@ -18,6 +18,7 @@ def card (request, slug):
     locationSlug = request.GET.get ('from', 'index.html')
     location = Location.objects.filter (slug = re.search ("/?(?:exploration/)?([^/]*)", locationSlug).group (1)).first ()
     
+    print ("CARD, ", card)
     player.resolve (location, card.getStatus (player))
     
     return redirect (request.GET.get ('from', 'index.html'))

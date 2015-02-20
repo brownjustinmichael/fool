@@ -45,11 +45,6 @@ class Event (models.Model):
         return u'%s' % self.title
         
     @property
-    def life (self):
-        if self.npc is not None:
-            return self.npc.life
-    
-    @property
     def contentFlags (self):
         return list (set ([tag for tag in re.findall (r"\{\{(.*?)\?", self.title + self.content)]))
         
@@ -127,6 +122,9 @@ class EventTrigger (models.Model):
     
     """
     
+    class Meta:
+        ordering = ['event', 'template', 'threshold']
+    
     # The original event from which this EventTrigger can be triggered
     originalEvent = models.ForeignKey (Event, null = True)
     
@@ -145,6 +143,7 @@ class EventTrigger (models.Model):
     
     # Particular cards, e.g. item cards, have different effects when found than when played. This boolean is true for an event triggered ONLY when the card is put into play directly from a non-player deck
     onlyWhenNotPlayed = models.BooleanField (default = False)
+    localOnly = models.BooleanField (default = False)
     
     # The content of an EventTrigger is the text displayed as the 'result' text in the log
     content = models.TextField (default = "", blank = True)
