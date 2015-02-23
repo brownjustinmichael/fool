@@ -110,6 +110,9 @@ class CardStatus (models.Model):
     @property
     def helper (self):
         return self.player.active_event.getHelper (self.card.template)
+        
+    def get_absolute_url (self):
+        return self.card.get_absolute_url ()
 
 class DeckStatus (models.Model):
     player = models.ForeignKey ('Player')

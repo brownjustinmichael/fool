@@ -60,7 +60,7 @@ class Event (models.Model):
             trigger = self.eventtrigger_set.filter (template = cardStatus.card.template).order_by ('threshold')
             if npc is not None:
                 player.attack (npc, scores)
-                value = self.npc.life + npc.life
+                value = npc.life
             else:
                 if len (scores) > 0:
                     value = -scores [0].value

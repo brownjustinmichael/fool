@@ -29,7 +29,8 @@ def draw (request):
     username = None
     player = get_object_or_404 (Player, user = request.user)
     # TODO do this correctly
-    slug = request.GET.get ('from', 'index.html').split ("/") [-2]
+    slug = request.GET.get ('from', 'index.html').lstrip ("/").lstrip ("exploration").lstrip ("/").rstrip ("/")
+    print (slug)
     location = get_object_or_404 (Location, slug = slug)
 
     player.draw (location)
