@@ -683,9 +683,9 @@ class Flag (models.Model):
         return type (self) == type (other) and self.name == other.name
         
 class CompositeFlag (object):
-    def __init__ (self, *flags, operator = "and"):
+    def __init__ (self, *flags, **kwargs):
         self.flags = flags
-        self.operator = operator
+        self.operator = kwargs.pop ("operator", "and")
         
     def getFlags (self):
         flags = []
