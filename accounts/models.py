@@ -308,15 +308,14 @@ class AbstractPlayer (models.Model):
         Draw cards until your hand is full
         """
         print ("SHALL WE DRAW?")
-        if (self.getCards (CARD_IN_HAND).count () >= self.maxCardsInHand ()):
-            return
-            raise RuntimeError ("You can't exceed the maximum number of cards in your hand")
-        if self.active_location is not None:
-            if location != self.active_location:
-                raise RuntimeError ("You can only draw at the current active location")
-        print (self.getCards (CARD_IN_HAND).count ())
-        while self.getCards (CARD_IN_HAND).count () < self.maxCardsInHand ():
-            self.deck.getStatus (self).drawCard ()
+        if (self.getCards (CARD_IN_HAND).count () < self.maxCardsInHand ()):
+            if self.active_location is not None:
+                if location != self.active_location:
+                    raise RuntimeError ("You can only draw at the current active location")
+            print (self.getCards (CARD_IN_HAND).count ())
+            while self.getCards (CARD_IN_HAND).count () < self.maxCardsInHand ():
+                self.deck.getStatus (self).drawCard ()
+            
         if self.active_event is not None:
             npc = self.active_event.npc
             if npc is not None:
@@ -327,7 +326,7 @@ class AbstractPlayer (models.Model):
                     pass
         else:
             try:
-                location.drawCard (self)
+                self.resolve (location, location.drawCard (self), played = False)
             except ValueError:
                 pass
         
@@ -352,6 +351,7 @@ class AbstractPlayer (models.Model):
         # Delete all npc instances; they'll be regenerated when the player interacts with them again
         for npcInstance in self.npcinstance_set.all ():
             npcInstance.delete ()
+        Flag.reset (self)
         
     def getCards (self, status = CARD_IN_PLAY, allDecks = False):
         query = CardStatus.objects.filter (deck__player = self).filter (status = status)
@@ -413,6 +413,8 @@ class AbstractPlayer (models.Model):
         
         returns: The topmost ActiveEvent object on the stack
         """
+        
+        print ("Resovle")
         # Check for unresolved events on the stack
         lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
         while lastEvent is not None and lastEvent.resolved:
@@ -424,15 +426,19 @@ class AbstractPlayer (models.Model):
         trigger = None
         failed = True
         if lastEvent is not None:
+            print ("event")
             trigger = lastEvent.resolve (self, cardStatus, played)
+        elif cardStatus is not None:
+            print ("Loc trigger")
+            trigger = location.trigger_event (self, cardStatus)
+            print (trigger)
+        if trigger is not None:
             if trigger is not None:
                 log = TriggerLog (trigger = trigger, user = self, location = location, card = cardStatus.card)
                 log.save ()
                 if trigger.event is not None and not trigger.switch:
                     self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
-        elif cardStatus is not None:
-            location.trigger_event (self, cardStatus)
             
         # Check for unresolved events on the stack
         while lastEvent is not None and lastEvent.resolved:
@@ -617,6 +623,22 @@ class Flag (models.Model):
     """A database entry that pertains to flags for the players"""
     
     name = models.CharField (max_length = 60, unique = True)
+    temporary = models.BooleanField (default = False)
+    
+    @staticmethod
+    def reset (player):
+        for flag in player.playerflag_set.all ():
+            if flag.flag.temporary:
+                flag.delete ()
+        night = Flag.get ("night")
+        print (night.state (player))
+        if night.state (player):
+            night.set (player, 0)
+        else:
+            night.set (player, 1)
+        night.save ()
+        print (night.state (player))
+            
     
     def save (self, *args, **kwargs):
         if re.search ("(^[^a-zA-Z_]|[^a-zA-Z0-9_])", self.name) is not None:
@@ -656,7 +678,10 @@ class Flag (models.Model):
         return self.getLogFlag (log = log).state
         
     def set (self, player, value):
-        self.getPlayerFlag (player = player).state = value
+        print (value)
+        flag = self.getPlayerFlag (player = player)
+        flag.state = value
+        flag.save ()
         
     @classmethod
     def parse (cls, content, player, log = None):
@@ -845,3 +870,23 @@ class LogFlag (models.Model):
     def __hash__ (self):
         return hash (self.log) + hash (self.flag)
     
+class KeyItem (models.Model):
+    name = models.CharField (max_length = 60, unique = True)
+    
+    def __str__ (self):
+        return self.name
+    
+    def add (self, player, number = 1):
+        keyiteminstance = self.keyiteminstance_set.filter (player = player).first ()
+        if keyiteminstance is None:
+            keyiteminstance = KeyItemInstance (player = player, keyitem = self)
+        keyiteminstance.number += 1
+        keyiteminstance.save ()
+
+class KeyItemInstance (models.Model):
+    player = models.ForeignKey (Player)
+    keyitem = models.ForeignKey (KeyItem)
+    number = models.IntegerField (default = 0)
+    
+    class Meta:
+        unique_together = (('player', 'keyitem'))

@@ -42,34 +42,43 @@ class Location (models.Model):
         return reverse('locations.views.location', args=[self.slug])
         
     def trigger_event (self, player, cardStatus, played = True):
-        scores = cardStatus.play (played = played)
-        if len (scores) > 0:
-            stat, strength = scores [0]
-        else:
-            strength = 0
-        # Filter the triggers by type and strength such that the first trigger satisfies the criteria
-        trigger = self.locationtrigger_set.filter (template = cardStatus.card.template).filter (threshold__lte = strength).order_by ('-threshold')
-                
+        scores = player.playCard (cardStatus)
+            
         # Filter out triggers based on whether a user played it
         if played:
+            trigger = self.locationtrigger_set.filter (template = cardStatus.card.template).order_by ('threshold')
+            if len (scores) > 0:
+                value = -scores [0].value
+            else:
+                value = -cardStatus.card.modifier
             trigger = trigger.filter (onlyWhenNotPlayed = False)
-            
+        else:
+            trigger = self.locationtrigger_set.filter (template = cardStatus.card.template).order_by ('threshold')
+            if len (scores) > 0:
+                value = -scores [0].value
+            else:
+                value = -cardStatus.card.modifier
+        
         # If there is a remaining trigger, add the event to the stack
-        if trigger.first () is not None:
-            player.addEvent (cardStatus = cardStatus, event = trigger.first ().event, location = self)
-            #Return the trigger or None
-            return trigger.first ()
+        last = None
+        for tr in trigger.all ():
+            if tr.checkTrigger (player, value):
+                last = tr
+                break
+                
+        return last
             
     def drawCard (self, player):
         """
         Draw a card from the location deck. Check whether this card triggers any events.
         """
-        print (self.deck)
         if self.deck is not None:
             if player.activeevent_set.count () > 0:
                 raise RuntimeError ("You can't draw from the location deck if there are still active events.")
             else:
-                self.trigger_event (player, self.deck.drawCard (player), played = False)
+                card = self.deck.drawCard (player)
+                card.play ()
+                return card
                 
     def playCard (self, player, cardStatus):
         """
@@ -78,7 +87,8 @@ class Location (models.Model):
         if player.activeevent_set.count () > 0:
             raise RuntimeError ("You can't play from the location deck if there are still active events.")
         else:
-            self.trigger_event (player, cardStatus, played = False)
+            cardStatus.play ()
+            player.resolve (self, cardStatus, played = False)
     
     @property
     def npcLinks (self):
@@ -90,14 +100,5 @@ class GlobalEventTrigger (models.Model):
     event = models.ForeignKey ("events.Event")
     threshold = models.IntegerField (default = 0)
     onlyWhenNotPlayed = models.BooleanField (default = False)
-
-class LocationTrigger (models.Model):
-    """docstring for EventTrigger """
-    location = models.ForeignKey (Location)
-    template = models.ForeignKey (CardTemplate)
-    event = models.ForeignKey ("events.Event")
-    threshold = models.IntegerField (default = 0)
-    onlyWhenNotPlayed = models.BooleanField (default = False)
-    content = models.TextField (default = "", blank = True)
 
 # Create your models here.

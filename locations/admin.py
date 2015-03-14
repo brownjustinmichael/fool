@@ -1,5 +1,6 @@
 from django.contrib import admin
-from locations.models import Location, LocationTrigger, GlobalEventTrigger
+from locations.models import Location, GlobalEventTrigger
+from events.models import LocationTrigger
 from npcs.models import NPCLink
  
 class NPCLinkInline(admin.TabularInline):

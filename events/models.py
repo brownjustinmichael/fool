@@ -126,7 +126,7 @@ class EventTrigger (models.Model):
         ordering = ['event', 'template', 'threshold']
     
     # The original event from which this EventTrigger can be triggered
-    originalEvent = models.ForeignKey (Event, null = True)
+    originalEvent = models.ForeignKey (Event, null = True, blank = True)
     
     # The CardTemplate that this EventTrigger can be triggered by
     template = models.ForeignKey (CardTemplate)
@@ -163,6 +163,9 @@ class EventTrigger (models.Model):
     switch = property (getSwitch)
     
     def checkTrigger (self, player, value):
+        print ("CHECKING")
+        print (CompositeFlag.fromString (self.conditions).state (player))
+        print (value, self.threshold)
         return CompositeFlag.fromString (self.conditions).state (player) and value <= self.threshold
     
     @property
@@ -171,6 +174,10 @@ class EventTrigger (models.Model):
     
     def __str__ (self):
         return "%s (%s %d) -> %s" % (str (self.originalEvent), str (self.template), self.threshold, str (self.event))
+
+class LocationTrigger (EventTrigger):
+    """docstring for EventTrigger """
+    location = models.ForeignKey ("locations.Location")
 
 class EventEffect (models.Model):
     event = models.ForeignKey (Event)

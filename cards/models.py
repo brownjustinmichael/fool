@@ -319,10 +319,6 @@ class AddCardEffect (Effect):
         return "Effect: Add %s" % str (self.card)
     
     def affect (self, multiplier, player, targetDeck):
-        print (type (self.card))
-        print (dir (self.card))
-        print (self.card.polymorphic_ctype)
-        print (self.card.itemcard)
         self.card.pk = None
         self.card.id = None
         self.card.deck = targetDeck
@@ -330,6 +326,15 @@ class AddCardEffect (Effect):
         status = self.card.deck.getStatus (player)
         status = status.addCardStatus (self.card, CARD_IN_HAND)
         status.save ()
+        
+class KeyItemEffect (Effect):
+    keyitem = models.ForeignKey ("accounts.KeyItem")
+    
+    def __str__ (self):
+        return "Effect: Add %s" % str (self.keyitem)
+    
+    def affect (self, multiplier, player, targetDeck):
+        keyitem.add (player, multiplier)
         
 class EffectLink (models.Model):
     template = models.ForeignKey (CardTemplate)

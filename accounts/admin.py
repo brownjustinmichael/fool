@@ -1,5 +1,5 @@
 from django.contrib import admin
-from accounts.models import Player, CardStatus, DeckStatus, Log, TriggerLog, ActiveEvent, PlayerFlag, Flag, LogFlag
+from accounts.models import Player, CardStatus, DeckStatus, Log, TriggerLog, ActiveEvent, PlayerFlag, Flag, LogFlag, KeyItem, KeyItemInstance
 from django.core.urlresolvers import reverse
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 
@@ -21,6 +21,9 @@ class CardStatusInline(admin.TabularInline):
 class ActiveEventInline(admin.TabularInline):
     model = ActiveEvent
 
+class KeyItemInline (admin.TabularInline):
+    model = KeyItemInstance
+
 class DeckStatusInline(admin.TabularInline):
     model = DeckStatus
     
@@ -41,12 +44,13 @@ class PlayerAdmin (admin.ModelAdmin):
             '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', # jquery
             'script.js',       # project static folder
         )
-    inlines = [DeckStatusInline, ActiveEventInline, PlayerFlagInline]
+    inlines = [DeckStatusInline, ActiveEventInline, PlayerFlagInline, KeyItemInline]
     
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(DeckStatus, DeckStatusAdmin)
 admin.site.register (CardStatus)
 admin.site.register (Flag)
+admin.site.register (KeyItem)
 # admin.site.register (Log)
 
 
