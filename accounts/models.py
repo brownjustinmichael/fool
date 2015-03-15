@@ -117,7 +117,7 @@ class CardStatus (models.Model):
 class DeckStatus (models.Model):
     player = models.ForeignKey ('Player')
     deck = models.ForeignKey (Deck)
-    location = models.ForeignKey ("locations.Location", blank = True, null = True)
+    event = models.ForeignKey ("events.Event", blank = True, null = True)
     initialized = models.BooleanField (default = False)
     
     class Meta:
@@ -153,7 +153,7 @@ class DeckStatus (models.Model):
         
     def save (self, *args, **kwargs):
         try:
-            self.location = self.deck.location
+            self.event = self.deck.event.first ()
         except ObjectDoesNotExist:
             pass
         return super (DeckStatus, self).save (*args, **kwargs)
@@ -398,6 +398,11 @@ class AbstractPlayer (models.Model):
         event: an Event object to add to the event stack
         location: the Location object that identifies where the event takes place
         """
+        if self.activeevent_set.count () == 0:
+            event = ActiveEvent (player = self, cardStatus = cardStatus, event = location, stackOrder = self.activeevent_set.count (), location = location)
+            event.resolved = True
+            event.log ()
+            event.save ()
         event = ActiveEvent (player = self, cardStatus = cardStatus, event = event, stackOrder = self.activeevent_set.count (), location = location)
         event.log ()
         event.save ()
@@ -413,8 +418,6 @@ class AbstractPlayer (models.Model):
         
         returns: The topmost ActiveEvent object on the stack
         """
-        
-        print ("Resovle")
         # Check for unresolved events on the stack
         lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
         while lastEvent is not None and lastEvent.resolved:
@@ -466,7 +469,7 @@ stats.update ({"__module__": __name__})
 Player = type ('Player', (AbstractPlayer,), stats)
 
 class Log (PolymorphicModel):
-    event = models.ForeignKey ("events.Event", null =  True, blank = True)
+    event = models.ForeignKey ("events.Event", null =  True, blank = True, related_name = "_unused_log_event")
     location = models.ForeignKey ("locations.Location")
     logged = models.DateTimeField (auto_now_add=True)
     card = models.ForeignKey (BaseCard, null = True, blank = True, default = None)
@@ -511,7 +514,7 @@ class TriggerLog (Log):
 
 class ActiveEvent (models.Model):
     player = models.ForeignKey (Player)
-    event = models.ForeignKey ("events.Event")
+    event = models.ForeignKey ("events.Event", related_name = "_unused_activeevent_event")
     stackOrder = models.IntegerField ()
     cardStatus = models.OneToOneField (CardStatus, related_name = "activeEvent")
     resolved = models.BooleanField (default = False)

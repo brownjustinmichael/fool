@@ -163,14 +163,16 @@ class Deck (models.Model):
         self.getStatus (player).reshuffle ()
             
     def __str__ (self):
+        print ("STRINGING")
         try:
             if self.player is not None:
                 return "%s's Deck" % (str (self.player.user.username))
         except ObjectDoesNotExist:
             pass
         try:
-            if self.location is not None:
-                return "Deck at %s" % (str (self.location))
+            if self.event is not None:
+                print (self.event.first ())
+                return "Deck at %s" % (str (self.event.first ()))
         except ObjectDoesNotExist:
             pass
         return "Unattached Deck"
@@ -335,6 +337,15 @@ class KeyItemEffect (Effect):
     
     def affect (self, multiplier, player, targetDeck):
         keyitem.add (player, multiplier)
+        
+class DamageEffect (Effect):
+    number = models.IntegerField (default = 1)
+    
+    def __str__ (self):
+        return "Effect: Damage %s" % str (self.number)
+    
+    def affect (self, multiplier, player, targetDeck):
+        player.discard (number * multiplier)
         
 class EffectLink (models.Model):
     template = models.ForeignKey (CardTemplate)

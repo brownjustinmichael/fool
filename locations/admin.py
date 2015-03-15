@@ -1,13 +1,14 @@
 from django.contrib import admin
 from locations.models import Location, GlobalEventTrigger
-from events.models import LocationTrigger
+from events.models import EventTrigger
 from npcs.models import NPCLink
  
 class NPCLinkInline(admin.TabularInline):
     model = NPCLink
     
-class LocationTriggerInline(admin.TabularInline):
-    model = LocationTrigger
+class EventTriggerInline(admin.TabularInline):
+    model = EventTrigger
+    fk_name = "originalEvent"
     
 class LocationAdmin (admin.ModelAdmin):
     class Media:
@@ -17,9 +18,8 @@ class LocationAdmin (admin.ModelAdmin):
         )
     inlines = [
         NPCLinkInline,
-        LocationTriggerInline,
+        EventTriggerInline,
     ]
  
-admin.site.register (LocationTrigger)
 admin.site.register (GlobalEventTrigger)
 admin.site.register (Location, LocationAdmin)

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 import re
 
 from cards.models import CardTemplate, Deck
@@ -21,8 +22,8 @@ class Event (models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, max_length=255)
     
-    description = models.CharField(max_length=255)
-    content = models.TextField()
+    description = models.CharField(max_length=255,default = "",blank=True)
+    content = models.TextField(default = "",blank=True)
     
     npc = models.ForeignKey (NPC, null = True, blank = True)
     
@@ -34,7 +35,7 @@ class Event (models.Model):
     generic_result = models.ForeignKey ("events.EventTrigger", default = None, null = True, related_name = "_unused_event_result", blank = True)
     auto = models.BooleanField (default = False)
     
-    deck = models.ForeignKey (Deck, null = True, blank = True)
+    deck = models.ForeignKey (Deck, null = True, blank = True,related_name = "event")
     
     blocking = models.BooleanField (default = False)
 
@@ -42,7 +43,8 @@ class Event (models.Model):
         ordering = ['-created']
 
     def __str__(self):
-        return u'%s' % self.title
+        print (self.title)
+        return '%s' % self.title
         
     @property
     def contentFlags (self):
@@ -52,12 +54,13 @@ class Event (models.Model):
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         # TODO cardStatus could keep track of its play values if it was just played
         # If there is a card, play it
+        print ("triggering")
         scores = player.playCard (cardStatus)
         npc = self.generateNPCInstance (player)
             
         # Filter out triggers based on whether a user played it
         if played:
-            trigger = self.eventtrigger_set.filter (template = cardStatus.card.template).order_by ('threshold')
+            trigger = self.eventtrigger_set.filter (Q (template = cardStatus.card.template) | Q (template__isnull = True)).order_by ('threshold')
             if npc is not None:
                 player.attack (npc, scores)
                 value = npc.life
@@ -116,6 +119,33 @@ class Event (models.Model):
             return self.generic_result
         return None
         
+    def drawCard (self, player):
+        """
+        Draw a card from the location deck. Check whether this card triggers any events.
+        """
+        if self.deck is not None:
+            if player.activeevent_set.count () > 0:
+                raise RuntimeError ("You can't draw from the location deck if there are still active events.")
+            else:
+                card = self.deck.drawCard (player)
+                card.play ()
+                return card
+                
+    def playCard (self, player, cardStatus):
+        """
+        Draw a card from the location deck. Check whether this card triggers any events.
+        """
+        if player.activeevent_set.count () > 0:
+            raise RuntimeError ("You can't play from the location deck if there are still active events.")
+        else:
+            cardStatus.play ()
+            player.resolve (self, cardStatus, played = False)
+    
+    @property
+    def npcLinks (self):
+        return self.npclink_set.all ()
+    
+        
 class EventTrigger (models.Model):
     """
     The EventTrigger links an event to possible sub-events
@@ -129,7 +159,7 @@ class EventTrigger (models.Model):
     originalEvent = models.ForeignKey (Event, null = True, blank = True)
     
     # The CardTemplate that this EventTrigger can be triggered by
-    template = models.ForeignKey (CardTemplate)
+    template = models.ForeignKey (CardTemplate, null = True, blank = True)
     
     # The threshold that this card must beat in order to activate successfully. This is either the quantity that the card score must beat or the maximum remaining life of the associated NPC to be successful
     threshold = models.IntegerField (default = 0)
@@ -174,10 +204,6 @@ class EventTrigger (models.Model):
     
     def __str__ (self):
         return "%s (%s %d) -> %s" % (str (self.originalEvent), str (self.template), self.threshold, str (self.event))
-
-class LocationTrigger (EventTrigger):
-    """docstring for EventTrigger """
-    location = models.ForeignKey ("locations.Location")
 
 class EventEffect (models.Model):
     event = models.ForeignKey (Event)

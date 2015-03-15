@@ -90,6 +90,6 @@ class NPCInstance (models.Model):
     
 class NPCLink (models.Model):
     npc = models.ForeignKey (NPC)
-    location = models.ForeignKey ("locations.Location")
+    event = models.ForeignKey ("events.Event")
     card = models.ForeignKey ("cards.BaseCard", blank = True, null = True)
     
