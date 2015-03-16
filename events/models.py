@@ -18,6 +18,8 @@ class Event (models.Model):
     """
     This class is designed to contain an event and handle its resolution by choosing the appropriate contained result object 
     """
+    tolog = models.BooleanField (default = True)
+    
     #Basic information about the event
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, max_length=255)
@@ -35,15 +37,17 @@ class Event (models.Model):
     generic_result = models.ForeignKey ("events.EventTrigger", default = None, null = True, related_name = "_unused_event_result", blank = True)
     auto = models.BooleanField (default = False)
     
-    deck = models.ForeignKey (Deck, null = True, blank = True,related_name = "event")
+    locationDeck = models.ForeignKey (Deck, null = True, blank = True, related_name = "event")
+    deck = models.ForeignKey (Deck, null = True, blank = True, related_name = "_unused_event_location")
     
     blocking = models.BooleanField (default = False)
+    canshuffle = models.BooleanField (default = False)
+    
 
     class Meta:
         ordering = ['-created']
-
+        
     def __str__(self):
-        print (self.title)
         return '%s' % self.title
         
     @property
@@ -56,34 +60,28 @@ class Event (models.Model):
         # If there is a card, play it
         print ("triggering")
         scores = player.playCard (cardStatus)
+        if len (scores) > 0:
+            value = scores [0].value
+        else:
+            value = cardStatus.card.modifier
+        
         npc = self.generateNPCInstance (player)
-            
-        # Filter out triggers based on whether a user played it
+        
+        trigger = self.eventtrigger_set.filter (Q (template = cardStatus.card.template) | Q (template__isnull = True)).order_by ('threshold')
+        
         if played:
-            trigger = self.eventtrigger_set.filter (Q (template = cardStatus.card.template) | Q (template__isnull = True)).order_by ('threshold')
             if npc is not None:
                 player.attack (npc, scores)
-                value = npc.life
-            else:
-                if len (scores) > 0:
-                    value = -scores [0].value
-                else:
-                    value = 0
             trigger = trigger.filter (onlyWhenNotPlayed = False)
-        else:
-            if npc is not None:
-                pass
-                # npc.attack (player, [(template, strength)])
-            trigger = self.eventtrigger_set.filter (template = cardStatus.card.template).order_by ('threshold')
-            if len (scores) > 0:
-                value = -scores [0].value
-            else:
-                value = 0
+        
+        npclife = None
+        if npc is not None:
+            npclife = npc.life
             
-        # If there is a remaining trigger, add the event to the stack
         last = None
         for tr in trigger.all ():
-            if tr.checkTrigger (player, value):
+            print ("Checking",tr,value,npclife)
+            if tr.checkTrigger (player, value, npclife):
                 last = tr
                 break
         return last
@@ -123,12 +121,14 @@ class Event (models.Model):
         """
         Draw a card from the location deck. Check whether this card triggers any events.
         """
-        if self.deck is not None:
+        if self.locationDeck is not None:
             if player.activeevent_set.count () > 0:
                 raise RuntimeError ("You can't draw from the location deck if there are still active events.")
             else:
-                card = self.deck.drawCard (player)
+                print ("event draw")
+                card = self.locationDeck.drawCard (player)
                 card.play ()
+                print (card)
                 return card
                 
     def playCard (self, player, cardStatus):
@@ -163,6 +163,7 @@ class EventTrigger (models.Model):
     
     # The threshold that this card must beat in order to activate successfully. This is either the quantity that the card score must beat or the maximum remaining life of the associated NPC to be successful
     threshold = models.IntegerField (default = 0)
+    npcthreshold = models.BooleanField (default = True)
     
     helper = models.CharField (max_length = 256, default = "", blank = True)
     
@@ -181,22 +182,22 @@ class EventTrigger (models.Model):
     # 
     result = models.CharField (max_length = 8, choices = RESULTS, blank = True, null = True, default = RESOLVE)
     
-    def getResolved (self):
-        return self.result == RESOLVE
-    
     # If this trigger resolves the parent event, this boolean is True
-    resolved = property (getResolved)
-    
-    def getSwitch (self):
+    @property
+    def resolved (self):
+        return self.result == RESOLVE
+        
+    @property
+    def switch (self):
         return self.result == SWITCH
         
-    switch = property (getSwitch)
-    
-    def checkTrigger (self, player, value):
-        print ("CHECKING")
-        print (CompositeFlag.fromString (self.conditions).state (player))
-        print (value, self.threshold)
-        return CompositeFlag.fromString (self.conditions).state (player) and value <= self.threshold
+    def checkTrigger (self, player, value, npclife = None):
+        if self.npcthreshold:
+            if npclife is not None:
+                return CompositeFlag.fromString (self.conditions).state (player) and npclife <= self.threshold
+        else:
+            return CompositeFlag.fromString (self.conditions).state (player) and value >= self.threshold
+        return False
     
     @property
     def title (self):

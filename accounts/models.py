@@ -23,7 +23,8 @@ class CardStatus (models.Model):
     A CardStatus object is an instance of a Card object
     """
     card = models.ForeignKey (BaseCard)
-    deck = models.ForeignKey ('DeckStatus')
+    deck = models.ForeignKey ('DeckStatus', null = True, blank = True)
+    player = models.ForeignKey ('Player', null = True, blank = True)
     status = models.CharField (max_length = 7, choices = CARD_STATUSES, default = CARD_IN_STASH)
     position = models.IntegerField ()
     played = models.BooleanField (default = False)
@@ -31,24 +32,28 @@ class CardStatus (models.Model):
     
     class Meta:
         unique_together = (('deck', 'position', 'status'))
+        unique_together = (('player', 'card'))
         ordering = ['status', 'position']
         verbose_name_plural = "Card statuses"
         
     def __str__ (self):
         return "%s in (%s)" % (self.card, self.deck)
         
-    @property
-    def player (self):
-        return self.deck.player
-        
     def save (self, *args, **kwargs):
         """
         Saves the object to the database
         """
         # self.deck = self.card.deck
-        if self.position == None:
+        if self.position == None and self.deck is not None:
             self.position = self.deck.getCards (status = self.status).order_by ("position").last ().position + 1
-        return super (CardStatus, self).save (*args, **kwargs)
+        if self.deck is None:
+            self.position = 0
+        super (CardStatus, self).save (*args, **kwargs)
+        if self.player is None:
+            self.player = self.deck.player
+            self.save ()
+        if self.player is None:
+            raise ValueError ("No player associated")
         
     def draw (self, next_status = CARD_IN_HAND):
         assert (next_status is not None)
@@ -67,9 +72,10 @@ class CardStatus (models.Model):
         self.targetDeck = self.deck
         self.status = next_status
         self.played = played
-        lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
-        if lastCard is not None:
-            self.position = lastCard.position + 1
+        if self.deck is not None:
+            lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
+            if lastCard is not None:
+                self.position = lastCard.position + 1
         self.save ()
         return value
         
@@ -77,30 +83,33 @@ class CardStatus (models.Model):
         self.card.resolve (self.deck.player, self.targetDeck, next_status = next_status)
         if CardStatus.objects.filter (id = self.id).count () > 0:
             self.status = next_status
-            lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
-            if lastCard is not None:
-                self.position = lastCard.position + 1
-            else:
-                self.position = 0
+            if self.deck is not None:
+                lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
+                if lastCard is not None:
+                    self.position = lastCard.position + 1
+                else:
+                    self.position = 0
             self.save ()
         
     def discard (self, next_status = CARD_IN_DISCARD):
         self.card.discard (next_status = next_status)
         self.status = next_status
-        lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
-        if lastCard is not None:
-            self.position = lastCard.position + 1
-        else:
-            self.position = 0
+        if self.deck is not None:
+            lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
+            if lastCard is not None:
+                self.position = lastCard.position + 1
+            else:
+                self.position = 0
         self.save ()
         
     def recover (self, next_status = CARD_IN_DECK):
         self.status = next_status
-        lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
-        if lastCard is not None:
-            self.position = lastCard.position + 1
-        else:
-            self.position = 0
+        if self.deck is not None:
+            lastCard = self.deck.getCards (status = next_status).order_by ("position").last ()
+            if lastCard is not None:
+                self.position = lastCard.position + 1
+            else:
+                self.position = 0
         self.save ()
         
     @property
@@ -132,12 +141,16 @@ class DeckStatus (models.Model):
             self.initialize ()
         
     def initialize (self, default = CARD_IN_DECK):
+        ignore = {}
         for cardstatus in self.cardstatus_set.all ():
-            cardstatus.delete ()
+            if cardstatus.status is not CARD_IN_PLAY and cardstatus.status is not CARD_IN_STASH:
+                cardstatus.delete ()
+            else:
+                ignore [cardstatus.card] = True
         
         resetCards = []
         for card in self.deck.basecard_set.all ():
-            if card.isActive ():
+            if card.isActive () and card not in ignore:
                 resetCards.append (card)
         
         indices = list (range (len (resetCards)))
@@ -292,9 +305,6 @@ class AbstractPlayer (models.Model):
         setattr (self, stat, getattr (self, stat) + value)
         self.save () 
     
-    def recordLog (self, event, result, location):
-        Log (title = event.title, event = event, result = result, user = self, location = location).save ()
-        
     def maxCardsInHand (self):
         return getattr (self, RESIST)
         
@@ -359,6 +369,11 @@ class AbstractPlayer (models.Model):
             query = query.filter (deck__deck = self.deck)
         return query.all ()
         
+    def addCardStatus (self, card):
+        cardstatus = CardStatus (card = card, player = self)
+        cardstatus.save ()
+        return cardstatus
+
     def addDeckStatus (self, deck):
         deckstatus = DeckStatus (deck = deck, player = self)
         deckstatus.save ()
@@ -399,13 +414,15 @@ class AbstractPlayer (models.Model):
         location: the Location object that identifies where the event takes place
         """
         if self.activeevent_set.count () == 0:
-            event = ActiveEvent (player = self, cardStatus = cardStatus, event = location, stackOrder = self.activeevent_set.count (), location = location)
-            event.resolved = True
-            event.log ()
-            event.save ()
-        event = ActiveEvent (player = self, cardStatus = cardStatus, event = event, stackOrder = self.activeevent_set.count (), location = location)
-        event.log ()
-        event.save ()
+            print ("We're adding an event:", location, None)
+            activeEvent = ActiveEvent (player = self, cardStatus = None, event = location, stackOrder = self.activeevent_set.count (), location = location)
+            activeEvent.resolved = True
+            activeEvent.save ()
+        print ("We're adding an event:", event, cardStatus)
+        activeEvent = ActiveEvent (player = self, cardStatus = cardStatus, event = event, stackOrder = self.activeevent_set.count (), location = location)
+        activeEvent.log ()
+        activeEvent.save ()
+        print (self.activeevent_set.all ())
         
     def resolve (self, location, cardStatus = None, played = True):
         """
@@ -418,6 +435,7 @@ class AbstractPlayer (models.Model):
         
         returns: The topmost ActiveEvent object on the stack
         """
+        print ("Resolving ", cardStatus, self.activeevent_set.all ())
         # Check for unresolved events on the stack
         lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
         while lastEvent is not None and lastEvent.resolved:
@@ -429,18 +447,14 @@ class AbstractPlayer (models.Model):
         trigger = None
         failed = True
         if lastEvent is not None:
-            print ("event")
             trigger = lastEvent.resolve (self, cardStatus, played)
         elif cardStatus is not None:
-            print ("Loc trigger")
             trigger = location.trigger_event (self, cardStatus)
-            print (trigger)
         if trigger is not None:
-            if trigger is not None:
-                log = TriggerLog (trigger = trigger, user = self, location = location, card = cardStatus.card)
-                log.save ()
-                if trigger.event is not None and not trigger.switch:
-                    self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
+            log = TriggerLog (trigger = trigger, user = self, location = location, card = cardStatus.card)
+            log.save ()
+            if trigger.event is not None and not trigger.switch:
+                self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
             
         # Check for unresolved events on the stack
@@ -456,11 +470,15 @@ class AbstractPlayer (models.Model):
         # Resolve any free cards in play
         for card in self.getCards (CARD_IN_PLAY, True):
             try:
-                if card.activeEvent is None:
+                if card.activeevent_set.count () == 0:
                     card.resolve ()
             except ObjectDoesNotExist:
                 card.resolve ()
-                
+        
+        print ("Resolved ", cardStatus, self.activeevent_set.all ())
+        
+        self.save ()
+        
         # Return the current event
         return lastEvent
 
@@ -516,10 +534,13 @@ class ActiveEvent (models.Model):
     player = models.ForeignKey (Player)
     event = models.ForeignKey ("events.Event", related_name = "_unused_activeevent_event")
     stackOrder = models.IntegerField ()
-    cardStatus = models.OneToOneField (CardStatus, related_name = "activeEvent")
+    cardStatus = models.ForeignKey (CardStatus, null = True, blank = True)
     resolved = models.BooleanField (default = False)
     logged = models.BooleanField (default = False)
     location = models.ForeignKey ("locations.Location", null = True)
+    
+    def __repr__ (self):
+        return "<ActiveEvent for " + str (self.event) + ">"
     
     def getPrevious (self):
         if self.stackOrder <= 0 or self.event.blocking:
@@ -542,19 +563,23 @@ class ActiveEvent (models.Model):
         
     def __init__(self, *args, **kwargs):
         super(ActiveEvent, self).__init__(*args, **kwargs)
+        try:
+            if self.event is not None and self.event.deck is not None:
+                deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
+                deckStatus.initialize (CARD_IN_HAND)
+        except ObjectDoesNotExist:
+            pass
         
     def delete (self):
-        if self.event.deck is not None:
+        if self.event is not None and self.event.deck is not None:
             deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
             deckStatus.delete ()
         super (ActiveEvent, self).delete ()
             
     def getCards (self, player, status):
         cards = []
-        print ("GETTING CARDS")
         if self.event.deck is not None:
             deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
-            deckStatus.initialize (CARD_IN_HAND)
             cards = list (deckStatus.getCards (status).all ())
             endcards = []
             for card in cards:
@@ -592,10 +617,10 @@ class ActiveEvent (models.Model):
         return trigger
             
     def log (self):
-        if not self.logged:
+        if not self.logged and self.event.tolog:
             for eventeffect in self.event.eventeffect_set.all ():
                 eventeffect.effect.affect (self.cardStatus.card.modifier, self.player, self.player.deck)
-            
+            print ("Writing a log for ", self.event)
             log = Log (event = self.event, user = self.player, location = self.location)
             log.save ()
             flags = list (set ([LogFlag.fromPlayerFlag (flag.getPlayerFlag (self.player), log) for tag in self.event.contentFlags for flag in CompositeFlag.fromString (tag).getFlags ()]))

@@ -9,8 +9,8 @@ from events.models import Event
 # TODO Since you can complete tasks outside of the active location, logs can be stored outside the location they happen
 
 class Location (Event):
-    canshuffle = models.BooleanField (default = False)
- 
+    tolog = False
+    
     def save (self, *args, **kwargs):
         print (args, kwargs)
         try:

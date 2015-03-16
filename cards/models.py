@@ -163,7 +163,6 @@ class Deck (models.Model):
         self.getStatus (player).reshuffle ()
             
     def __str__ (self):
-        print ("STRINGING")
         try:
             if self.player is not None:
                 return "%s's Deck" % (str (self.player.user.username))
@@ -171,7 +170,6 @@ class Deck (models.Model):
             pass
         try:
             if self.event is not None:
-                print (self.event.first ())
                 return "Deck at %s" % (str (self.event.first ()))
         except ObjectDoesNotExist:
             pass
@@ -201,7 +199,10 @@ class BaseCard (PolymorphicModel):
         pass
         
     def getStatus (self, player):
-        return self.cardstatus_set.filter (deck = self.deck.getStatus (player)).first ()
+        status = self.cardstatus_set.filter (player = player).first ()
+        if status is None:
+            status = player.addCardStatus (self)
+        return status
         
     def get_absolute_url (self):
         return reverse ('cards.views.card', args=[self.id])

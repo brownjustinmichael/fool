@@ -5,7 +5,7 @@ from npcs.models import NPCLink
  
 class NPCLinkInline(admin.TabularInline):
     model = NPCLink
-    
+        
 class EventTriggerInline(admin.TabularInline):
     model = EventTrigger
     fk_name = "originalEvent"
@@ -20,6 +20,11 @@ class LocationAdmin (admin.ModelAdmin):
         NPCLinkInline,
         EventTriggerInline,
     ]
+    
+    def get_form(self, request, obj=None, **kwargs):
+        # just save obj reference for future processing in Inline
+        request._obj_ = obj
+        return super(LocationAdmin, self).get_form(request, obj, **kwargs)
  
 admin.site.register (GlobalEventTrigger)
 admin.site.register (Location, LocationAdmin)

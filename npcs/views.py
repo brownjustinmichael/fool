@@ -12,6 +12,8 @@ from locations.models import Location
 def npc (request, slug):
     # get the Card object
     # TODO This should really fetch a cardStatus (which should be called a cardInstance)
+    print ("HERE I AM")
+    
     npcLink = get_object_or_404 (NPCLink, id=slug)
     player = get_object_or_404 (Player, user = request.user)
     # now return the rendered template
@@ -23,7 +25,12 @@ def npc (request, slug):
     if player.active_event is not None:
         raise RuntimeError ("You can't engage an NPC while there are unresolved events")
     
-    cardStatus = location.deck.getStatus (player).addCardStatus (npcLink.card)
+    print (npcLink.npc)
+    print (npcLink.npc.card)
+    
+    cardStatus = npcLink.npc.card.getStatus (player)
+    print ("Playing", cardStatus)
     location.playCard (player, cardStatus)
+    print ("We just played", cardStatus, cardStatus.status)
     
     return redirect (request.GET.get ('from', 'index.html'))
