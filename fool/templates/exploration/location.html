@@ -27,33 +27,28 @@
 	No active scenario here. Go to {{userprofile.active_location}}.
 	{% else %}
 	<!--Locations-->
+	<h2>Areas</h2>
 	{% for link in location.npcLinks %}
 	<a name="location" href="/npc/{{link.id}}?from={{request.path}}">{{ link.npc.name }}</a>
 	{% endfor %}
 	{% endif %}
-</div>
-<div class="vert_divider"></div>
-<div id="content_main">
-<header>
+	<div class="horiz_divider"></div>
 	<!--Look Around-->
 	{% if numcardsatlocation > 0 %}
 	<h2 name="look around"><a href="draw/">Look Around</a></h2>
 	{% endif %}
-	<!-- <h2>
-	<a href="shuffle">Rest</a>
-	</h2> -->
+</div>
+<div class="vert_divider"></div>
+<div id="content_main">
 	
-	<!--active event-->
-	
-
-</header>
-
+<div id="log_entries">
 {% for log in logs %}
-<div class="logentry">
+<div class="log_entry">
 	<h2> {{log.title}} </h2>
 	{{log.content | safe}}
 	<div class="horiz_divider"></div>
 </div>
 {% endfor %}
+</div>
 </div>
 {% endblock %}

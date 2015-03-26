@@ -4,6 +4,7 @@ function start() {
 	handShift();
 	scrollBottom();
 	animateCardHover();
+	deleteLocationContentDuplicates()
 }
 
 function cardModal() {
@@ -76,4 +77,16 @@ function animateCardHover(){
 		}, {duration: 200, 
 			queue:false});
 	});
+}
+
+function deleteLocationContentDuplicates(){
+	var logLength = $('.log_entry').size();
+	
+	for(var i = 1; i <= logLength; i++){
+		if($('.log_entry:nth-child(' + i + ') h2').html() == $('.log_entry:nth-child(' + (i - 1) + ') h2').html()){
+			$('.log_entry:nth-child(' + i + ') h2').css("color","red");
+			//$('.log_entry:nth-child(' + i + ') h2').hide();
+			$('.log_entry:nth-child(' + (i-1) + ') .horiz_divider').hide();
+		}
+	}
 }
