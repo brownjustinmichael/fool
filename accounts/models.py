@@ -224,7 +224,7 @@ class DeckStatus (models.Model):
         cardstatus = self.cardstatus_set.filter (status = CARD_IN_DECK).order_by ('position').first ()
         if cardstatus is not None:
             return cardstatus.draw (next_status)
-        raise ValueError ("You've run out of cards in this deck.")
+        # raise ValueError ("You've run out of cards in this deck.")
 
     def playCard (self, card, next_status = CARD_IN_HAND):
         """
