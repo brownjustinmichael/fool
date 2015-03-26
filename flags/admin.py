@@ -1,11 +1,11 @@
 from django.contrib import admin
-from flags.models import nFlag, nFlagDependency
+from flags.models import Flag, FlagDependency
 
-class nFlagDependencyInline(admin.TabularInline):
-    model = nFlagDependency
+class FlagDependencyInline(admin.TabularInline):
+    model = FlagDependency
     fk_name = 'dependent_flag'
     
-class nFlagAdmin (admin.ModelAdmin):
-    inlines = [nFlagDependencyInline]
+class FlagAdmin (admin.ModelAdmin):
+    inlines = [FlagDependencyInline]
     
-admin.site.register (nFlag, nFlagAdmin)
+admin.site.register (Flag, FlagAdmin)

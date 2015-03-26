@@ -13,7 +13,7 @@ import collections
 from polymorphic import PolymorphicModel
 
 from cards.models import CardTemplate, CARD_STATUSES, CARD_IN_STASH, CARD_IN_DECK, CARD_IN_DISCARD, CARD_IN_HAND, CARD_IN_PLAY, Deck, Card, BaseCard, PLAYER_STATS, EXTRA_STATS, DEFENSE_BONUS, OFFENSE_BONUS, RESIST, FORCE
-from flags.models import nFlag, nLogFlag, nCompositeFlag, nPlayerFlag
+from flags.models import Flag, LogFlag, CompositeFlag
 
 stats = collections.OrderedDict ()
 for stat in PLAYER_STATS + EXTRA_STATS:
@@ -365,7 +365,7 @@ class AbstractPlayer (models.Model):
         # Delete all npc instances; they'll be regenerated when the player interacts with them again
         for npcInstance in self.npcinstance_set.all ():
             npcInstance.delete ()
-        nFlag.reset (self)
+        Flag.reset (self)
         
     def getCards (self, status = CARD_IN_PLAY, allDecks = False):
         query = CardStatus.objects.filter (deck__player = self).filter (status = status)
@@ -514,11 +514,11 @@ class Log (PolymorphicModel):
     
     @property
     def title (self):
-        return nFlag.parse (self.event.title, self.player, self)
+        return Flag.parse (self.event.title, self.player, self)
     
     @property
     def content (self):
-        return nFlag.parse (self.event.content, self.player, self)
+        return Flag.parse (self.event.content, self.player, self)
 
     class Meta:
         #Specify the order that the logging messages should appear "logged" for forward and "-logged" for reverse
@@ -535,11 +535,11 @@ class TriggerLog (Log):
     
     @property
     def title (self):
-        return nFlag.parse (self.trigger.title, self.player, self)
+        return Flag.parse (self.trigger.title, self.player, self)
     
     @property
     def content (self):
-        return nFlag.parse (self.trigger.content, self.player, self)
+        return Flag.parse (self.trigger.content, self.player, self)
 
 class ActiveEvent (models.Model):
     player = models.ForeignKey (Player)
@@ -641,18 +641,18 @@ class ActiveEvent (models.Model):
             print ("Writing a log for ", self.event)
             log = Log (event = self.event, user = self.player, location = self.location)
             log.save ()
-            flags = list (set ([nLogFlag.fromPlayerFlag (flag.getPlayerFlag (self.player), log) for tag in self.event.contentFlags for flag in nCompositeFlag.fromString (tag).getFlags ()]))
+            flags = list (set ([LogFlag.fromPlayerFlag (flag.getPlayerFlag (self.player), log) for tag in self.event.contentFlags for flag in CompositeFlag.fromString (tag).getFlags ()]))
             [flag.save () for flag in flags]
             self.logged = True
             self.save ()
     
     @property
     def title (self):
-        return nFlag.parse (self.event.title, self.player)
+        return Flag.parse (self.event.title, self.player)
     
     @property
     def content (self):
-        return nFlag.parse (self.event.content, self.player)
+        return Flag.parse (self.event.content, self.player)
         
     def getHelper (self, template, modifier):
         # TODO Make it easier to get the correct trigger

@@ -2,7 +2,7 @@ from django.db import models
 import re
 import ast
 
-class nFlag (models.Model):
+class Flag (models.Model):
     """A database entry that pertains to flags for the players"""
     
     name = models.CharField (max_length = 60, unique = True)
@@ -26,7 +26,7 @@ class nFlag (models.Model):
     def save (self, *args, **kwargs):
         if re.search ("(^[^a-zA-Z_]|[^a-zA-Z0-9_])", self.name) is not None:
             raise ValueError ("Flags must be valid python variables (a-zA-Z0-9 and can't begin with a number)")
-        super (nFlag, self).save (*args, **kwargs)
+        super (Flag, self).save (*args, **kwargs)
         
     @classmethod
     def get (cls, name):
@@ -39,16 +39,16 @@ class nFlag (models.Model):
         return [self]
         
     def getPlayerFlag (self, player):
-        flag = nPlayerFlag.objects.filter (flag = self).filter (player = player).first ()
+        flag = PlayerFlag.objects.filter (flag = self).filter (player = player).first ()
         if flag is None:
-            flag = nPlayerFlag (player = player, flag = self)
+            flag = PlayerFlag (player = player, flag = self)
             flag.save ()
         return flag
             
     def getLogFlag (self, log):
-        flag = nLogFlag.objects.filter (flag = self).filter (log = log).first ()
+        flag = LogFlag.objects.filter (flag = self).filter (log = log).first ()
         if flag is None:
-            flag = nLogFlag (log = log, flag = self)
+            flag = LogFlag (log = log, flag = self)
             flag.save ()
         return flag
             
@@ -80,7 +80,7 @@ class nFlag (models.Model):
                     innerContent = content [stack [-1] + 1: i]
                     condition = innerContent.split ("?") [0]
                     success, failure = innerContent.split ("?") [1].split (":")
-                    if nCompositeFlag.fromString (condition).state (player = player, log = log):
+                    if CompositeFlag.fromString (condition).state (player = player, log = log):
                         content = content.replace (content [stack [-1]: i + 1], success)
                     else:
                         content = content.replace (content [stack [-1]: i + 1], failure)
@@ -93,15 +93,15 @@ class nFlag (models.Model):
     def __eq__ (self, other):
         return type (self) == type (other) and self.name == other.name
         
-class nFlagDependency (models.Model):
+class FlagDependency (models.Model):
     """A database that links dependent flags together such that if one is changed, so too is the other."""
     
-    independent_flag = models.ForeignKey (nFlag)
+    independent_flag = models.ForeignKey (Flag)
     independent_flag_value = models.IntegerField (default = 0)
-    dependent_flag = models.ForeignKey (nFlag, related_name = "_unused_flagdependency_flag")
+    dependent_flag = models.ForeignKey (Flag, related_name = "_unused_flagdependency_flag")
     dependent_flag_value = models.IntegerField (default = 0)
         
-class nCompositeFlag (object):
+class CompositeFlag (object):
     def __init__ (self, *flags, **kwargs):
         self.flags = flags
         self.operator = kwargs.pop ("operator", "and")
@@ -168,7 +168,7 @@ class nCompositeFlag (object):
     @classmethod
     def fromNode (cls, node, opno = None):
         if isinstance (node, ast.Name):
-            return nFlag.get (node.id)
+            return Flag.get (node.id)
         if isinstance (node, ast.Num):
             return node.n
         if isinstance (node, ast.NameConstant):
@@ -222,11 +222,11 @@ class nCompositeFlag (object):
         raise ValueError ("Not implemented yet", type (node))
         
         
-class nPlayerFlag (models.Model):
+class PlayerFlag (models.Model):
     """A linking table that links flags to players"""
     
     player = models.ForeignKey ("accounts.Player")
-    flag = models.ForeignKey (nFlag)
+    flag = models.ForeignKey (Flag)
     state = models.IntegerField (default = 0)
     
     class Meta:
@@ -238,11 +238,11 @@ class nPlayerFlag (models.Model):
     def __eq__ (self, other):
         return type (self) == type (other) and self.player == other.player and self.flag == other.flag and self.state == other.state
         
-class nLogFlag (models.Model):
+class LogFlag (models.Model):
     """A linking table that links flags to players"""
     
     log = models.ForeignKey ("accounts.Log")
-    flag = models.ForeignKey (nFlag)
+    flag = models.ForeignKey (Flag)
     state = models.IntegerField (default = 0)
     
     class Meta:

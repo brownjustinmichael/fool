@@ -4,7 +4,7 @@ import re
 
 from cards.models import CardTemplate, Deck
 from npcs.models import NPC, NPCInstance
-from flags.models import nCompositeFlag
+from flags.models import CompositeFlag
 
 # class EffectEventLink (models.Model):
 #     template = models.ForeignKey (CardTemplate)
@@ -233,10 +233,10 @@ class EventTrigger (models.Model):
         print ("Checking", self, "with", self.npcthreshold, npclife, value)
         if self.npcthreshold:
             if npclife is not None:
-                return nCompositeFlag.fromString (self.conditions).state (player) and npclife <= self.threshold
+                return CompositeFlag.fromString (self.conditions).state (player) and npclife <= self.threshold
         else:
-            print ("Checking", self.conditions, nCompositeFlag.fromString (self.conditions).state (player))
-            return nCompositeFlag.fromString (self.conditions).state (player) and value >= self.threshold
+            print ("Checking", self.conditions, CompositeFlag.fromString (self.conditions).state (player))
+            return CompositeFlag.fromString (self.conditions).state (player) and value >= self.threshold
         return False
     
     @property
