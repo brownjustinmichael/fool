@@ -38,7 +38,10 @@ def location (request, slug):
             card.resolve ()
             
     active_event = player.active_event
-    location_deck = active_event.event.locationDeck
+    if active_event is not None:
+        location_deck = active_event.event.locationDeck
+    else:
+        location_deck = None
     
     print ("Before render:", player.activeevent_set.all ())
     
