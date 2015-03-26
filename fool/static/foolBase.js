@@ -1,7 +1,8 @@
+
+
 function start() {
-	roundHand();
+	handPrep();
 	cardModal();
-	handShift();
 	scrollBottom();
 	animateCardHover();
 	deleteLocationContentDuplicates()
@@ -24,40 +25,50 @@ function cardModal() {
 	})
 }
 
-function roundHand(){
-	var cardWidth = $('.card_slot').width();
-	$('#card_bin').width(Math.floor($('#card_bin').width()/cardWidth)*(cardWidth + 3));
-	$('#cards').width(Math.floor($('#card_bin').width()/cardWidth)*(cardWidth + 3) + 80);
-	$('.card_button[value=back]').css('background','grey');
-	if(Math.floor($('#card_bin').width()/cardWidth) >= $('.card_slot').length){
-		$('.card_button[value=next]').css('background','grey');
-	}
-
+function handPrep(){
+	var handCount = 5;
+	handShift(handCount);
 }
 
-function handShift(){
-	var cardWidth = $('.card_slot').width();
+function handShift(handCount){
+	buttonToggle('back','off');
+	if($('.card_slot').size() >= handCount){
+		buttonToggle('next','on');
+	}
+	
+	var cardHeight = 50;
 	$('.card_button').click(function(){
-		var shiftCount = -(parseInt($('#card_slots').css('left'))/cardWidth);
-		var handCount = $('#card_bin').width()/cardWidth;
+		var shiftCount = -(parseInt($('#card_slots').css('top'))/cardHeight);
 		if($(this).attr('value') == 'next' && shiftCount < $('.card_slot').length - handCount){
-			$('#card_slots').animate({left:'-=' + cardWidth + 'px'}, 50);
+			$('#card_slots').animate({top:'-=' + cardHeight + 'px'}, 200);
+			$('.card_slot:nth-child(' + (shiftCount + 1) + ')').animate({opacity:0}, 200);
 			shiftCount += 1;
 		}else if($(this).attr('value') == 'back' && shiftCount > 0){
-			$('#card_slots').animate({left:'+=' + cardWidth + 'px'}, 50);
+			$('#card_slots').animate({top:'+=' + cardHeight + 'px'}, 200);
+			$('.card_slot:nth-child(' + (shiftCount) + ')').animate({opacity:1}, 200);
 			shiftCount -= 1;
 		}
 		if(shiftCount >= $('.card_slot').length - handCount){
-			$('.card_button[value=back]').css('background','red');
-			$('.card_button[value=next]').css('background','grey');
+			buttonToggle('back','on');
+			buttonToggle('next','off');
 		}else if(shiftCount <= 0){
-			$('.card_button[value=back]').css('background','grey');
-			$('.card_button[value=next]').css('background','red');
+			buttonToggle('back','off');
+			buttonToggle('next','on');
 		}else{
-			$('.card_button[value=back]').css('background','red');
-			$('.card_button[value=next]').css('background','red');
+			buttonToggle('back','on');
+			buttonToggle('next','on');
 		}
-	})
+	});
+	function buttonToggle(type, toggle){
+		if(toggle == "on"){
+			$('.card_button[value='+ type + ']').css('background','#c3beb9');
+			$('.card_button[value='+ type + ']').html('O')
+		}
+		else{
+			$('.card_button[value='+ type + ']').css('background','#554b40');
+			$('.card_button[value='+ type + ']').html('-');
+		}
+	}
 }
 
 function scrollBottom(){

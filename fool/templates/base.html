@@ -19,30 +19,24 @@
 		<div class="header">
 			The Fool
 		</div>
-		<div class="sidebar">
-			<div class="sidebar_item" id="sidebar_home">
+		<div class="menubar">
+			<div class="menubar_item" id="sidebar_home">
 				<a href="{% url 'Home' %}">Home</a>
 			</div>
-			<div class="sidebar_item" id="sidebar_map">
+			<div class="menubar_item" id="sidebar_map">
 				<a href="{% url 'Subway' %}">Map</a>
 			</div>
-			<div class="sidebar_item" id="sidebar_journal">
+			<div class="menubar_item" id="sidebar_journal">
 				<a href="{% url 'Journal' %}">Journal</a>
 			</div>
-			<div class="sidebar_item" id="sidebar_user_preferences">
+			<div class="menubar_item" id="sidebar_user_preferences">
 				<a href="{% url 'User_Preferences' %}">User Preferences</a>
 			</div>
 		</div>
-		<div class="content">
-			{% block content %}
-			{% endblock %}
-		</div>
-		<div id="end_page_spacing"></div>
-		<div class="footer">
+		<div class="sidebar">
 			<div id="cards">
 			<div class="card_button" value="back"></div>
 			<div id="card_bin">
-				<div id="card_background"></div>
 				
 				<div id="card_slots">
 				{% for card in hand %}
@@ -83,6 +77,13 @@
 			</div>
 			<div class="card_button" value="next"></div>
 			</div>
+		</div>
+		<div class="content">
+			{% block content %}
+			{% endblock %}
+		</div>
+		<!--<div id="end_page_spacing"></div>-->
+		<div class="footer">
 			<div id="inventory">
 				<div id="deck">
 					{% if numcardsindeck > 0 %}
