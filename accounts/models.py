@@ -457,7 +457,7 @@ class AbstractPlayer (models.Model):
         if lastEvent is not None:
             trigger = lastEvent.resolve (self, cardStatus, played)
         elif cardStatus is not None:
-            trigger = location.trigger_event (self, cardStatus)
+            trigger = location.resolve (self, cardStatus, played)
         if trigger is not None:
             card = cardStatus.card if cardStatus is not None else None
             log = TriggerLog (trigger = trigger, user = self, location = location, card = card)

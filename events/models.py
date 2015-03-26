@@ -84,6 +84,8 @@ class Event (models.Model):
         npctriggers.reverse ()
         
         triggers = npctriggers + valuetriggers
+        
+        print ("LLAMA THINKING ABOUT TRIGGER:", triggers)
             
         if played:
             if npc is not None and scores is not None:
@@ -97,7 +99,9 @@ class Event (models.Model):
         for tr in triggers:
             if tr.checkTrigger (player, value, npclife):
                 last = tr
+                print ("Success with ", tr)
                 break
+            print ("I FAILLLLLLLED")
         return last
         
         
@@ -113,6 +117,7 @@ class Event (models.Model):
         """Resolve an event with or without a card to play. If the event can't resolve with current conditions, return None
         
         Note: this method calls the card.draw () method, which effectively moves the card to the discard pile and puts any special abilities of that card into effect."""
+        print ("LLAMA RESOLUTION")
         if cardStatus is None and not self.auto:
             return None
         
@@ -218,6 +223,7 @@ class EventTrigger (models.Model):
         return self.result == SWITCH
         
     def checkTrigger (self, player, value, npclife = None):
+        print ("Checking", self, "with", self.npcthreshold, npclife, value)
         if self.npcthreshold:
             if npclife is not None:
                 return CompositeFlag.fromString (self.conditions).state (player) and npclife <= self.threshold
