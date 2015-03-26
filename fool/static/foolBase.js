@@ -35,6 +35,7 @@ function handShift(handCount){
 	if($('.card_slot').size() >= handCount){
 		buttonToggle('next','on');
 	}
+	$('#card_slots').css('top',' ' + (150+(5-$('.card_slot').size())*50) +'px');
 	
 	var cardHeight = 50;
 	var shiftCount = 0;
