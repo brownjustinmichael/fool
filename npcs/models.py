@@ -76,7 +76,8 @@ class NPCInstance (models.Model):
 
     def discard (self, number):
         # TODO This should eventually deal with decks
-        self.deckStatus.discard (number)
+        if self.deckStatus is not None:
+            self.deckStatus.discard (number)
         
     def defend (self, scores):
         return Score (DEFENSE_BONUS [scores [0].stat], getattr (self.npc, DEFENSE_BONUS [scores [0].stat]))
