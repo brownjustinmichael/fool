@@ -21,6 +21,8 @@ def location (request, slug):
     location = get_object_or_404 (Location, slug=slug)
     location_deck = location.locationDeck
     
+    print ("NO LLAMA.", location_deck)
+    
     # now return the rendered template
     player = get_object_or_404 (Player, user = request.user)
     in_play = player.getCards (CARD_IN_PLAY)
@@ -39,9 +41,11 @@ def location (request, slug):
             
     active_event = player.active_event
     if active_event is not None:
+        print ("YARR. THERE BE AN ACTIVE EVENT")
         location_deck = active_event.event.locationDeck
-    else:
-        location_deck = None
+        
+    if location_deck is not None:
+        location_deck.getStatus (player)
     
     print ("Before render:", player.activeevent_set.all ())
     
@@ -53,8 +57,9 @@ def location (request, slug):
     
     print ("Before render:", player.activeevent_set.all ())
     
+    print ("HI! I AM LLAMA", location_deck, location_deck.getNumCards (player) if location_deck is not None else 0)
     
-    return render (request, 'exploration/location.html', {'location': location, 'location_content': Flag.parse (location.content, player), 'location_deck': location_deck, 'numcardsatlocation': location_deck.getNumCards (player) if location_deck is not None else None, 'in_play': [card.card for card in in_play], 'hand': in_hand, 'request': request, 'userprofile': player, 'numcardsindeck': player.deck.getNumCards (player), 'logs': player.log_set.filter (location = location).all ()})
+    return render (request, 'exploration/location.html', {'location': location, 'location_content': Flag.parse (location.content, player), 'location_deck': location_deck, 'numcardsatlocation': location_deck.getNumCards (player) if location_deck is not None else 0, 'in_play': [card.card for card in in_play], 'hand': in_hand, 'request': request, 'userprofile': player, 'numcardsindeck': player.deck.getNumCards (player), 'logs': player.log_set.filter (location = location).all ()})
 
 @login_required (login_url='/accounts/login/')
 def draw (request, slug):
