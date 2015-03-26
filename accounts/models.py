@@ -119,7 +119,7 @@ class CardStatus (models.Model):
         
     @property
     def helper (self):
-        return self.player.active_event.getHelper (self.card.template)
+        return self.player.active_event.getHelper (self.card.template, self.card.modifier)
         
     def get_absolute_url (self):
         return self.card.get_absolute_url ()
@@ -138,9 +138,7 @@ class DeckStatus (models.Model):
         return "%s viewed by %s" % (str (self.deck), str (self.player.user.username))
         
     def checkInitialize (self):
-        print ("SHOULD I?")
         if not self.initialized:
-            print ("OUI!!!!!")
             self.initialize ()
         
     def initialize (self, default = CARD_IN_DECK):
@@ -655,8 +653,9 @@ class ActiveEvent (models.Model):
     def content (self):
         return Flag.parse (self.event.content, self.player)
         
-    def getHelper (self, template):
-        trigger = self.event.eventtrigger_set.filter (template = template).order_by ("threshold").first ()
+    def getHelper (self, template, modifier):
+        # TODO Make it easier to get the correct trigger
+        trigger = self.event.eventtrigger_set.filter (template = template).order_by ("threshold").filter (threshold__gte = modifier).first ()
         if trigger is None:
             previous = self.getPrevious ()
             if previous is None:
@@ -726,6 +725,9 @@ class Flag (models.Model):
         flag = self.getPlayerFlag (player = player)
         flag.state = value
         flag.save ()
+        for flagDependency in self.flagdependency_set.all ():
+            if flagDependency.independent_flag_value == value:
+                flagDependency.dependent_flag.set (player, flagDependency.dependent_flag_value)
         
     @classmethod
     def parse (cls, content, player, log = None):
@@ -753,6 +755,14 @@ class Flag (models.Model):
         
     def __eq__ (self, other):
         return type (self) == type (other) and self.name == other.name
+        
+class FlagDependency (models.Model):
+    """A database that links dependent flags together such that if one is changed, so too is the other."""
+    
+    independent_flag = models.ForeignKey (Flag)
+    independent_flag_value = models.IntegerField (default = 0)
+    dependent_flag = models.ForeignKey (Flag, related_name = "_unused_flagdependency_flag")
+    dependent_flag_value = models.IntegerField (default = 0)
         
 class CompositeFlag (object):
     def __init__ (self, *flags, **kwargs):

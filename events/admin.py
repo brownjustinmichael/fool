@@ -4,6 +4,7 @@ from events.models import Event, EventTrigger, EventEffect
 class EventTriggerInline(admin.TabularInline):
     model = EventTrigger
     fk_name = "originalEvent"
+    ordering = ['template', "threshold"]
 
 class EffectInline(admin.TabularInline):
     model = EventEffect

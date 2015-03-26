@@ -311,9 +311,7 @@ class FlagEffect (Effect):
         return "Effect: %s -> %d" % (self.flag, self.value)
         
     def affect (self, multiplier, player, targetDeck):
-        flag = self.flag.getPlayerFlag (player)
-        flag.state = self.value
-        flag.save ()
+        self.flag.set (player, self.value)
         
 class AddCardEffect (Effect):
     card = models.ForeignKey (BaseCard)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from accounts.models import Player, CardStatus, DeckStatus, Log, TriggerLog, ActiveEvent, PlayerFlag, Flag, LogFlag, KeyItem, KeyItemInstance
+from accounts.models import Player, CardStatus, DeckStatus, Log, TriggerLog, ActiveEvent, PlayerFlag, Flag, LogFlag, FlagDependency, KeyItem, KeyItemInstance
 from django.core.urlresolvers import reverse
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 
@@ -46,11 +46,18 @@ class PlayerAdmin (admin.ModelAdmin):
         )
     inlines = [DeckStatusInline, ActiveEventInline, PlayerFlagInline, KeyItemInline]
     
+class FlagDependencyInline(admin.TabularInline):
+    model = FlagDependency
+    fk_name = 'dependent_flag'
+    
+class FlagAdmin (admin.ModelAdmin):
+    inlines = [FlagDependencyInline]
+    
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(ActiveEvent)
 admin.site.register(DeckStatus, DeckStatusAdmin)
 admin.site.register (CardStatus)
-admin.site.register (Flag)
+admin.site.register (Flag, FlagAdmin)
 admin.site.register (KeyItem)
 # admin.site.register (Log)
 

@@ -86,6 +86,8 @@ class Event (models.Model):
             else:
                 valuetriggers.append (trigger)
                 
+        valuetriggers.reverse ()
+                
         triggers = npctriggers + valuetriggers
         
         print ("LLAMA THINKING ABOUT TRIGGER:", triggers)
@@ -189,7 +191,7 @@ class EventTrigger (models.Model):
     """
     
     class Meta:
-        ordering = ['event', 'template', 'threshold']
+        ordering = ['event', 'threshold', 'template']
     
     # The original event from which this EventTrigger can be triggered
     originalEvent = models.ForeignKey (Event, null = True, blank = True)
@@ -233,6 +235,7 @@ class EventTrigger (models.Model):
             if npclife is not None:
                 return CompositeFlag.fromString (self.conditions).state (player) and npclife <= self.threshold
         else:
+            print ("Checking", self.conditions, CompositeFlag.fromString (self.conditions).state (player))
             return CompositeFlag.fromString (self.conditions).state (player) and value >= self.threshold
         return False
     
