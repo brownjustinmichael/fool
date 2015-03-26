@@ -2,6 +2,7 @@ function start() {
 	roundHand();
 	cardModal();
 	handShift();
+	scrollBottom();
 }
 
 function cardModal() {
@@ -9,9 +10,11 @@ function cardModal() {
 		var cardName = $(this).find(".card_title h2").html();
 		var cardModifier = $(this).find(".card_level").html();
 		var cardLink = $(this).find(".play_card").html();
+		var cardDescription = $(this).find(".card_description").html();
 		$('#card_modal .card_title h2').html(cardName);
 		$('#card_modal .card_level').html(cardModifier);
 		$('#card_modal #modal_play_card').html(cardLink);
+		$('#card_modal .card_description').html(cardDescription);
 		$('#card_modal').show();
 	});
 	$("#modal_cancel").click(function(){
@@ -53,4 +56,8 @@ function handShift(){
 			$('.card_button[value=next]').css('background','red');
 		}
 	})
+}
+
+function scrollBottom(){
+	$("#content_main").prop({ scrollTop: $("#content_main").prop("scrollHeight") });
 }

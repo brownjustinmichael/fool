@@ -3,8 +3,14 @@
 {% block title %}{{location.title}}{% endblock %}
 
 {% block content %}
+<div id="content_header">
+	<h1 id="content_header_location"> {{location.title}} </h1>
+	<!--stack-->
+	<h4>{% for event in userprofile.active_events %}
+	<span name="stack"> {% if event.cardStatus != None %}{{event.cardStatus.card.template.name}} {{event.cardStatus.card.modifier}} : {% endif %}{{event.title}} {% if event != userprofile.active_event %} &gt;&gt; {% endif %}</span>
+	{% endfor %}</h4>
+</div>
 <div id="content_sidebar">
-	<h1> {{location.title}} </h1>
 	<p>
 		<p class="description">
 		{{location_content}}
@@ -13,29 +19,32 @@
 	{% if location.canshuffle %}
 	<h2><a href="/shuffle?from={{request.path}}">Sleep</a></h2>
 	{% endif %}
+	{% if userprofile.active_location == location %}
+	<h2 name="active event"> {{userprofile.active_event.title}} (Life: {{userprofile.active_event.life}}) </h2>
+	{{userprofile.active_event.content}}
+	<!--no active location-->
+	{% elif userprofile.active_location != None %}
+	No active scenario here. Go to {{userprofile.active_location}}.
+	{% else %}
+	<!--Locations-->
+	{% for link in location.npcLinks %}
+	<a name="location" href="/npc/{{link.id}}?from={{request.path}}">{{ link.npc.name }}</a>
+	{% endfor %}
+	{% endif %}
 </div>
 <div class="vert_divider"></div>
+<div id="content_main">
 <header>
-
+	<!--Look Around-->
 	{% if numcardsatlocation > 0 %}
-	<h2><a href="draw/">Deck</a></h2>
+	<h2 name="look around"><a href="draw/">Look Around</a></h2>
 	{% endif %}
 	<!-- <h2>
 	<a href="shuffle">Rest</a>
 	</h2> -->
-	{% for event in userprofile.active_events %}
-	<h2> {{event.cardStatus.card.template.name}} {{event.cardStatus.card.modifier}} : {{event.title}} </h2>
-	{% endfor %}
-	{% if userprofile.active_location == location %}
-	<h2> {{userprofile.active_event.title}} (Life: {{userprofile.active_event.life}}) </h2>
-	{{userprofile.active_event.content}}
-	{% elif userprofile.active_location != None %}
-	No active scenario here. Go to {{userprofile.active_location}}.
-	{% else %}
-	{% for link in location.npcLinks %}
-	<a href="/npc/{{link.id}}?from={{request.path}}">{{ link.npc.name }}</a>
-	{% endfor %}
-	{% endif %}
+	
+	<!--active event-->
+	
 
 </header>
 
@@ -43,12 +52,8 @@
 <div class="logentry">
 	<h2> {{log.title}} </h2>
 	{{log.content | safe}}
-	<p>
-		Logged on
-		<time datetime="{{log.logged|date:"c"}}">
-			{{location.created|date}}
-		</time>
-	</p>
+	<div class="horiz_divider"></div>
 </div>
 {% endfor %}
+</div>
 {% endblock %}
