@@ -555,8 +555,8 @@ class ActiveEvent (models.Model):
             return None
         return self.player.active_events [self.stackOrder - 1]
         
-    def triggers (self, template, local = True):
-        triggers = self.event.eventtrigger_set.filter (template = template).order_by ("threshold")
+    def triggers (self, template, local = True, order = "threshold"):
+        triggers = self.event.eventtrigger_set.filter (template = template).order_by (order)
         if not local:
             triggers = triggers.filter (localOnly = False)
         triggers = list (triggers)
@@ -612,7 +612,10 @@ class ActiveEvent (models.Model):
     npc = property (getNPC)
     
     def resolve (self, player, cardStatus = None, played = True):
-        trigger = self.event.resolve (player, cardStatus, played)
+        triggers = None
+        if cardStatus is not None:
+            triggers = self.triggers (cardStatus.card.template)
+        trigger = self.event.resolve (player, cardStatus, played, triggers = triggers)
         if trigger is None and not self.event.blocking:
             previous = self.getPrevious ()
             if previous is not None:

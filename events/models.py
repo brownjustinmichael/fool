@@ -54,46 +54,52 @@ class Event (models.Model):
     def contentFlags (self):
         return list (set ([tag for tag in re.findall (r"\{\{(.*?)\?", self.title + self.content)]))
         
-    def trigger_event (self, player, cardStatus, played = True):
+    def trigger_event (self, player, cardStatus, played = True, scores = None, value = 0):
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         # TODO cardStatus could keep track of its play values if it was just played
         # If there is a card, play it
         print ("triggering")
-        scores = player.playCard (cardStatus)
-        print ("Card played")
-        if len (scores) > 0:
-            value = scores [0].value
-        else:
-            value = cardStatus.card.modifier
-        
-        print ("Generating NPC")
-        npc = self.generateNPCInstance (player)
         
         trigger = self.eventtrigger_set.filter (Q (template = cardStatus.card.template) | Q (template__isnull = True))
-        if npc is None:
-            trigger = trigger.order_by ('-threshold')
-        else:
-            trigger = trigger.order_by ('threshold')
         
         print ("Found triggers", trigger.all ())
         
+        return self.narrow_trigger (player, cardStatus, trigger, played, scores = scores, value = value)
+        
+    def narrow_trigger (self, player, cardStatus, triggers, played = True, scores = None, value = 0):
+        print ("Generating NPC")
+        npc = self.generateNPCInstance (player)
+        
+        npctriggers = []
+        valuetriggers = []
+        for trigger in triggers:
+            if played:
+                if trigger.onlyWhenNotPlayed:
+                    continue
+            if trigger.npcthreshold:
+                npctriggers.append (trigger)
+            else:
+                valuetriggers.append (trigger)
+                
+        npctriggers.reverse ()
+        
+        triggers = npctriggers + valuetriggers
+            
         if played:
-            if npc is not None:
+            if npc is not None and scores is not None:
                 player.attack (npc, scores)
-            trigger = trigger.filter (onlyWhenNotPlayed = False)
         
         npclife = None
         if npc is not None:
             npclife = npc.life
             
         last = None
-        for tr in trigger.all ():
-            print ("Checking",tr,value,npclife)
+        for tr in triggers:
             if tr.checkTrigger (player, value, npclife):
                 last = tr
                 break
-        print ("End trigger")
         return last
+        
         
     def generateNPCInstance (self, player):
         if self.npc is not None:
@@ -103,18 +109,32 @@ class Event (models.Model):
                 npc.save ()
             return npc
     
-    def resolve (self, player, cardStatus = None, played = True):
+    def resolve (self, player, cardStatus = None, played = True, triggers = None):
         """Resolve an event with or without a card to play. If the event can't resolve with current conditions, return None
         
         Note: this method calls the card.draw () method, which effectively moves the card to the discard pile and puts any special abilities of that card into effect."""
-        
         if cardStatus is None and not self.auto:
             return None
+        
+        scores = []
+        value = 0
+        if cardStatus is not None:
+            scores = player.playCard (cardStatus)
+            print ("Card played")
+            if len (scores) > 0:
+                value = scores [0].value
+            else:
+                value = cardStatus.card.modifier
+        
+        if triggers is not None:
+            trigger = self.narrow_trigger (player, cardStatus = cardStatus, triggers = triggers, played = played, scores = scores, value = value)
+            if trigger is not None:
+                return trigger
         
         if cardStatus is not None:
                 
             # Try to trigger an event with the card
-            eventtrigger = self.trigger_event (player, cardStatus, played)
+            eventtrigger = self.trigger_event (player, cardStatus, played = played, scores = scores, value = value)
             if eventtrigger is not None:
                 return eventtrigger
                 
