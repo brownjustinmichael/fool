@@ -86,7 +86,7 @@ class Event (models.Model):
             else:
                 valuetriggers.append (trigger)
                 
-        valuetriggers.reverse ()
+        # valuetriggers.reverse ()
                 
         triggers = npctriggers + valuetriggers
         
