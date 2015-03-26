@@ -614,18 +614,25 @@ class ActiveEvent (models.Model):
             
     npc = property (getNPC)
     
-    def resolve (self, player, cardStatus = None, played = True):
+    def resolve (self, player, cardStatus = None, played = True, local = True):
+        print ("ACTIVE EVENT RESOLUTION", cardStatus)
         triggers = None
         if cardStatus is not None:
-            triggers = self.triggers (cardStatus.card.template)
-        trigger = self.event.resolve (player, cardStatus, played, triggers = triggers)
+            triggers = self.triggers (cardStatus.card.template, local = local)
+        print ("POSSIBLE TRIGGERS", triggers)
+        # if triggers is None or len (triggers) == 0:
+        #     return None
+        trigger = self.event.resolve (player, cardStatus, played, triggers = triggers, local = local)
+        print ("THE NEW TRIGGER IS", trigger)
         if trigger is None and not self.event.blocking:
             previous = self.getPrevious ()
             if previous is not None:
-                trigger = previous.resolve (player, cardStatus, played)
+                print ("TRYING PREVIOUS")
+                trigger = previous.resolve (player, cardStatus, played, local = False)
         if (trigger is not None and trigger.resolved) or self.event.auto:
             self.resolved = True
             self.save ()
+        print ("DONE", trigger)
         return trigger
             
     def log (self):

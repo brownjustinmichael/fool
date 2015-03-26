@@ -47,6 +47,7 @@ class PlayerAdmin (admin.ModelAdmin):
     inlines = [DeckStatusInline, ActiveEventInline, PlayerFlagInline, KeyItemInline]
     
 admin.site.register(Player, PlayerAdmin)
+admin.site.register(ActiveEvent)
 admin.site.register(DeckStatus, DeckStatusAdmin)
 admin.site.register (CardStatus)
 admin.site.register (Flag)

@@ -54,7 +54,7 @@ class Event (models.Model):
     def contentFlags (self):
         return list (set ([tag for tag in re.findall (r"\{\{(.*?)\?", self.title + self.content)]))
         
-    def trigger_event (self, player, cardStatus, played = True, scores = None, value = 0):
+    def trigger_event (self, player, cardStatus, played = True, scores = None, value = 0, local = True):
         # Filter the triggers by type and strength such that the first trigger satisfies the criteria
         # TODO cardStatus could keep track of its play values if it was just played
         # If there is a card, play it
@@ -64,17 +64,22 @@ class Event (models.Model):
         
         print ("Found triggers", trigger.all ())
         
-        return self.narrow_trigger (player, cardStatus, trigger, played, scores = scores, value = value)
+        return self.narrow_trigger (player, cardStatus, trigger, played, scores = scores, value = value, local = local)
         
-    def narrow_trigger (self, player, cardStatus, triggers, played = True, scores = None, value = 0):
+    def narrow_trigger (self, player, cardStatus, triggers, played = True, scores = None, value = 0, local = True):
         print ("Generating NPC")
         npc = self.generateNPCInstance (player)
+        if len (triggers) == 0:
+            return None
         
         npctriggers = []
         valuetriggers = []
         for trigger in triggers:
             if played:
                 if trigger.onlyWhenNotPlayed:
+                    continue
+            if not local:
+                if trigger.localOnly:
                     continue
             if trigger.npcthreshold:
                 npctriggers.append (trigger)
@@ -111,7 +116,7 @@ class Event (models.Model):
                 npc.save ()
             return npc
     
-    def resolve (self, player, cardStatus = None, played = True, triggers = None):
+    def resolve (self, player, cardStatus = None, played = True, triggers = None, local = True):
         """Resolve an event with or without a card to play. If the event can't resolve with current conditions, return None
         
         Note: this method calls the card.draw () method, which effectively moves the card to the discard pile and puts any special abilities of that card into effect."""
@@ -130,14 +135,15 @@ class Event (models.Model):
                 value = cardStatus.card.modifier
         
         if triggers is not None:
-            trigger = self.narrow_trigger (player, cardStatus = cardStatus, triggers = triggers, played = played, scores = scores, value = value)
+            print ("NARROW TRIGGER TIME")
+            trigger = self.narrow_trigger (player, cardStatus = cardStatus, triggers = triggers, played = played, scores = scores, value = value, local = local)
             if trigger is not None:
                 return trigger
         
         if cardStatus is not None:
-                
+            print ("EVENT TRIGGER TIME")
             # Try to trigger an event with the card
-            eventtrigger = self.trigger_event (player, cardStatus, played = played, scores = scores, value = value)
+            eventtrigger = self.trigger_event (player, cardStatus, played = played, scores = scores, value = value, local = local)
             if eventtrigger is not None:
                 return eventtrigger
                 
@@ -145,7 +151,8 @@ class Event (models.Model):
             cardStatus.resolve ()
                 
         # If nothing else works, use the generic result
-        if self.generic_result is not None:
+        if self.generic_result is not None and local:
+            print ("IM BASIC",self, self.generic_result)
             return self.generic_result
         return None
         
