@@ -48,8 +48,6 @@ class CardStatus (models.Model):
             self.position = self.deck.getCards (status = self.status).order_by ("position").last ().position + 1
         if self.deck is None:
             self.position = 0
-            if self.player is not None:
-                self.deck = self.card.deck.getStatus (player)
         super (CardStatus, self).save (*args, **kwargs)
         print ("LLAMA SAY CARD IS", self.player, self.card, self.deck)
         if self.player is None:
