@@ -85,8 +85,10 @@ class Event (models.Model):
                 npctriggers.append (trigger)
             else:
                 valuetriggers.append (trigger)
-                
-        # valuetriggers.reverse ()
+        
+        npctriggers.sort ()
+        valuetriggers.sort ()
+        valuetriggers.reverse ()
                 
         triggers = npctriggers + valuetriggers
         
@@ -245,6 +247,9 @@ class EventTrigger (models.Model):
     
     def __str__ (self):
         return "%s (%s %d) -> %s" % (str (self.originalEvent), str (self.template), self.threshold, str (self.event))
+        
+    def __gt__ (self, other):
+        return self.threshold > other.threshold
 
 class EventEffect (models.Model):
     event = models.ForeignKey (Event)

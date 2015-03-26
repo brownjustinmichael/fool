@@ -637,7 +637,10 @@ class ActiveEvent (models.Model):
     def log (self):
         if not self.logged and self.event.tolog:
             for eventeffect in self.event.eventeffect_set.all ():
-                eventeffect.effect.affect (self.cardStatus.card.modifier, self.player, self.player.deck)
+                if self.cardStatus is not None:
+                    eventeffect.effect.affect (self.cardStatus.card.modifier, self.player, self.player.deck)
+                else:
+                    eventeffect.effect.affect (0, self.player, self.player.deck)
             print ("Writing a log for ", self.event)
             log = Log (event = self.event, user = self.player, location = self.location)
             log.save ()
