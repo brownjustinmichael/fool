@@ -4,7 +4,8 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 
 from locations.models import Location
-from accounts.models import Player, Flag
+from accounts.models import Player
+from flags.models import nFlag
 from cards.models import CARD_IN_HAND, CARD_IN_PLAY, CARD_IN_DISCARD
 
 @login_required (login_url='/accounts/login/')
@@ -50,7 +51,7 @@ def location (request, slug):
     if event is not None:
         in_hand += [card for card in event.getCards (player, CARD_IN_HAND)]
     
-    return render (request, 'exploration/location.html', {'location': location, 'location_content': Flag.parse (location.content, player), 'location_deck': location_deck, 'numcardsatlocation': location_deck.getNumCards (player) if location_deck is not None else 0, 'in_play': [card.card for card in in_play], 'hand': in_hand, 'request': request, 'userprofile': player, 'numcardsindeck': player.deck.getNumCards (player), 'logs': player.log_set.filter (location = location).all ()})
+    return render (request, 'exploration/location.html', {'location': location, 'location_content': nFlag.parse (location.content, player), 'location_deck': location_deck, 'numcardsatlocation': location_deck.getNumCards (player) if location_deck is not None else 0, 'in_play': [card.card for card in in_play], 'hand': in_hand, 'request': request, 'userprofile': player, 'numcardsindeck': player.deck.getNumCards (player), 'logs': player.log_set.filter (location = location).all ()})
 
 @login_required (login_url='/accounts/login/')
 def draw (request, slug):

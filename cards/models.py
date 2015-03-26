@@ -304,14 +304,14 @@ class StatChangeEffect (Effect):
         player.changeStat (self.stat, self.strength)
         
 class FlagEffect (Effect):
-    flag = models.ForeignKey ("accounts.Flag")
+    nflag = models.ForeignKey ("flags.nFlag", null = True)
     value = models.IntegerField (default = 0)
     
     def __str__ (self):
-        return "Effect: %s -> %d" % (self.flag, self.value)
+        return "Effect: %s -> %d" % (self.nflag, self.value)
         
     def affect (self, multiplier, player, targetDeck):
-        self.flag.set (player, self.value)
+        self.nflag.set (player, self.value)
         
 class AddCardEffect (Effect):
     card = models.ForeignKey (BaseCard)

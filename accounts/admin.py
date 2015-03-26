@@ -1,5 +1,6 @@
 from django.contrib import admin
-from accounts.models import Player, CardStatus, DeckStatus, Log, TriggerLog, ActiveEvent, PlayerFlag, Flag, LogFlag, FlagDependency, KeyItem, KeyItemInstance
+from accounts.models import Player, CardStatus, DeckStatus, Log, TriggerLog, ActiveEvent, KeyItem, KeyItemInstance
+from flags.models import nPlayerFlag, nLogFlag
 from django.core.urlresolvers import reverse
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 
@@ -36,7 +37,7 @@ class DeckStatusAdmin (admin.ModelAdmin):
         return super(DeckStatusAdmin, self).get_form(request, obj, **kwargs)
     
 class PlayerFlagInline (admin.TabularInline):
-    model = PlayerFlag
+    model = nPlayerFlag
 
 class PlayerAdmin (admin.ModelAdmin):
     class Media:
@@ -46,24 +47,16 @@ class PlayerAdmin (admin.ModelAdmin):
         )
     inlines = [DeckStatusInline, ActiveEventInline, PlayerFlagInline, KeyItemInline]
     
-class FlagDependencyInline(admin.TabularInline):
-    model = FlagDependency
-    fk_name = 'dependent_flag'
-    
-class FlagAdmin (admin.ModelAdmin):
-    inlines = [FlagDependencyInline]
-    
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(ActiveEvent)
 admin.site.register(DeckStatus, DeckStatusAdmin)
 admin.site.register (CardStatus)
-admin.site.register (Flag, FlagAdmin)
 admin.site.register (KeyItem)
 # admin.site.register (Log)
 
 
 class LogFlagInline (admin.TabularInline):
-    model = LogFlag
+    model = nLogFlag
 
 class LogChildAdmin(PolymorphicChildModelAdmin):
     """ Base admin class for all child models """

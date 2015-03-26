@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'grappelli',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'flags',
     'cards',
     'events',
     'locations',

@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 
 from cards.models import Deck, CardTemplate, NPCCard
-from accounts.models import Flag
 from events.models import Event
 
 # TODO Since you can complete tasks outside of the active location, logs can be stored outside the location they happen
