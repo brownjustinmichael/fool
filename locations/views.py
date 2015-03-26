@@ -19,7 +19,7 @@ def index(request):
 def location (request, slug):
     # get the Location object
     location = get_object_or_404 (Location, slug=slug)
-    location_deck = location.deck
+    location_deck = location.locationDeck
     
     # now return the rendered template
     player = get_object_or_404 (Player, user = request.user)
@@ -36,6 +36,9 @@ def location (request, slug):
     if (event is None):
         for card in in_play:
             card.resolve ()
+            
+    active_event = player.active_event
+    location_deck = active_event.event.locationDeck
     
     print ("Before render:", player.activeevent_set.all ())
     
@@ -57,8 +60,9 @@ def draw (request, slug):
     player = get_object_or_404 (Player, user = request.user)
         
     location = get_object_or_404 (Location, slug=slug)
+    active_event = player.active_event
 
-    player.resolve (location, location.drawCard (player))
+    player.resolve (location, active_event.event.drawCard (player))
 
     return redirect (location.get_absolute_url ())
 

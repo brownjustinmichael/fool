@@ -60,14 +60,22 @@ class Event (models.Model):
         # If there is a card, play it
         print ("triggering")
         scores = player.playCard (cardStatus)
+        print ("Card played")
         if len (scores) > 0:
             value = scores [0].value
         else:
             value = cardStatus.card.modifier
         
+        print ("Generating NPC")
         npc = self.generateNPCInstance (player)
         
-        trigger = self.eventtrigger_set.filter (Q (template = cardStatus.card.template) | Q (template__isnull = True)).order_by ('threshold')
+        trigger = self.eventtrigger_set.filter (Q (template = cardStatus.card.template) | Q (template__isnull = True))
+        if npc is None:
+            trigger = trigger.order_by ('-threshold')
+        else:
+            trigger = trigger.order_by ('threshold')
+        
+        print ("Found triggers", trigger.all ())
         
         if played:
             if npc is not None:
@@ -84,6 +92,7 @@ class Event (models.Model):
             if tr.checkTrigger (player, value, npclife):
                 last = tr
                 break
+        print ("End trigger")
         return last
         
     def generateNPCInstance (self, player):
@@ -122,14 +131,11 @@ class Event (models.Model):
         Draw a card from the location deck. Check whether this card triggers any events.
         """
         if self.locationDeck is not None:
-            if player.activeevent_set.count () > 0:
-                raise RuntimeError ("You can't draw from the location deck if there are still active events.")
-            else:
-                print ("event draw")
-                card = self.locationDeck.drawCard (player)
-                card.play ()
-                print (card)
-                return card
+            print ("event draw")
+            card = self.locationDeck.drawCard (player)
+            card.play ()
+            print (card)
+            return card
                 
     def playCard (self, player, cardStatus):
         """
@@ -180,7 +186,7 @@ class EventTrigger (models.Model):
     content = models.TextField (default = "", blank = True)
 
     # 
-    result = models.CharField (max_length = 8, choices = RESULTS, blank = True, null = True, default = RESOLVE)
+    result = models.CharField (max_length = 8, choices = RESULTS, blank = True, null = True, default = None)
     
     # If this trigger resolves the parent event, this boolean is True
     @property

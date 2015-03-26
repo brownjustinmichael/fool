@@ -143,7 +143,7 @@ class DeckStatus (models.Model):
     def initialize (self, default = CARD_IN_DECK):
         ignore = {}
         for cardstatus in self.cardstatus_set.all ():
-            if cardstatus.status is not CARD_IN_PLAY and cardstatus.status is not CARD_IN_STASH:
+            if cardstatus.status != CARD_IN_PLAY and cardstatus.status != CARD_IN_STASH and cardstatus.status != default:
                 cardstatus.delete ()
             else:
                 ignore [cardstatus.card] = True
@@ -183,6 +183,7 @@ class DeckStatus (models.Model):
         cardstatus.save ()
         
     def addCardStatus (self, card, status = CARD_IN_PLAY):
+        print ("Adding card status from deck")
         if self.getCards (status = status).count () > 0:
             newpos = self.getCards (status = status).last ().position + 1
         else:
@@ -346,6 +347,7 @@ class AbstractPlayer (models.Model):
             cardstatus = card.getStatus (self)
         else:
             cardstatus = card
+        print ("Done")
         return tuple (score + getattr (self, score.stat) for score in cardstatus.play ())
         
     def discard (self, number):
@@ -370,8 +372,10 @@ class AbstractPlayer (models.Model):
         return query.all ()
         
     def addCardStatus (self, card):
+        print ("Adding Card Status from player")
         cardstatus = CardStatus (card = card, player = self)
         cardstatus.save ()
+        print ("Saved")
         return cardstatus
 
     def addDeckStatus (self, deck):
@@ -442,7 +446,7 @@ class AbstractPlayer (models.Model):
             lastEvent.log ()
             lastEvent.delete ()
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
-            
+        
         # Attempt to trigger a new event using any cards that may have been played
         trigger = None
         failed = True
@@ -453,10 +457,14 @@ class AbstractPlayer (models.Model):
         if trigger is not None:
             log = TriggerLog (trigger = trigger, user = self, location = location, card = cardStatus.card)
             log.save ()
-            if trigger.event is not None and not trigger.switch:
+            if trigger.event is not None:
+                if trigger.switch:
+                    if lastEvent is None:
+                        raise TypeError ("Can't switch without previous event")
+                    lastEvent.delete ()
                 self.addEvent (cardStatus = cardStatus, event = trigger.event, location = location)
             lastEvent = self.activeevent_set.order_by ("stackOrder").last ()
-            
+        
         # Check for unresolved events on the stack
         while lastEvent is not None and lastEvent.resolved:
             lastEvent.log ()
@@ -561,15 +569,6 @@ class ActiveEvent (models.Model):
     class Meta:
         unique_together = ("player", "event", "stackOrder")
         
-    def __init__(self, *args, **kwargs):
-        super(ActiveEvent, self).__init__(*args, **kwargs)
-        try:
-            if self.event is not None and self.event.deck is not None:
-                deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
-                deckStatus.initialize (CARD_IN_HAND)
-        except ObjectDoesNotExist:
-            pass
-        
     def delete (self):
         if self.event is not None and self.event.deck is not None:
             deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
@@ -578,6 +577,13 @@ class ActiveEvent (models.Model):
             
     def getCards (self, player, status):
         cards = []
+        # TODO I really don't like that initialize happens here
+        try:
+            if self.event is not None and self.event.deck is not None:
+                deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
+                deckStatus.initialize (CARD_IN_HAND)
+        except ObjectDoesNotExist:
+            pass
         if self.event.deck is not None:
             deckStatus = self.event.deck.getStatus (self.player, default = CARD_IN_HAND)
             cards = list (deckStatus.getCards (status).all ())
@@ -691,11 +697,9 @@ class Flag (models.Model):
         return flag
             
     def getLogFlag (self, log):
-        print ("Getting log flag", self.name)
         print (LogFlag.objects.all ())
         flag = LogFlag.objects.filter (flag = self).filter (log = log).first ()
         if flag is None:
-            print ("Couldn't find flag", self.name)
             flag = LogFlag (log = log, flag = self)
             flag.save ()
         return flag
