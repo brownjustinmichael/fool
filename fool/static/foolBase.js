@@ -37,8 +37,9 @@ function handShift(handCount){
 	}
 	
 	var cardHeight = 50;
+	var shiftCount = 0;
 	$('.card_button').click(function(){
-		var shiftCount = -(parseInt($('#card_slots').css('top'))/cardHeight);
+		
 		if($(this).attr('value') == 'next' && shiftCount < $('.card_slot').length - handCount){
 			$('#card_slots').animate({top:'-=' + cardHeight + 'px'}, 200);
 			$('.card_slot:nth-child(' + (shiftCount + 1) + ')').animate({opacity:0}, 200);
@@ -78,13 +79,26 @@ function scrollBottom(){
 function animateCardHover(){
 	$(".card").mouseenter(function(){
 		$(this).animate({
-			top: "5"
+			top: "-120"
 		}, {duration: 200, 
 			queue:false});
 	});
 	$(".card").mouseleave(function(){
 			$(this).animate({
-			top: "150"
+			top: "0"
+		}, {duration: 200, 
+			queue:false});
+	});
+	
+	$(".card_sidetab").mouseenter(function(){
+		$(this).siblings('.card').animate({
+			top: "-120"
+		}, {duration: 200, 
+			queue:false});
+	});
+	$(".card_sidetab").mouseleave(function(){
+			$(this).siblings('.card').animate({
+			top: "0"
 		}, {duration: 200, 
 			queue:false});
 	});

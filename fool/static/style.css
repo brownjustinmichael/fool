@@ -26,12 +26,13 @@ body{
 
 .content{
 	display:inline-block;
+	float:left;
 	border: 1px solid #403830;
 	box-shadow: 0px 0px 3px 3px rgba(64,56,48, 0.5);
 	background-color: #fff;
 	max-width: 1000px;
 	width: 96%;
-	height:80%;
+	height:675px;
 	margin: 20px  auto;
 }
 
@@ -113,9 +114,40 @@ a{
 /*CARD CSS*/
 
 .sidebar{
+	height:675px;
 	display:inline-block;
+	float:left;
 	width:300px;
-	margin:0px 0px 0px 10px;
+	margin:20px 0px 0px 60px;
+	border:1px solid #403830;
+	box-shadow: 0px 0px 3px 3px rgba(64,56,48, 0.5);
+	background-color:#403830;
+}
+
+#sidebar_title{
+	color:white;
+	text-align:center;
+}
+
+#inventory{
+	background-color:#554b40;
+	text-align:center;
+	font-size:150%;
+	color:white;
+}
+
+#inventory a{ 
+	color:white;
+}
+
+#deck{
+	padding:10px;
+	
+}
+
+#money{
+	border:1px solid black;
+	padding:10px;
 }
 
 #cards{
@@ -144,19 +176,35 @@ a{
 #card_slots{
 	position:relative;
 	width:100%;
-	top:0px;
+	top:150px;
 }
 
 .card_slot{
 	display:inline-block;
+	margin-left:10px;
 	width:200px;
 	height:50px;
 	float:left;
+	cursor:pointer;
+}
+
+.card_sidetab{
+	display:inline-block;
+	margin-top:10px;
+	width:25px;
+	height:40px;
+	float:left;
+	border-bottom-left-radius:10px;
+	border-top-left-radius:10px;
+	border: 2px solid #6E6754;
+	background-color:#b5aea7;
+	text-align:center;
+	font-size:130%;
 }
 
 .card{
 	position:relative;
-	top:150px;
+	top:0px;
 	width:150px;
 	margin:auto;
 	height:200px;
@@ -238,24 +286,7 @@ a{
 	background-color:#555555;
 }
 
-#inventory{
-	position:fixed;
-	bottom:0px;
-	right:0px;
-	background-color:darkgrey;
-	width:100px;
-	height:100px;
-	border-top-left-radius: 20px;
-}
 
-#deck{
-	height:50px;
-}
-
-#money{
-	border:1px solid black;
-	padding:10px;
-}
 
 /*CARD MODAL */
 

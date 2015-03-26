@@ -34,6 +34,25 @@
 			</div>
 		</div>
 		<div class="sidebar">
+			<div id='sidebar_title'><h2>Inventory</h2></div>
+			<div id="inventory">
+				<div id="deck">
+					{% if numcardsindeck > 0 %}
+						<div>
+							<a href="/draw?from={{request.path}}">Deck ({{numcardsindeck}})</a>
+						</div>
+					{% else %}
+						<div>
+							Deck ({{numcardsindeck}})
+						</div>
+					{% endif %}
+				</div>
+				<div id="money">
+					<div>
+						{{user.player.money}} $
+					</div>
+				</div>
+			</div>
 			<div id="cards">
 			<div class="card_button" value="back"></div>
 			<div id="card_bin">
@@ -42,6 +61,7 @@
 				{% for card in hand %}
 				
 				<div class="card_slot">
+						<div class='card_sidetab'>{{card.card.modifier}}</div>
 						<div class="card" id="card-{{card.id}}">
 							<div class="card_image"></div>
 							<div class="card_inner">
@@ -84,25 +104,6 @@
 		</div>
 		<!--<div id="end_page_spacing"></div>-->
 		<div class="footer">
-			<div id="inventory">
-				<div id="deck">
-					{% if numcardsindeck > 0 %}
-						<h2>
-							<a href="/draw?from={{request.path}}">Deck ({{numcardsindeck}})</a>
-						</h2>
-					{% else %}
-						<h2>
-							Deck ({{numcardsindeck}})
-						</h2>
-					{% endif %}
-				</div>
-				<div id="money">
-					<div>
-						{{user.player.money}} $
-					</div>
-				</div>
-			</div>
-			
 		</div>
 		<div id="card_modal">
 			<div id="modal_background">
