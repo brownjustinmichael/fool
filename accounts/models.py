@@ -242,7 +242,8 @@ class DeckStatus (models.Model):
             cardstatus = self.cardstatus_set.filter (status = CARD_IN_DECK).order_by ('position').first ()
             if cardstatus is not None:
                 return cardstatus.discard (next_status)
-        raise ValueError ("You've run out of cards in this deck.")
+        # TODO Enable death
+        # raise ValueError ("You've run out of cards in this deck:", self)
         
     def reshuffle (self, **kwargs):
         """
@@ -702,7 +703,6 @@ class Flag (models.Model):
         return flag
             
     def getLogFlag (self, log):
-        print (LogFlag.objects.all ())
         flag = LogFlag.objects.filter (flag = self).filter (log = log).first ()
         if flag is None:
             flag = LogFlag (log = log, flag = self)

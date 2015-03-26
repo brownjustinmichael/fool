@@ -81,8 +81,6 @@ class Event (models.Model):
             else:
                 valuetriggers.append (trigger)
                 
-        npctriggers.reverse ()
-        
         triggers = npctriggers + valuetriggers
         
         print ("LLAMA THINKING ABOUT TRIGGER:", triggers)
