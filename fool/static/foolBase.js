@@ -3,6 +3,7 @@ function start() {
 	cardModal();
 	handShift();
 	scrollBottom();
+	animateCardHover();
 }
 
 function cardModal() {
@@ -60,4 +61,19 @@ function handShift(){
 
 function scrollBottom(){
 	$("#content_main").prop({ scrollTop: $("#content_main").prop("scrollHeight") });
+}
+
+function animateCardHover(){
+	$(".card").mouseenter(function(){
+		$(this).animate({
+			top: "5"
+		}, {duration: 200, 
+			queue:false});
+	});
+	$(".card").mouseleave(function(){
+			$(this).animate({
+			top: "150"
+		}, {duration: 200, 
+			queue:false});
+	});
 }
